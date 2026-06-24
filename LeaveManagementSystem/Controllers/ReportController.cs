@@ -126,7 +126,10 @@ namespace LeaveManagementSystem.Controllers
                 }
 
                 // Filter statuses
-                if (status != null && status.Length > 0)
+                bool isAllSelected = status != null &&
+                                     status.Any(s => s.Equals("All", StringComparison.OrdinalIgnoreCase));
+
+                if (!isAllSelected && status != null && status.Length > 0)
                 {
                     leaves = leaves
                         .Where(x => status.Contains(x.Status))
