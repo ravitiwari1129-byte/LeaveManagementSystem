@@ -1,0 +1,78 @@
+﻿<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+@model IEnumerable<LeaveManagementSystem.Models.EmployeeModel>
+@{
+    ViewBag.Title = "Employee Management";
+}
+
+<div class="page-header">
+    <h2>Employee Management</h2>
+    <p>Manage all employees in the system</p>
+</div>
+
+<div class="stats-grid">
+    <div class="stat-card total">
+        <div class="stat-label">Total Employees</div>
+        <div class="stat-number">@Model.Count()</div>
+    </div>
+    <div class="stat-card approved">
+        <div class="stat-label">Active Employees</div>
+        <div class="stat-number">@Model.Count(e => e.IsActive)</div>
+    </div>
+    <div class="stat-card pending">
+        <div class="stat-label">Departments</div>
+        <div class="stat-number">@(ViewBag.Departments?.Count ?? 0)</div>
+    </div>
+</div>
+
+<div class="card">
+    <div style="margin-bottom: 1rem;">
+        <a href="@Url.Action("Create", "Employee")" class="btn btn-primary">+ Add New Employee</a>
+    </div>
+    <div id="employeeGrid" style="width: 100%; height: 500px;"></div>
+</div>
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/ag-grid-community@35.3.1/styles/ag-theme-alpine.css">
+<script src="https://cdn.jsdelivr.net/npm/ag-grid-community@35.3.1/dist/ag-grid-community.min.js"></script>
+
+<script>
+    window.employeeData = @Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(Model.Select(e => new
+    {
+        EmployeeId = e.EmployeeId,
+        EmployeeName = e.EmployeeName,
+        Email = e.Email,
+        DepartmentName = e.DepartmentName,
+        Role = e.Role,
+        IsActive = e.IsActive,
+        Status = e.IsActive ? "Active" : "Inactive"
+    })));
+</script>
+<script src="~/js/employee.js"></script>
+
+@Html.AntiForgeryToken()
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

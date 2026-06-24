@@ -1,0 +1,55 @@
+﻿@model IEnumerable<LeaveManagementSystem.Models.LeaveRequestModel>
+@{
+    ViewBag.Title = "Leave History";
+}
+
+<div class="page-header">
+    <h2>Leave History</h2>
+    <p>View all your leave requests and their status</p>
+</div>
+
+<div class="stats-grid">
+    <div class="stat-card pending">
+        <div class="stat-label">Pending Requests</div>
+        <div class="stat-number" id="pendingCount">@Model?.Count(l => l.Status == "Pending")</div>
+    </div>
+    <div class="stat-card approved">
+        <div class="stat-label">Approved Requests</div>
+        <div class="stat-number" id="approvedCount">@Model?.Count(l => l.Status == "Approved")</div>
+    </div>
+    <div class="stat-card rejected">
+        <div class="stat-label">Rejected Requests</div>
+        <div class="stat-number" id="rejectedCount">@Model?.Count(l => l.Status == "Rejected")</div>
+    </div>
+    <div class="stat-card total">
+        <div class="stat-label">Total Leaves Taken</div>
+        <div class="stat-number" id="totalDays">0</div>
+    </div>
+</div>
+
+<div class="card">
+    <div class="card-title">Leave Requests</div>
+    <div id="leaveHistoryGrid" class="ag-theme-alpine" style="width: 100%; height: 500px;"></div>
+</div>
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/ag-grid-community@35.3.1/styles/ag-theme-alpine.css">
+<script src="https://cdn.jsdelivr.net/npm/ag-grid-community@35.3.1/dist/ag-grid-community.min.js"></script>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+<script>
+    window.leaveHistoryData = @Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(Model.Select(l => new
+    {
+        LeaveId = l.LeaveId,
+        LeaveType = l.LeaveType,
+        FromDate = l.FromDate.ToString("dd MMM yyyy"),
+        FromDateRaw = l.FromDate.ToString("yyyy-MM-dd"),
+        ToDate = l.ToDate.ToString("dd MMM yyyy"),
+        ToDateRaw = l.ToDate.ToString("yyyy-MM-dd"),
+        Reason = l.Reason?.Length > 60 ? l.Reason.Substring(0, 60) + "..." : l.Reason,
+        FullReason = l.Reason,
+        Status = l.Status,
+        AppliedDate = l.AppliedDate.ToString("dd MMM yyyy")
+    })));
+</script>
+
+<script src="~/js/leave.js"></script>

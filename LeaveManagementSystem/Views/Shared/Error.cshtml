@@ -1,0 +1,24 @@
+﻿@model LeaveManagementSystem.Models.ErrorViewModel
+@{
+    ViewBag.Title = "Error";
+}
+
+<div class="card" style="text-align: center; padding: 3rem;">
+    <h2>Something went wrong!</h2>
+
+    @if (!string.IsNullOrEmpty(Model?.ErrorMessage))
+    {
+        <div class="alert alert-error"><strong>Error:</strong> @Model.ErrorMessage</div>
+    }
+    else
+    {
+        <p>An error occurred while processing your request.</p>
+    }
+
+    @if (Model?.ShowRequestId == true)
+    {
+        <p><strong>Request ID:</strong> <code>@Model.RequestId</code></p>
+    }
+
+    <a href="@Url.Action("Index", "Report")" class="btn btn-primary">Go to Dashboard</a>
+</div>

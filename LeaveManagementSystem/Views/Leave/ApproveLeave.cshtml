@@ -1,0 +1,611 @@
+﻿@* @model IEnumerable<LeaveManagementSystem.Models.LeaveModel>
+@{
+    ViewBag.Title = "Approve Leaves";
+}
+
+<div class="page-header">
+    <h2>Pending Leave Approvals</h2>
+    <p>Review and approve/reject leave requests</p>
+</div>
+
+<div class="stats-grid">
+    <div class="stat-card pending">
+        <div class="stat-label">Pending Requests</div>
+        <div class="stat-number" id="pendingCount">@Model?.Count()</div>
+    </div>
+    <div class="stat-card approved">
+        <div class="stat-label">Today's Requests</div>
+        <div class="stat-number">@Model?.Count(l => l.AppliedDate.Date == DateTime.Today)</div>
+    </div>
+    <div class="stat-card total">
+        <div class="stat-label">Total Leave Types</div>
+        <div class="stat-number">@Model?.Select(l => l.LeaveType).Distinct().Count()</div>
+    </div>
+</div>
+
+<div class="card">
+    <div class="card-title">Pending Leave Requests</div>
+    <div style="width: 100%; overflow-x: auto; border: 1px solid #ddd; border-radius: 5px;">
+        <div id="leaveGrid" style="min-width: 1400px; height: 500px;" class="ag-theme-alpine"></div>
+    </div>
+</div>
+
+<!-- Modal for Approval/Rejection -->
+<div id="actionModal" class="modal" style="display: none;">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h3 id="modalTitle">Confirm Action</h3>
+            <span onclick="closeModal()" style="cursor: pointer; float: right; font-size: 24px;">&times;</span>
+        </div>
+        <div class="modal-body">
+            <p id="modalMessage"></p>
+            <div class="form-group">
+                <label for="remarks">Remarks (Optional)</label>
+                <textarea id="remarks" class="form-control" rows="3" placeholder="Add any remarks..."></textarea>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button onclick="closeModal()" class="btn btn-secondary">Cancel</button>
+            <button onclick="confirmAction()" class="btn btn-primary">Confirm</button>
+        </div>
+    </div>
+</div>
+
+@Html.AntiForgeryToken()
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/ag-grid-community@35.3.1/styles/ag-theme-alpine.css">
+<script src="https://cdn.jsdelivr.net/npm/ag-grid-community@35.3.1/dist/ag-grid-community.min.js"></script>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+<script>
+    // ========================================
+    // STEP 1: LOAD DATA
+    // ========================================
+    window.leaveData = @Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(Model.Select(l => new
+    {
+        LeaveId = l.LeaveId,
+        EmployeeName = l.EmployeeName,
+        LeaveType = l.LeaveType,
+        FromDate = l.FromDate.ToString("dd MMM yyyy"),
+        ToDate = l.ToDate.ToString("dd MMM yyyy"),
+        Reason = l.Reason,
+        AppliedDate = l.AppliedDate.ToString("dd MMM yyyy")
+    })));
+
+    console.log("=== DEBUG: Data Loaded ===");
+    console.log("Total Records:", window.leaveData.length);
+    if (window.leaveData.length > 0) {
+    console.log("Sample Record:", window.leaveData[0]);
+    }
+</script>
+
+<script>
+    // ========================================
+    // STEP 2: INITIALIZE GRID
+    // ========================================
+    var gridApi = null;
+
+    function initGrid() {
+    var gridDiv = document.getElementById('leaveGrid');
+    if (!gridDiv) {
+    console.error("Grid container not found!");
+    return;
+    }
+
+    if (typeof agGrid === 'undefined') {
+    console.error("AG Grid not loaded!");
+    return;
+    }
+
+    var columnDefs = [
+    { field: "EmployeeName", headerName: "Employee", sortable: true, filter: true, width: 200 },
+    { field: "LeaveType", headerName: "Leave Type", sortable: true, filter: true, width: 170 },
+    { field: "FromDate", headerName: "From Date", sortable: true, width: 130 },
+    { field: "ToDate", headerName: "To Date", sortable: true, width: 130 },
+    {
+    field: "Reason",
+    headerName: "Reason",
+    sortable: true,
+    filter: true,
+    width: 320,
+    cellRenderer: function(params) {
+    var reason = params.value || "";
+    return reason.length > 60 ? reason.substring(0, 60) + "..." : reason;
+    }
+    },
+    { field: "AppliedDate", headerName: "Applied Date", sortable: true, width: 130 },
+    {
+    headerName: "Action",
+    width: 320,
+    sortable: false,
+    filter: false,
+    cellRenderer: function(params) {
+    var leaveId = params.data.LeaveId;
+    return '<div style="display: flex; gap: 8px; white-space: nowrap;">' +
+    '<button type="button" class="btn btn-success" style="padding: 6px 14px; cursor: pointer; font-size: 13px; font-weight: 500;" onclick="approveLeave(' + leaveId + ')">Approve</button>' +
+    '<button type="button" class="btn btn-danger" style="padding: 6px 14px; cursor: pointer; font-size: 13px; font-weight: 500;" onclick="rejectLeave(' + leaveId + ')">Reject</button>' +
+    // ✅ FIXED: Correct URL
+    '<a href="/Leave/Details/' + leaveId + '" class="btn btn-info" style="padding: 6px 14px; text-decoration: none; display: inline-block; font-size: 13px;">View</a>' +
+    '</div>';
+    }
+    }
+    ];
+
+    gridApi = agGrid.createGrid(gridDiv, {
+    columnDefs: columnDefs,
+    rowData: window.leaveData,
+    domLayout: 'autoHeight',
+    animateRows: true
+    });
+
+    console.log("✅ Grid Initialized Successfully!");
+
+    setTimeout(function() {
+    if (gridApi) gridApi.sizeColumnsToFit();
+    }, 100);
+    }
+
+    // Initialize when page is ready
+    if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initGrid);
+    } else {
+    initGrid();
+    }
+</script>
+
+<script>
+    // ========================================
+    // STEP 3: APPROVE/REJECT FUNCTIONS
+    // ========================================
+    var currentLeaveId = null;
+    var currentAction = null;
+
+    function approveLeave(leaveId) {
+    console.log("✅ Approve clicked for Leave ID:", leaveId);
+    currentLeaveId = leaveId;
+    currentAction = "Approved";
+    document.getElementById('modalTitle').innerHTML = "Approve Leave Request";
+    document.getElementById('modalMessage').innerHTML = "Are you sure you want to approve this leave request?";
+    document.getElementById('actionModal').style.display = "flex";
+    document.getElementById('remarks').value = '';
+    }
+
+    function rejectLeave(leaveId) {
+    console.log("✅ Reject clicked for Leave ID:", leaveId);
+    currentLeaveId = leaveId;
+    currentAction = "Rejected";
+    document.getElementById('modalTitle').innerHTML = "Reject Leave Request";
+    document.getElementById('modalMessage').innerHTML = "Are you sure you want to reject this leave request?";
+    document.getElementById('actionModal').style.display = "flex";
+    document.getElementById('remarks').value = '';
+    }
+
+    function closeModal() {
+    document.getElementById('actionModal').style.display = "none";
+    currentLeaveId = null;
+    currentAction = null;
+    }
+
+    function confirmAction() {
+    console.log("📤 Confirm Action - LeaveId:", currentLeaveId, "Action:", currentAction);
+
+    if (!currentLeaveId || !currentAction) {
+    alert("No action selected");
+    return;
+    }
+
+    var remarks = document.getElementById('remarks').value || "";
+    var token = document.querySelector('input[name="__RequestVerificationToken"]')?.value || "";
+
+    if (!token) {
+    console.error("❌ Anti-forgery token not found!");
+    alert("Security token not found. Please refresh the page.");
+    return;
+    }
+
+    console.log("📤 Sending request to server...");
+
+    fetch('/ApproveLeaves/ApproveReject', {
+    method: 'POST',
+    headers: {
+    'Content-Type': 'application/json',
+    'RequestVerificationToken': token
+    },
+    body: JSON.stringify({
+    leaveId: currentLeaveId,
+    status: currentAction,
+    remarks: remarks
+    })
+    })
+    .then(function(response) {
+    console.log("📥 Response Status:", response.status);
+    if (!response.ok) {
+    return response.text().then(function(text) {
+    throw new Error("Server returned " + response.status + ": " + text);
+    });
+    }
+    return response.json();
+    })
+    .then(function(data) {
+    console.log("📥 Response Data:", data);
+
+    if (data.success) {
+    // ✅ Remove row from grid
+    if (gridApi) {
+    var allRows = [];
+    gridApi.forEachNode(function(node) {
+    allRows.push(node.data);
+    });
+
+    var updatedRows = allRows.filter(function(row) {
+    return row.LeaveId !== currentLeaveId;
+    });
+
+    gridApi.setGridOption('rowData', updatedRows);
+    console.log("✅ Row removed, remaining:", updatedRows.length);
+
+    // Update pending count
+    var pendingCountElem = document.getElementById('pendingCount');
+    if (pendingCountElem) {
+    pendingCountElem.innerHTML = updatedRows.length;
+    }
+    }
+
+    alert("✅ " + data.message);
+    closeModal();
+    } else {
+    alert("❌ " + (data.message || "Failed to process request"));
+    }
+    })
+    .catch(function(error) {
+    console.error("💥 Error:", error);
+    alert("❌ An error occurred: " + error.message);
+    });
+    }
+
+    // ✅ Close modal when clicking outside
+    window.onclick = function(event) {
+    var modal = document.getElementById('actionModal');
+    if (event.target === modal) {
+    closeModal();
+    }
+    };
+
+    // ✅ Handle window resize
+    window.addEventListener('resize', function() {
+    if (gridApi) {
+    setTimeout(function() { gridApi.sizeColumnsToFit(); }, 100);
+    }
+    });
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    @model IEnumerable<LeaveManagementSystem.Models.LeaveModel>
+@{
+    ViewBag.Title = "Approve Leaves";
+}
+
+<div class="page-header">
+    <h2>Pending Leave Approvals</h2>
+    <p>Review and approve/reject leave requests</p>
+</div>
+
+<div class="stats-grid">
+    <div class="stat-card pending">
+        <div class="stat-label">Pending Requests</div>
+        <div class="stat-number" id="pendingCount">@Model?.Count()</div>
+    </div>
+    <div class="stat-card approved">
+        <div class="stat-label">Today's Requests</div>
+        <div class="stat-number">@Model?.Count(l => l.AppliedDate.Date == DateTime.Today)</div>
+    </div>
+    <div class="stat-card total">
+        <div class="stat-label">Total Leave Types</div>
+        <div class="stat-number">@Model?.Select(l => l.LeaveType).Distinct().Count()</div>
+    </div>
+</div>
+
+<div class="card">
+    <div class="card-title">Pending Leave Requests</div>
+    <div style="width: 100%; overflow-x: auto; border: 1px solid #ddd; border-radius: 5px;">
+        <div id="leaveGrid" style="min-width: 1400px; height: 500px;" class="ag-theme-alpine"></div>
+    </div>
+</div>
+
+<!-- Modal for Approval/Rejection -->
+<div id="actionModal" class="modal" style="display: none;">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h3 id="modalTitle">Confirm Action</h3>
+            <span onclick="closeModal()" style="cursor: pointer; float: right; font-size: 24px;">&times;</span>
+        </div>
+        <div class="modal-body">
+            <p id="modalMessage"></p>
+            <div class="form-group">
+                <label for="remarks">Remarks (Optional)</label>
+                <textarea id="remarks" class="form-control" rows="3" placeholder="Add any remarks..."></textarea>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button onclick="closeModal()" class="btn btn-secondary">Cancel</button>
+            <button onclick="confirmAction()" class="btn btn-primary">Confirm</button>
+        </div>
+    </div>
+</div>
+
+@Html.AntiForgeryToken()
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/ag-grid-community@35.3.1/styles/ag-theme-alpine.css">
+<script src="https://cdn.jsdelivr.net/npm/ag-grid-community@35.3.1/dist/ag-grid-community.min.js"></script>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+<script>
+    // ========================================
+    // STEP 1: LOAD DATA
+    // ========================================
+    window.leaveData = @Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(Model.Select(l => new
+    {
+        LeaveId = l.LeaveId,
+        EmployeeName = l.EmployeeName,
+        LeaveType = l.LeaveType,
+        FromDate = l.FromDate.ToString("dd MMM yyyy"),
+        ToDate = l.ToDate.ToString("dd MMM yyyy"),
+        Reason = l.Reason,
+        AppliedDate = l.AppliedDate.ToString("dd MMM yyyy")
+    })));
+
+    console.log("=== DEBUG: Data Loaded ===");
+    console.log("Total Records:", window.leaveData.length);
+    if (window.leaveData.length > 0) {
+    console.log("Sample Record:", window.leaveData[0]);
+    }
+</script>
+
+<script>
+    // ========================================
+    // STEP 2: INITIALIZE GRID
+    // ========================================
+    var gridApi = null;
+
+    function initGrid() {
+    var gridDiv = document.getElementById('leaveGrid');
+    if (!gridDiv) {
+    console.error("Grid container not found!");
+    return;
+    }
+
+    if (typeof agGrid === 'undefined') {
+    console.error("AG Grid not loaded!");
+    return;
+    }
+
+    var columnDefs = [
+    { field: "EmployeeName", headerName: "Employee", sortable: true, filter: true, width: 200 },
+    { field: "LeaveType", headerName: "Leave Type", sortable: true, filter: true, width: 170 },
+    { field: "FromDate", headerName: "From Date", sortable: true, width: 130 },
+    { field: "ToDate", headerName: "To Date", sortable: true, width: 130 },
+    {
+    field: "Reason",
+    headerName: "Reason",
+    sortable: true,
+    filter: true,
+    width: 320,
+    cellRenderer: function(params) {
+    var reason = params.value || "";
+    return reason.length > 60 ? reason.substring(0, 60) + "..." : reason;
+    }
+    },
+    { field: "AppliedDate", headerName: "Applied Date", sortable: true, width: 130 },
+    {
+    headerName: "Action",
+    width: 320,
+    sortable: false,
+    filter: false,
+    cellRenderer: function(params) {
+    var leaveId = params.data.LeaveId;
+    return '<div style="display: flex; gap: 8px; white-space: nowrap;">' +
+    '<button type="button" class="btn btn-success" style="padding: 6px 14px; cursor: pointer; font-size: 13px; font-weight: 500;" onclick="approveLeave(' + leaveId + ')">Approve</button>' +
+    '<button type="button" class="btn btn-danger" style="padding: 6px 14px; cursor: pointer; font-size: 13px; font-weight: 500;" onclick="rejectLeave(' + leaveId + ')">Reject</button>' +
+    // ✅ FIXED: Correct URL
+    '<a href="/Leave/Details/' + leaveId + '" class="btn btn-info" style="padding: 6px 14px; text-decoration: none; display: inline-block; font-size: 13px;">View</a>' +
+    '</div>';
+    }
+    }
+    ];
+
+    gridApi = agGrid.createGrid(gridDiv, {
+    columnDefs: columnDefs,
+    rowData: window.leaveData,
+    domLayout: 'autoHeight',
+    animateRows: true
+    });
+
+    console.log("✅ Grid Initialized Successfully!");
+
+    setTimeout(function() {
+    if (gridApi) gridApi.sizeColumnsToFit();
+    }, 100);
+    }
+
+    // Initialize when page is ready
+    if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initGrid);
+    } else {
+    initGrid();
+    }
+</script>
+
+<script>
+    // ========================================
+    // STEP 3: APPROVE/REJECT FUNCTIONS
+    // ========================================
+    var currentLeaveId = null;
+    var currentAction = null;
+
+    function approveLeave(leaveId) {
+    console.log("✅ Approve clicked for Leave ID:", leaveId);
+    currentLeaveId = leaveId;
+    currentAction = "Approved";
+    document.getElementById('modalTitle').innerHTML = "Approve Leave Request";
+    document.getElementById('modalMessage').innerHTML = "Are you sure you want to approve this leave request?";
+    document.getElementById('actionModal').style.display = "flex";
+    document.getElementById('remarks').value = '';
+    }
+
+    function rejectLeave(leaveId) {
+    console.log("✅ Reject clicked for Leave ID:", leaveId);
+    currentLeaveId = leaveId;
+    currentAction = "Rejected";
+    document.getElementById('modalTitle').innerHTML = "Reject Leave Request";
+    document.getElementById('modalMessage').innerHTML = "Are you sure you want to reject this leave request?";
+    document.getElementById('actionModal').style.display = "flex";
+    document.getElementById('remarks').value = '';
+    }
+
+    function closeModal() {
+    document.getElementById('actionModal').style.display = "none";
+    currentLeaveId = null;
+    currentAction = null;
+    }
+
+    function confirmAction() {
+    console.log("📤 Confirm Action - LeaveId:", currentLeaveId, "Action:", currentAction);
+
+    if (!currentLeaveId || !currentAction) {
+    alert("No action selected");
+    return;
+    }
+
+    var remarks = document.getElementById('remarks').value || "";
+    var token = document.querySelector('input[name="__RequestVerificationToken"]')?.value || "";
+
+    if (!token) {
+    console.error("❌ Anti-forgery token not found!");
+    alert("Security token not found. Please refresh the page.");
+    return;
+    }
+
+    console.log("📤 Sending request to server...");
+
+    fetch('/ApproveLeaves/ApproveReject', {
+    method: 'POST',
+    headers: {
+    'Content-Type': 'application/json',
+    'RequestVerificationToken': token
+    },
+    body: JSON.stringify({
+    leaveId: currentLeaveId,
+    status: currentAction,
+    remarks: remarks
+    })
+    })
+    .then(function(response) {
+    console.log("📥 Response Status:", response.status);
+    if (!response.ok) {
+    return response.text().then(function(text) {
+    throw new Error("Server returned " + response.status + ": " + text);
+    });
+    }
+    return response.json();
+    })
+    .then(function(data) {
+    console.log("📥 Response Data:", data);
+
+    if (data.success) {
+    // ✅ Remove row from grid
+    if (gridApi) {
+    var allRows = [];
+    gridApi.forEachNode(function(node) {
+    allRows.push(node.data);
+    });
+
+    var updatedRows = allRows.filter(function(row) {
+    return row.LeaveId !== currentLeaveId;
+    });
+
+    gridApi.setGridOption('rowData', updatedRows);
+    console.log("✅ Row removed, remaining:", updatedRows.length);
+
+    // Update pending count
+    var pendingCountElem = document.getElementById('pendingCount');
+    if (pendingCountElem) {
+    pendingCountElem.innerHTML = updatedRows.length;
+    }
+    }
+
+    alert("✅ " + data.message);
+    closeModal();
+    } else {
+    alert("❌ " + (data.message || "Failed to process request"));
+    }
+    })
+    .catch(function(error) {
+    console.error("💥 Error:", error);
+    alert("❌ An error occurred: " + error.message);
+    });
+    }
+
+    // ✅ Close modal when clicking outside
+    window.onclick = function(event) {
+    var modal = document.getElementById('actionModal');
+    if (event.target === modal) {
+    closeModal();
+    }
+    };
+
+    // ✅ Handle window resize
+    window.addEventListener('resize', function() {
+    if (gridApi) {
+    setTimeout(function() { gridApi.sizeColumnsToFit(); }, 100);
+    }
+    });
+</script> *@

@@ -1,0 +1,73 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+    <meta http-equiv="Pragma" content="no-cache" />
+    <meta http-equiv="Expires" content="0" />
+    <title>Leave Management System - @ViewBag.Title</title>
+    <link rel="stylesheet" href="~/css/site.css" />
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.5/jquery.validate.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validation-unobtrusive/3.2.12/jquery.validate.unobtrusive.min.js"></script>
+    <script src="~/js/site.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    @RenderSection("Scripts", required: false)
+</head>
+<body>
+    @{
+        var userRole = Context.Session.GetString("UserRole");
+        var userName = Context.Session.GetString("EmployeeName");
+        var isLoggedIn = !string.IsNullOrEmpty(userName);
+    }
+
+    @if (isLoggedIn)
+    {
+        <div class="header">
+            <div class="logo">
+                <h1>Leave Management System</h1>
+                <p>Track and manage leave requests efficiently</p>
+            </div>
+            <div class="user-info">
+                <span class="user-name">👤 @userName (@userRole)</span>
+                <a href="@Url.Action("Logout", "Account")" class="logout-btn">Logout</a>
+            </div>
+        </div>
+        <div class="container">
+            <div class="sidebar">
+                <a href="@Url.Action("Index", "Report")" class="@(ViewContext.RouteData.Values["controller"]?.ToString() == "Report" && ViewContext.RouteData.Values["action"]?.ToString() == "Index" ? "active" : "")">📊 Dashboard</a>
+                @if (userRole == "Admin")
+                {
+                    <a href="@Url.Action("Index", "Employee")" class="@(ViewContext.RouteData.Values["controller"]?.ToString() == "Employee" ? "active" : "")">👥 Employees</a>
+@*                     <a href="@Url.Action("Index", "ApproveLeaves")" class="@(ViewContext.RouteData.Values["controller"]?.ToString() == "ApproveLeaves" ? "active" : "")">✅ Approve Leave</a>*@                    
+                    <a href="@Url.Action("Index", "Leave")" class="@(ViewContext.RouteData.Values["controller"]?.ToString() == "ApproveLeaves" ? "active" : "")">✅  Leave</a>
+
+                    <a href="@Url.Action("LeaveReport", "Report")" class="@(ViewContext.RouteData.Values["action"]?.ToString() == "LeaveReport" ? "active" : "")">📋  Report</a>
+                }
+                else
+                {
+                    <a href="@Url.Action("Index", "ApplyLeave")" class="@(ViewContext.RouteData.Values["controller"]?.ToString() == "ApplyLeave" ? "active" : "")">📝 Apply Leave</a>
+                    <a href="@Url.Action("Index", "LeaveHistory")" class="@(ViewContext.RouteData.Values["controller"]?.ToString() == "LeaveHistory" ? "active" : "")">📜 Leave History</a>
+                }
+                @* <a href="@Url.Action("Index", "SearchLeaves")" class="@(ViewContext.RouteData.Values["action"]?.ToString() == "Search" ? "active" : "")">🔍 Search Leave</a> *@
+            </div>
+            <div class="main-content">
+                @if (TempData["Success"] != null)
+                {
+                    <div class="alert alert-success" id="successAlert">@TempData["Success"]</div>
+                }
+                @if (TempData["Error"] != null)
+                {
+                    <div class="alert alert-error" id="errorAlert">@TempData["Error"]</div>
+                }
+                @RenderBody()
+            </div>
+        </div>
+    }
+    else
+    {
+        @RenderBody()
+    }
+</body>
+</html>
