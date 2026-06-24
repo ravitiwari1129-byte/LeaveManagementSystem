@@ -1,9 +1,11 @@
-﻿@{
+﻿@model LeaveManagementSystem.Models.UserSession
+@{
     ViewBag.Title = "Leave Report";
     var employees = ViewBag.Employees as List<LeaveManagementSystem.Models.EmployeeModel>;
 }
 
 
+@using Microsoft.AspNetCore.Http
 
 <div class="page-header">
     <h2>Leave Report</h2>
@@ -14,20 +16,28 @@
     <div class="filter-row">
         <div class="form-group">
             <label for="reportEmployeeId">Employee</label>
-            <select id="reportEmployeeId" multiple>
-                <option value="All">All Employees</option>
-                @if (employees != null)  // ✅ ADD THIS CHECK
-                {
-                    foreach (var emp in employees)
+
+            @if (ViewBag.userrole == "Employee")
+            {
+                <select id="reportEmployeeId" multiple>
+                    <option value="All">All Employees</option>
+                    @if (employees != null)  // ✅ ADD THIS CHECK
                     {
-                        <option value="@emp.EmployeeId">@emp.EmployeeName</option>
+                        foreach (var emp in employees)
+                        {
+                            <option value="@emp.EmployeeId">@emp.EmployeeName</option>
+                        }
                     }
-                }
-                else
-                {
-                    <option value="">No employees found</option>
-                }
-            </select>
+                    else
+                    {
+                        <option value="">No employees found</option>
+                    }
+                </select>
+            }
+            else
+            {
+                <input type="text" id="empid" class="form-control" value=@Model.EmployeeName"/>
+            }
         </div>
 
         <div class="form-group">

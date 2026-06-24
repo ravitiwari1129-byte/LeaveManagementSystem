@@ -63,13 +63,18 @@ namespace LeaveManagementSystem.Controllers
         [HttpGet]
         public IActionResult LeaveReport()
         {
-            if (!IsAdmin())
-                return RedirectToAction("AccessDenied", "Account");
+            //if (!IsAdmin())
+            //{
+            //    return RedirectToAction("AccessDenied", "Account");
+            //}
 
             try
             {
+                var role = GetCurrentUserRole();
+                var userName = HttpContext.Session.GetString("EmployeeName") ?? "User";
                 var employees = _employeeRepository.GetAllEmployees();
                 ViewBag.Employees = employees;
+                ViewBag.userrole = role;
                 return View(); // ✅ Views/Report/LeaveReport.cshtml
             }
             catch (Exception ex)
