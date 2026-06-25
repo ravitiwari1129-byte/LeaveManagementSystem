@@ -124,5 +124,28 @@ namespace LeaveManagementSystem.Helpers
             conn.Open();
             return cmd.ExecuteReader(CommandBehavior.CloseConnection);
         }
+
+        public bool EmailExists(string email)
+        {
+            using (SqlConnection conn = GetConnection())
+            using (SqlCommand cmd = new SqlCommand("USP_CheckEmailExists", conn))
+            {
+                cmd.CommandType = CommandType.StoredProcedure;
+
+                cmd.Parameters.AddWithValue("@Email", email);
+
+                SqlParameter existsParam = new SqlParameter("@Exists", SqlDbType.Bit)
+                {
+                    Direction = ParameterDirection.Output
+                };
+
+                cmd.Parameters.Add(existsParam);
+
+                conn.Open();
+                cmd.ExecuteNonQuery();
+
+                return Convert.ToBoolean(existsParam.Value);
+            }
+        }
     }
 }

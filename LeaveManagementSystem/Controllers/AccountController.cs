@@ -1,10 +1,11 @@
 ﻿using System;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Http;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Data.SqlClient;
+using LeaveManagementSystem.Helpers;
 using LeaveManagementSystem.Models;
 using LeaveManagementSystem.Repositories;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.Data.SqlClient;
+using Microsoft.Extensions.Configuration;
 
 namespace LeaveManagementSystem.Controllers
 {
@@ -12,11 +13,13 @@ namespace LeaveManagementSystem.Controllers
     {
         private readonly IEmployeeRepository _employeeRepository;
         private readonly string _connectionString;
+        private readonly DatabaseHelper _db;
 
-        public AccountController(IEmployeeRepository employeeRepository, IConfiguration configuration)
+        public AccountController(IEmployeeRepository employeeRepository, IConfiguration configuration, DatabaseHelper db)
         {
             _employeeRepository = employeeRepository;
             _connectionString = configuration.GetConnectionString("DefaultConnection");
+            _db = db;
         }
 
         private bool IsLoggedIn()
@@ -113,9 +116,9 @@ namespace LeaveManagementSystem.Controllers
 
             try
             {
-                if (EmailExists(model.Email))
+                if (_db.EmailExists(model.Email))
                 {
-                    ModelState.AddModelError("Email", "Email already exists");
+                    ModelState.AddModelError("Email", "Email already exists.");
                     return View(model);
                 }
 
@@ -147,30 +150,6 @@ namespace LeaveManagementSystem.Controllers
         }
 
 
-        // ========================================
-        // PRIVATE METHODS
-        // ========================================
-        private bool EmailExists(string email)
-        {
-            using (SqlConnection connection = new SqlConnection(_connectionString))
-            {
-                connection.Open();
-                using (SqlCommand command = new SqlCommand("USP_CheckEmailExists", connection))
-                {
-                    command.CommandType = System.Data.CommandType.StoredProcedure;
-                    command.Parameters.AddWithValue("@Email", email);
-
-                    SqlParameter resultParam = new SqlParameter("@Exists", System.Data.SqlDbType.Bit)
-                    {
-                        Direction = System.Data.ParameterDirection.Output
-                    };
-                    command.Parameters.Add(resultParam);
-
-                    command.ExecuteNonQuery();
-                    return Convert.ToBoolean(resultParam.Value);
-                }
-            }
-        }
 
         private int CreateEmployeeUsingStoredProcedure(SignupModel model)
         {
