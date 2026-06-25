@@ -12,12 +12,10 @@ namespace LeaveManagementSystem.Controllers
     public class LeaveController : Controller
     {
         private readonly ILeaveRepository _leaveRepository;
-        private readonly IEmployeeRepository _employeeRepository;
 
-        public LeaveController(ILeaveRepository leaveRepository, IEmployeeRepository employeeRepository)
+        public LeaveController(ILeaveRepository leaveRepository)
         {
             _leaveRepository = leaveRepository;
-            _employeeRepository = employeeRepository;
         }
 
         private int GetCurrentUserId()
@@ -144,20 +142,9 @@ namespace LeaveManagementSystem.Controllers
                 TempData["Error"] = "Error loading details: " + ex.Message;
                 return RedirectToAction("Index", "LeaveHistory");
             }
-            //var leave = _leaveRepository.GetLeaveById(id);
-
-            //if (leave == null)
-            //{
-            //    return NotFound();
-            //}
-
-            //return View(leave);
         }
 
-      
-
-
-
+     
         // ========================================
         // APPLY LEAVE
         // ========================================
@@ -184,66 +171,13 @@ namespace LeaveManagementSystem.Controllers
         [ValidateAntiForgeryToken]
         public IActionResult Apply(LeaveRequestModel leave)
         {
-            var leaveTypes = new[] {
-                "Sick Leave",
-                "Vacation",
-                "Personal Leave",
-                "Maternity Leave",
-                "Paternity Leave",
-                "Bereavement Leave"
-            };
-            ViewBag.LeaveTypes = leaveTypes;
+            var result = _leaveRepository.ApplyLeave(leave);
 
-            // Remove fields that shouldn't be validated from user input
-            ModelState.Remove("EmployeeName");
-            ModelState.Remove("Status");
-            ModelState.Remove("ApprovedByName");
-            ModelState.Remove("Remarks");
-            ModelState.Remove("ApprovedBy");
-            ModelState.Remove("LeaveId");
-            ModelState.Remove("AppliedDate");
-            ModelState.Remove("EmployeeId");
-            ModelState.Remove("TotalDays");
-
-            // Set values from session
-            leave.EmployeeId = GetCurrentUserId();
-            leave.Status = "Pending";
-            leave.AppliedDate = DateTime.Now;
-
-            // Custom validations
-            if (leave.FromDate == default(DateTime))
-                ModelState.AddModelError("FromDate", "From date is required");
-            else if (leave.FromDate < DateTime.Today)
-                ModelState.AddModelError("FromDate", "Cannot apply for past dates");
-
-            if (leave.ToDate == default(DateTime))
-                ModelState.AddModelError("ToDate", "To date is required");
-            else if (leave.FromDate > leave.ToDate)
-                ModelState.AddModelError("ToDate", "To date must be greater than or equal to from date");
-
-            if (string.IsNullOrEmpty(leave.LeaveType))
-                ModelState.AddModelError("LeaveType", "Leave type is required");
-
-            if (string.IsNullOrEmpty(leave.Reason))
-                ModelState.AddModelError("Reason", "Reason is required");
-
-            if (ModelState.IsValid)
+            if (result.Success)
             {
-                try
-                {
-                    var result = _leaveRepository.ApplyLeave(leave);
-                    if (result.Success)
-                    {
-                        TempData["Success"] = string.IsNullOrEmpty(result.Message) ? "Leave applied successfully!" : result.Message;
-                        return RedirectToAction("History");
-                    }
-                    ModelState.AddModelError("", string.IsNullOrEmpty(result.Message) ? "Failed to apply leave. Please try again." : result.Message);
-                }
-                catch (Exception ex)
-                {
-                    ModelState.AddModelError("", "Error applying leave: " + ex.Message);
-                }
+                return RedirectToAction("History");
             }
+
             return View(leave);
         }
 
