@@ -118,11 +118,7 @@ namespace LeaveManagementSystem.Repositories
             ht.Add("Role", employee.Role);
             ht.Add("Password", employee.Password);
 
-            object result = _dbHelper.ExecuteScalar("USP_InsertEmployee", ht);
-
-            return result != null && result != DBNull.Value
-                ? Convert.ToInt32(result)
-                : 0;
+            return _dbHelper.ExecuteWithOutputParameter("USP_InsertEmployee",ht,"@EmployeeId");
         }
 
         public bool UpdateEmployee(EmployeeModel employee)

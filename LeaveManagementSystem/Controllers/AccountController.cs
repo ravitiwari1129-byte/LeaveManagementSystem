@@ -12,14 +12,11 @@ namespace LeaveManagementSystem.Controllers
     public class AccountController : Controller
     {
         private readonly IEmployeeRepository _employeeRepository;
-        private readonly string _connectionString;
         private readonly DatabaseHelper _db;
 
-        public AccountController(IEmployeeRepository employeeRepository, IConfiguration configuration, DatabaseHelper db)
+        public AccountController(IEmployeeRepository employeeRepository)
         {
             _employeeRepository = employeeRepository;
-            _connectionString = configuration.GetConnectionString("DefaultConnection");
-            _db = db;
         }
 
         private bool IsLoggedIn()
@@ -77,7 +74,6 @@ namespace LeaveManagementSystem.Controllers
 
                 SetUserSession(user);
 
-                // ✅ FIXED: Redirect to Report/Index (Dashboard)
                 return RedirectToAction("Index", "Report");
             }
             catch (Exception ex)
@@ -107,8 +103,6 @@ namespace LeaveManagementSystem.Controllers
         [ValidateAntiForgeryToken]
         public IActionResult Signup(SignupModel model)
         {
-            ModelState.Remove("Role");
-
             if (!ModelState.IsValid)
             {
                 return View(model);
@@ -116,13 +110,16 @@ namespace LeaveManagementSystem.Controllers
 
             try
             {
-                if (_db.EmailExists(model.Email))
+                EmployeeModel employee = new EmployeeModel
                 {
-                    ModelState.AddModelError("Email", "Email already exists.");
-                    return View(model);
-                }
+                    EmployeeName = model.FullName,
+                    Email = model.Email,
+                    DepartmentId = 1,
+                    Role = "Employee",
+                    Password = model.Password
+                };
 
-                int employeeId = CreateEmployeeUsingStoredProcedure(model);
+                int employeeId = _employeeRepository.InsertEmployee(employee);
 
                 if (employeeId > 0)
                 {
@@ -130,7 +127,37 @@ namespace LeaveManagementSystem.Controllers
                     return RedirectToAction("Login");
                 }
 
-                ModelState.AddModelError("", "Failed to create account. Please try again.");
+                switch (employeeId)
+                {
+                    case -1:
+                        ModelState.AddModelError("Email", "Email already exists.");
+                        break;
+
+                    case -2:
+                        ModelState.AddModelError("", "Department not found.");
+                        break;
+
+                    case -3:
+                        ModelState.AddModelError("", "Invalid role.");
+                        break;
+
+                    case -4:
+                        ModelState.AddModelError("", "Employee name cannot be empty.");
+                        break;
+
+                    case -5:
+                        ModelState.AddModelError("Email", "Invalid email format.");
+                        break;
+
+                    case -6:
+                        ModelState.AddModelError("Password", "Password must be at least 4 characters.");
+                        break;
+
+                    default:
+                        ModelState.AddModelError("", "Failed to create account.");
+                        break;
+                }
+
             }
             catch (Exception ex)
             {
@@ -147,40 +174,6 @@ namespace LeaveManagementSystem.Controllers
         {
             HttpContext.Session.Clear();
             return RedirectToAction("Login", "Account");
-        }
-
-
-
-        private int CreateEmployeeUsingStoredProcedure(SignupModel model)
-        {
-            using (SqlConnection connection = new SqlConnection(_connectionString))
-            {
-                connection.Open();
-                using (SqlCommand command = new SqlCommand("USP_InsertEmployee", connection))
-                {
-                    command.CommandType = System.Data.CommandType.StoredProcedure;
-
-                    command.Parameters.AddWithValue("@EmployeeName", model.FullName);
-                    command.Parameters.AddWithValue("@Email", model.Email);
-                    command.Parameters.AddWithValue("@DepartmentId", 1);
-                    command.Parameters.AddWithValue("@Role", "Employee");
-                    command.Parameters.AddWithValue("@Password", model.Password);
-
-                    SqlParameter outputParam = new SqlParameter("@EmployeeId", System.Data.SqlDbType.Int)
-                    {
-                        Direction = System.Data.ParameterDirection.Output
-                    };
-                    command.Parameters.Add(outputParam);
-
-                    command.ExecuteNonQuery();
-
-                    if (outputParam.Value != DBNull.Value)
-                    {
-                        return Convert.ToInt32(outputParam.Value);
-                    }
-                    return 0;
-                }
-            }
         }
 
 

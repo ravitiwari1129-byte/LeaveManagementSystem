@@ -147,5 +147,32 @@ namespace LeaveManagementSystem.Helpers
                 return Convert.ToBoolean(existsParam.Value);
             }
         }
+
+        public int ExecuteWithOutputParameter(string procedureName,Hashtable parameters,string outputParameterName)
+        {
+            using (SqlConnection conn = GetConnection())
+            using (SqlCommand cmd = new SqlCommand(procedureName, conn))
+            {
+                cmd.CommandType = CommandType.StoredProcedure;
+
+                SqlParameter[] sqlParams =
+                    ConvertHashtableToSqlParameters(parameters);
+
+                if (sqlParams != null)
+                    cmd.Parameters.AddRange(sqlParams);
+
+                SqlParameter outputParam =
+                    new SqlParameter(outputParameterName, SqlDbType.Int);
+
+                outputParam.Direction = ParameterDirection.Output;
+
+                cmd.Parameters.Add(outputParam);
+
+                conn.Open();
+                cmd.ExecuteNonQuery();
+
+                return outputParam.Value != DBNull.Value? Convert.ToInt32(outputParam.Value): 0;
+            }
+        }
     }
 }
