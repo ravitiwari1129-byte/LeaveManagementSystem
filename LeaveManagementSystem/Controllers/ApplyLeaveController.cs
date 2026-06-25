@@ -86,23 +86,6 @@ namespace LeaveManagementSystem.Controllers
             leave.Status = "Pending";
             leave.AppliedDate = DateTime.Now;
 
-            // Custom validations
-            if (leave.FromDate == default(DateTime))
-                ModelState.AddModelError("FromDate", "From date is required");
-            else if (leave.FromDate < DateTime.Today)
-                ModelState.AddModelError("FromDate", "Cannot apply for past dates");
-
-            if (leave.ToDate == default(DateTime))
-                ModelState.AddModelError("ToDate", "To date is required");
-            else if (leave.FromDate > leave.ToDate)
-                ModelState.AddModelError("ToDate", "To date must be greater than or equal to from date");
-
-            if (string.IsNullOrEmpty(leave.LeaveType))
-                ModelState.AddModelError("LeaveType", "Leave type is required");
-
-            if (string.IsNullOrEmpty(leave.Reason))
-                ModelState.AddModelError("Reason", "Reason is required");
-
             if (ModelState.IsValid)
             {
                 try
