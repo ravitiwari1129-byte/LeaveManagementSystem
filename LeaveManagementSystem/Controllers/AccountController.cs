@@ -37,9 +37,7 @@ namespace LeaveManagementSystem.Controllers
             }
         }
 
-        // ========================================
-        // LOGIN - GET
-        // ========================================
+
         [HttpGet]
         public IActionResult Login()
         {
@@ -50,9 +48,7 @@ namespace LeaveManagementSystem.Controllers
             return View(new LoginModel());
         }
 
-        // ========================================
-        // LOGIN - POST (FIXED)
-        // ========================================
+        
         [HttpPost]
         [ValidateAntiForgeryToken]
         public IActionResult Login(LoginModel model)
@@ -61,19 +57,15 @@ namespace LeaveManagementSystem.Controllers
             {
                 return View(model);
             }
-
             try
             {
                 var user = _employeeRepository.ValidateUser(model.Email, model.Password);
-
                 if (user == null)
                 {
                     ModelState.AddModelError("", "Invalid email or password");
                     return View(model);
                 }
-
                 SetUserSession(user);
-
                 return RedirectToAction("Index", "Report");
             }
             catch (Exception ex)
@@ -83,9 +75,7 @@ namespace LeaveManagementSystem.Controllers
             }
         }
 
-        // ========================================
-        // SIGNUP - GET
-        // ========================================
+
         [HttpGet]
         public IActionResult Signup()
         {
@@ -96,9 +86,7 @@ namespace LeaveManagementSystem.Controllers
             return View(new SignupModel());
         }
 
-        // ========================================
-        // SIGNUP - POST
-        // ========================================
+
         [HttpPost]
         [ValidateAntiForgeryToken]
         public IActionResult Signup(SignupModel model)
@@ -107,7 +95,6 @@ namespace LeaveManagementSystem.Controllers
             {
                 return View(model);
             }
-
             try
             {
                 EmployeeModel employee = new EmployeeModel
@@ -118,58 +105,45 @@ namespace LeaveManagementSystem.Controllers
                     Role = "Employee",
                     Password = model.Password
                 };
-
                 int employeeId = _employeeRepository.InsertEmployee(employee);
-
                 if (employeeId > 0)
                 {
                     TempData["Success"] = "Account created successfully! Please login.";
                     return RedirectToAction("Login");
                 }
-
                 switch (employeeId)
                 {
                     case -1:
                         ModelState.AddModelError("Email", "Email already exists.");
                         break;
-
                     case -2:
                         ModelState.AddModelError("", "Department not found.");
                         break;
-
                     case -3:
                         ModelState.AddModelError("", "Invalid role.");
                         break;
-
                     case -4:
                         ModelState.AddModelError("", "Employee name cannot be empty.");
                         break;
-
                     case -5:
                         ModelState.AddModelError("Email", "Invalid email format.");
                         break;
-
                     case -6:
                         ModelState.AddModelError("Password", "Password must be at least 4 characters.");
                         break;
-
                     default:
                         ModelState.AddModelError("", "Failed to create account.");
                         break;
                 }
-
             }
             catch (Exception ex)
             {
                 ModelState.AddModelError("", $"Error: {ex.Message}");
             }
-
             return View(model);
         }
 
-        // ========================================
-        // LOGOUT
-        // ========================================
+
         public IActionResult Logout()
         {
             HttpContext.Session.Clear();

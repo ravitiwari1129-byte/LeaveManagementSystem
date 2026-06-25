@@ -32,9 +32,7 @@ namespace LeaveManagementSystem.Controllers
             ViewBag.Roles = new[] { "Employee", "Admin" };
         }
 
-        // ========================================
-        // GET: Employee/Index
-        // ========================================
+       
         [HttpGet]
         public IActionResult Index()
         {
@@ -46,9 +44,7 @@ namespace LeaveManagementSystem.Controllers
             return View(employees);
         }
 
-        // ========================================
-        // GET: Employee/Create
-        // ========================================
+        
         [HttpGet]
         public IActionResult Create()
         {
@@ -59,31 +55,26 @@ namespace LeaveManagementSystem.Controllers
             return View(new EmployeeModel());
         }
 
-        // ========================================
-        // POST: Employee/Create - HARD BINDING
-        // ========================================
+        
         [HttpPost]
         [ValidateAntiForgeryToken]
         public IActionResult Create(EmployeeModel employee)
         {
             if (!IsAdmin())
+            {
                 return RedirectToAction("AccessDenied", "Account");
-
+            }
             ModelState.Remove("DepartmentName");
             ModelState.Remove("IsActive");
             ModelState.Remove("EmployeeId");
-
-            // Custom validation
             if (employee.DepartmentId <= 0)
             {
                 ModelState.AddModelError("DepartmentId", "Please select a valid department");
             }
-
             if (string.IsNullOrEmpty(employee.Role))
             {
                 ModelState.AddModelError("Role", "Please select a role");
             }
-
             if (ModelState.IsValid)
             {
                 try
@@ -106,59 +97,45 @@ namespace LeaveManagementSystem.Controllers
                     ModelState.AddModelError("", "Error: " + ex.Message);
                 }
             }
-
             LoadViewBagData();
             return View(employee);
         }
 
-        // ========================================
-        // GET: Employee/Edit
-        // ========================================
+        
         [HttpGet]
         public IActionResult Edit(int id)
         {
             if (!IsAdmin())
                 return RedirectToAction("AccessDenied", "Account");
-
             var employee = _employeeRepository.GetEmployeeById(id);
             if (employee == null)
             {
                 TempData["Error"] = "Employee not found";
                 return RedirectToAction("Index");
             }
-
             LoadViewBagData();
             return View(employee);
         }
 
-        // ========================================
-        // POST: Employee/Edit
-        // ========================================
+
         [HttpPost]
         [ValidateAntiForgeryToken]
         public IActionResult Edit(EmployeeModel employee)
         {
             if (!IsAdmin())
                 return RedirectToAction("AccessDenied", "Account");
-
             ModelState.Remove("DepartmentName");
             ModelState.Remove("IsActive");
             ModelState.Remove("Password");
-
             if (_employeeRepository == null)
             {
                 throw new Exception("_employeeRepository is NULL");
             }
-
             if (employee == null)
             {
                 throw new Exception("employee is NULL");
             }
-
-            // Existing employee ki details nikalo
             var existingEmployee = _employeeRepository.GetEmployeeById(employee.EmployeeId);
-
-            // Agar current Admin ko Employee banaya ja raha hai
             if (existingEmployee != null &&
                 existingEmployee.Role == "Admin" &&
                 employee.Role != "Admin")
@@ -170,7 +147,6 @@ namespace LeaveManagementSystem.Controllers
                         "System mein kam se kam ek Admin hona zaroori hai.");
                 }
             }
-
             if (ModelState.IsValid)
             {
                 try
@@ -184,15 +160,11 @@ namespace LeaveManagementSystem.Controllers
                     ModelState.AddModelError("", "Error: " + ex.Message);
                 }
             }
-
             LoadViewBagData();
-
             return View(employee);
         }
 
-        // ========================================
-        // POST: Employee/Delete
-        // ========================================
+
         [HttpPost]
         [ValidateAntiForgeryToken]
         public IActionResult Delete([FromBody] DeleteRequest request)
@@ -201,12 +173,9 @@ namespace LeaveManagementSystem.Controllers
             {
                 if (!IsAdmin())
                     return Json(new { success = false, message = "Unauthorized" });
-
                 if (request == null || request.Id <= 0)
                     return Json(new { success = false, message = "Invalid employee ID" });
-
                 bool result = _employeeRepository.DeleteEmployee(request.Id);
-
                 if (result)
                     return Json(new { success = true, message = "Employee deleted successfully" });
                 else
@@ -218,9 +187,7 @@ namespace LeaveManagementSystem.Controllers
             }
         }
 
-        // ========================================
-        // GET: Employee/GetEmployees
-        // ========================================
+        
         [HttpGet]
         public IActionResult GetEmployees(int? departmentId)
         {

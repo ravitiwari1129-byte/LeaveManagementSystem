@@ -24,9 +24,6 @@ namespace LeaveManagementSystem.Controllers
             return string.IsNullOrEmpty(userId) ? 0 : Convert.ToInt32(userId);
         }
 
-        // ========================================
-        // GET: Apply Leave Form
-        // ========================================
 
         [HttpGet]
         public IActionResult Index()
@@ -34,21 +31,10 @@ namespace LeaveManagementSystem.Controllers
             if (GetCurrentUserId() == 0)
                 return RedirectToAction("Login", "Account");
 
-            ViewBag.LeaveTypes = new[] {
-                "Sick Leave",
-                "Vacation",
-                "Personal Leave",
-                "Maternity Leave",
-                "Paternity Leave",
-                "Bereavement Leave"
-            };
-
+            ViewBag.LeaveTypes = new[] {"Sick Leave","Vacation","Personal Leave","Maternity Leave","Paternity Leave","Bereavement Leave"};
             return View(new LeaveRequestModel());
         }
 
-        // ========================================
-        // POST: Submit Leave Application
-        // ========================================
 
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -60,17 +46,9 @@ namespace LeaveManagementSystem.Controllers
                 return RedirectToAction("Index");
             }
 
-            var leaveTypes = new[] {
-                "Sick Leave",
-                "Vacation",
-                "Personal Leave",
-                "Maternity Leave",
-                "Paternity Leave",
-                "Bereavement Leave"
-            };
+            var leaveTypes = new[] {"Sick Leave","Vacation","Personal Leave","Maternity Leave","Paternity Leave","Bereavement Leave"};
             ViewBag.LeaveTypes = leaveTypes;
 
-            // Remove fields that shouldn't be validated from user input
             ModelState.Remove("EmployeeName");
             ModelState.Remove("Status");
             ModelState.Remove("ApprovedByName");
@@ -81,7 +59,6 @@ namespace LeaveManagementSystem.Controllers
             ModelState.Remove("EmployeeId");
             ModelState.Remove("TotalDays");
 
-            // Set values from session
             leave.EmployeeId = GetCurrentUserId();
             leave.Status = "Pending";
             leave.AppliedDate = DateTime.Now;
@@ -94,7 +71,6 @@ namespace LeaveManagementSystem.Controllers
                     if (result.Success)
                     {
                         TempData["Success"] = result.Message ?? "Leave applied successfully!";
-                        // ✅ FIXED: Redirect to LeaveHistory/Index
                         return RedirectToAction("Index", "LeaveHistory");
                     }
                     ModelState.AddModelError("", string.IsNullOrEmpty(result.Message) ? "Failed to apply leave. Please try again." : result.Message);

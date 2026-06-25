@@ -18,30 +18,28 @@ namespace LeaveManagementSystem.Controllers
             _employeeRepository = employeeRepository;
         }
 
+
         private int GetCurrentUserId()
         {
             var userId = HttpContext.Session.GetString("EmployeeId");
             return string.IsNullOrEmpty(userId) ? 0 : Convert.ToInt32(userId);
         }
 
-        private string GetCurrentUserRole() => HttpContext.Session.GetString("UserRole") ?? "Employee";
+
+        private string GetCurrentUserRole()
+        {
+            return HttpContext.Session.GetString("UserRole") ?? "Employee";
+        }
+
 
         [HttpGet]
         public IActionResult Index()
         {
             if (GetCurrentUserId() == 0)
                 return RedirectToAction("Login", "Account");
-
             try
             {
-                var leaves = _leaveRepository.SearchLeaves(
-                    null,
-                    null,
-                    null,
-                    null,
-                    GetCurrentUserRole(),
-                    GetCurrentUserId()
-                );
+                var leaves = _leaveRepository.SearchLeaves(null,null,null,null,GetCurrentUserRole(),GetCurrentUserId());
                 return View(leaves ?? new List<LeaveRequestModel>());
             }
             catch (Exception ex)

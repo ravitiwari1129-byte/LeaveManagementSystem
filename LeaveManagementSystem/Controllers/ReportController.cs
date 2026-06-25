@@ -18,56 +18,53 @@ namespace LeaveManagementSystem.Controllers
             _employeeRepository = employeeRepository;
         }
 
+
         private int GetCurrentUserId()
         {
             var userId = HttpContext.Session.GetString("EmployeeId");
             return string.IsNullOrEmpty(userId) ? 0 : Convert.ToInt32(userId);
         }
 
-        private string GetCurrentUserRole() => HttpContext.Session.GetString("UserRole") ?? "Employee";
-        private bool IsAdmin() => GetCurrentUserRole() == "Admin";
+        private string GetCurrentUserRole()
+        {
+            return HttpContext.Session.GetString("UserRole") ?? "Employee";
+        }
 
-        // ========================================
-        // DASHBOARD
-        // ========================================
+
+        private bool IsAdmin()
+        {
+            return GetCurrentUserRole() == "Admin";
+        }
+
+        
         [HttpGet]
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Index()
         {
             var userId = GetCurrentUserId();
             if (userId == 0)
+            {
                 return RedirectToAction("Login", "Account");
-
+            }
             var role = GetCurrentUserRole();
             var userName = HttpContext.Session.GetString("EmployeeName") ?? "User";
-
             var dashboard = _leaveRepository.GetDashboardCounts(role, userId);
             var summary = new DashboardModel();
-
             if (role != "Admin")
             {
                 summary = _leaveRepository.GetLeaveSummary(userId);
             }
-
             ViewBag.Dashboard = dashboard;
             ViewBag.Summary = summary;
             ViewBag.UserName = userName;
             ViewBag.UserRole = role;
-
-            return View("Index"); // ✅ Views/Report/Index.cshtml
+            return View("Index"); 
         }
 
-        // ========================================
-        // LEAVE REPORT
-        // ========================================
+        
         [HttpGet]
         public IActionResult LeaveReport()
         {
-            //if (!IsAdmin())
-            //{
-            //    return RedirectToAction("AccessDenied", "Account");
-            //}
-
             try
             {
                 var role = GetCurrentUserRole();
@@ -75,7 +72,7 @@ namespace LeaveManagementSystem.Controllers
                 var employees = _employeeRepository.GetAllEmployees();
                 ViewBag.Employees = employees;
                 ViewBag.userrole = role;
-                return View(); // ✅ Views/Report/LeaveReport.cshtml
+                return View(); 
             }
             catch (Exception ex)
             {
@@ -84,63 +81,37 @@ namespace LeaveManagementSystem.Controllers
             }
         }
 
-        // ========================================
-        // GET LEAVE REPORT DATA (AJAX)
-        // ========================================
-        public IActionResult GetLeaveReport(
-    int[] employeeId,
-    string[] status,
-    DateTime? fromDate,
-    DateTime? toDate)
+
+        public IActionResult GetLeaveReport(int[] employeeId,string[] status,DateTime? fromDate,DateTime? toDate)
         {
             if (!IsAdmin())
+            {
                 return Json(new { success = false, message = "Unauthorized" });
-
+            }
             try
             {
                 var employeeNames = new List<string>();
-
                 if (employeeId != null)
                 {
                     foreach (var id in employeeId)
                     {
                         var emp = _employeeRepository.GetEmployeeById(id);
-
                         if (emp != null)
                         {
                             employeeNames.Add(emp.EmployeeName);
                         }
                     }
                 }
-
-                // Search all records first
-                var leaves = _leaveRepository.SearchLeaves(
-                    null,
-                    null,
-                    fromDate,
-                    toDate,
-                    "Admin",
-                    null);
-
-                // Filter employees
+                var leaves = _leaveRepository.SearchLeaves(null,null,fromDate,toDate,"Admin",null);
                 if (employeeNames.Any())
                 {
-                    leaves = leaves
-                        .Where(x => employeeNames.Contains(x.EmployeeName))
-                        .ToList();
+                    leaves = leaves.Where(x => employeeNames.Contains(x.EmployeeName)).ToList();
                 }
-
-                // Filter statuses
-                bool isAllSelected = status != null &&
-                                     status.Any(s => s.Equals("All", StringComparison.OrdinalIgnoreCase));
-
+                bool isAllSelected = status != null &&status.Any(s => s.Equals("All", StringComparison.OrdinalIgnoreCase));
                 if (!isAllSelected && status != null && status.Length > 0)
                 {
-                    leaves = leaves
-                        .Where(x => status.Contains(x.Status))
-                        .ToList();
+                    leaves = leaves.Where(x => status.Contains(x.Status)).ToList();
                 }
-
                 return Json(new
                 {
                     success = true,

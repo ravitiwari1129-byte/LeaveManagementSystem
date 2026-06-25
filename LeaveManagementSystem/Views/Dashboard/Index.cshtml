@@ -11,9 +11,6 @@
     <p>Here's an overview of your leave management system</p>
 </div>
 
-<!-- ======================================== -->
-<!-- STATS CARDS -->
-<!-- ======================================== -->
 <div class="stats-grid">
     <div class="stat-card pending">
         <div class="stat-label">Pending Requests</div>
@@ -33,9 +30,6 @@
     </div>
 </div>
 
-<!-- ======================================== -->
-<!-- EMPLOYEE LEAVE SUMMARY (Non-Admin Only) -->
-<!-- ======================================== -->
 @if (userRole != "Admin")
 {
     <div class="card">
@@ -57,17 +51,11 @@
     </div>
 }
 
-<!-- ======================================== -->
-<!-- CHART SECTION -->
-<!-- ======================================== -->
 <div class="card">
     <div class="card-title">Leave Requests Overview</div>
     <div id="myChart" style="width: 100%; height: 400px;"></div>
 </div>
 
-<!-- ======================================== -->
-<!-- QUICK ACTIONS -->
-<!-- ======================================== -->
 <div class="card">
     <div class="card-title">Quick Actions</div>
     <div style="display: flex; gap: 1rem; flex-wrap: wrap;">
@@ -86,142 +74,122 @@
     </div>
 </div>
 
-<!-- ======================================== -->
-<!-- SCRIPTS - ALL IN ONE FILE -->
-<!-- ======================================== -->
-<!-- 1. jQuery -->
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-
-<!-- 2. AG Charts Library -->
 <script src="https://cdn.jsdelivr.net/npm/ag-charts-community@13.3.1/dist/umd/ag-charts-community.min.js"></script>
-
-<!-- 3. Pass Data from Controller -->
 <script>
-    // Data from controller
     window.dashboardData = {
     pendingCount: @(dashboard?.PendingCount ?? 0),
     approvedCount: @(dashboard?.ApprovedCount ?? 0),
     rejectedCount: @(dashboard?.RejectedCount ?? 0)
     };
     window.userRole = '@userRole';
-
     console.log('📊 Dashboard Data:', window.dashboardData);
     console.log('👤 User Role:', window.userRole);
 </script>
 
-<!-- 4. Chart Creation Script -->
 <script>
-    (function ($) {
-    'use strict';
-
-    let chartInstance = null;
-
-    function createChart() {
-    // ========================================
-    // DEBUG: Check all requirements
-    // ========================================
-    const container = document.getElementById('myChart');
-    console.log('1. Container found:', container ? '✅ Yes' : '❌ No');
-
-    if (!container) {
-    console.error('❌ Container #myChart not found!');
-    return;
+    (function ($) 
+    {
+        'use strict';
+        let chartInstance = null;
+        function createChart() 
+        {
+            const container = document.getElementById('myChart');
+            console.log('1. Container found:', container ? '✅ Yes' : '❌ No');
+            if (!container) 
+            {
+                console.error('❌ Container #myChart not found!');
+            }
+        return;
     }
 
     console.log('2. Dashboard Data:', window.dashboardData);
-    if (!window.dashboardData) {
-    console.error('❌ dashboardData not found!');
-    return;
+    if (!window.dashboardData) 
+    {
+        console.error('❌ dashboardData not found!');
+        return;
     }
 
     console.log('3. AG Charts loaded:', typeof agCharts !== 'undefined' ? '✅ Yes' : '❌ No');
-    if (typeof agCharts === 'undefined') {
-    console.error('❌ AG Charts library not loaded!');
-    return;
+    if (typeof agCharts === 'undefined') 
+    {
+        console.error('❌ AG Charts library not loaded!');
+        return;
     }
 
-    // ========================================
-    // Prepare Chart Data
-    // ========================================
-    const chartData = [
-    {
-    status: 'Pending',
-    count: window.dashboardData.pendingCount || 0
-    },
-    {
-    status: 'Approved',
-    count: window.dashboardData.approvedCount || 0
-    },
-    {
-    status: 'Rejected',
-    count: window.dashboardData.rejectedCount || 0
-    }
+    const chartData = 
+    [
+        {
+            status: 'Pending',
+            count: window.dashboardData.pendingCount || 0
+        },
+        {
+            status: 'Approved',
+            count: window.dashboardData.approvedCount || 0
+        },
+        {
+            status: 'Rejected',
+            count: window.dashboardData.rejectedCount || 0
+        }
     ];
 
-    console.log('4. Chart Data:', chartData);
 
-    // ========================================
-    // Chart Options - FIXED VERSION
-    // ========================================
-    const options = {
-    container: container,
-    data: chartData,
-    title: {
-    text: "Leave Requests Overview",
-    fontSize: 16,
-    fontWeight: "bold"
-    },
-    subtitle: {
-    text: "Click on any bar to view filtered report",
-    fontSize: 12
-    },
-    series: [{
-    type: 'bar',
-    xKey: 'status',
-    yKey: 'count',
-    fill: '#3498db',
-    strokeWidth: 0,
-    cornerRadius: 6,
-    label: {
-    enabled: true,
-    fontWeight: 'bold',
-    fontSize: 14,
-    color: '#fff'
-    }
-    }]
-    // ❌ REMOVED: listeners.nodeClick (causes error)
-    // ❌ REMOVED: axes array (causes error)
-    // ✅ Using default axes
+    const options = 
+    {
+        container: container,
+        data: chartData,
+        title: 
+        {
+            text: "Leave Requests Overview",
+            fontSize: 16,
+            fontWeight: "bold"
+        },
+        subtitle: 
+        {
+            text: "Click on any bar to view filtered report",
+            fontSize: 12
+        },
+        series: 
+        [
+            {
+                type: 'bar',
+                xKey: 'status',
+                yKey: 'count',
+                fill: '#3498db',
+                strokeWidth: 0,
+                cornerRadius: 6,
+                label: 
+                {
+                    enabled: true,
+                    fontWeight: 'bold',
+                    fontSize: 14,
+                    color: '#fff'
+                }
+            }
+        ]
     };
 
-    console.log('5. Creating chart with options:', options);
 
-    // ========================================
-    // Create Chart
-    // ========================================
-    try {
-    if (chartInstance) {
-    chartInstance.destroy();
-    }
-
+    try 
+    {
+        if (chartInstance) 
+        {
+            chartInstance.destroy();
+        }
     chartInstance = agCharts.AgCharts.create(options);
-    console.log('✅ Chart created successfully!');
-
-    } catch (error) {
-    console.error('❌ Error creating chart:', error);
-    return;
+    } 
+    catch (error) 
+    {
+        console.error('❌ Error creating chart:', error);
+        return;
     }
 
-    // ========================================
-    // Click Handler - FIXED REDIRECT
-    // ========================================
     container.style.cursor = 'pointer';
     container.onclick = function (e) {
     const rect = container.getBoundingClientRect();
     const x = e.clientX - rect.left;
     const width = rect.width;
-
-    // Calculate which bar was clicked
+   
     const barWidth = width / 3;
     const barIndex = Math.floor(x / barWidth);
     const statuses = ['Pending', 'Approved', 'Rejected'];
@@ -232,33 +200,32 @@
 
     console.log(`📊 Clicked: ${clickedStatus} (${count} requests)`);
 
-    if (count > 0) {
-    sessionStorage.setItem('presetStatus', clickedStatus);
-
-    // ✅ CORRECT REDIRECT URLs
-    if (window.userRole === 'Admin') {
-    window.location.href = '/Report/LeaveReport';
-    } else {
-    window.location.href = '/Leave/LeaveHistory';
+    if (count > 0) 
+    {
+        sessionStorage.setItem('presetStatus', clickedStatus);
+    }
+    if (window.userRole === 'Admin') 
+    {
+        window.location.href = '/Report/LeaveReport';
+    } 
+    else 
+    {
+        window.location.href = '/Leave/LeaveHistory';
     }
     }
     }
     };
     }
 
-    // ========================================
-    // Initialize on Document Ready
-    // ========================================
-    $(document).ready(function () {
-    console.log('📄 Document ready - initializing chart...');
-    // Small delay to ensure everything is loaded
-    setTimeout(createChart, 300);
+    $(document).ready(function () 
+    {
+        console.log('📄 Document ready - initializing chart...');
+        setTimeout(createChart, 300);
     });
 
     })(jQuery);
 </script>
 
-<!-- 5. Anti-Forgery Token -->
 @Html.AntiForgeryToken()
 
 

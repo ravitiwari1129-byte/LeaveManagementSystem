@@ -34,37 +34,27 @@ namespace LeaveManagementSystem.Controllers
             return GetCurrentUserRole() == "Admin";
         }
 
+
         [HttpGet]
         public IActionResult Index()
         {
             return View();
         }
 
+
         [HttpPost]
         [ValidateAntiForgeryToken]
         public IActionResult SearchLeaves(List<string> employeeNames,List<string> statuses,DateTime? fromDate,DateTime? toDate)
         {
-            Console.WriteLine("========== SEARCH DEBUG ==========");
-            Console.WriteLine("Employee Names: " +
-                (employeeNames == null ? "NULL" : string.Join(",", employeeNames)));
-
-            Console.WriteLine("Statuses: " +
-                (statuses == null ? "NULL" : string.Join(",", statuses)));
+            Console.WriteLine("Employee Names: " + (employeeNames == null ? "NULL" : string.Join(",", employeeNames)));
+            Console.WriteLine("Statuses: " + (statuses == null ? "NULL" : string.Join(",", statuses)));
             try
             {
                 if (statuses != null && statuses.Contains("All"))
                 {
                     statuses = null;
                 }
-                var leaves = _leaveRepository.SearchLeaves(
-                    employeeNames,
-                    statuses,
-                    fromDate,
-                    toDate,
-                    GetCurrentUserRole(),
-                    GetCurrentUserId()
-                );
-
+                var leaves = _leaveRepository.SearchLeaves(employeeNames,statuses,fromDate,toDate,GetCurrentUserRole(),GetCurrentUserId());
                 var result = leaves.Select(leave => new
                 {
                     employeeName = leave.EmployeeName,
@@ -75,7 +65,6 @@ namespace LeaveManagementSystem.Controllers
                     status = leave.Status,
                     appliedDate = leave.AppliedDate.ToString("yyyy-MM-dd")
                 }).ToList();
-
                 return Json(new { success = true, data = result });
             }
             catch (Exception ex)
