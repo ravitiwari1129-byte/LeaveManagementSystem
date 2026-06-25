@@ -4,7 +4,6 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<!-- ✅ CSS Link -->
 <link rel="stylesheet" href="~/css/approve-leaves.css" />
 
 <div class="page-header">
@@ -12,7 +11,6 @@
     <p>Review and approve/reject leave requests</p>
 </div>
 
-<!-- Stats Cards -->
 <div class="stats-grid">
     <div class="stat-card pending">
         <div class="stat-label">Pending Requests</div>
@@ -28,7 +26,6 @@
     </div>
 </div>
 
-<!-- Grid Container - ✅ FIXED: Proper sizing -->
 <div class="card">
     <div class="card-title">Pending Leave Requests</div>
     @if (Model != null && Model.Any())
@@ -46,7 +43,6 @@
     }
 </div>
 
-<!-- Modal -->
 <div id="actionModal" class="modal" style="display: none;">
     <div class="modal-content">
         <div class="modal-header">
@@ -69,7 +65,6 @@
 
 @Html.AntiForgeryToken()
 
-<!-- Scripts -->
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/ag-grid-community@35.3.1/styles/ag-theme-alpine.css">
 <script src="https://cdn.jsdelivr.net/npm/ag-grid-community@35.3.1/dist/ag-grid-community.min.js"></script>
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
@@ -103,172 +98,173 @@
     }
 
     window.leaveData = @Html.Raw(jsonData);
-
     console.log("Has Data:", @(hasData ? "true" : "false"));
     console.log("Records Count:", window.leaveData.length);
 </script>
 
 <script>
-    // ========================================
-    // GRID INITIALIZATION - FIXED
-    // ========================================
     var gridApi = null;
-
-    function initGrid() {
-    console.log("🔍 Initializing grid...");
-
-    var gridDiv = document.getElementById('leaveGrid');
-    if (!gridDiv) {
-    console.error("❌ Grid container not found!");
-    return;
+    function initGrid() 
+    {
+        console.log("Initializing grid...");
+        var gridDiv = document.getElementById('leaveGrid');
+        if (!gridDiv) 
+        {
+            console.error("Grid container not found!");
+        return;
     }
 
-    if (typeof agGrid === 'undefined') {
-    console.error("❌ AG Grid not loaded!");
-    return;
+    if (typeof agGrid === 'undefined') 
+    {
+        console.error("AG Grid not loaded!");
+        return;
     }
 
-    if (!window.leaveData || window.leaveData.length === 0) {
-    console.log("⚠️ No data to display");
-    return;
+    if (!window.leaveData || window.leaveData.length === 0) 
+    {
+        console.log("⚠️ No data to display");
+        return;
     }
 
-    // ✅ FIXED: Column definitions with flex instead of fixed widths
-    var columnDefs = [
-    {
-    field: "EmployeeName",
-    headerName: "Employee",
-    sortable: true,
-    filter: true,
-    flex: 2,
-    minWidth: 150
-    },
-    {
-    field: "LeaveType",
-    headerName: "Leave Type",
-    sortable: true,
-    filter: true,
-    flex: 1.5,
-    minWidth: 130
-    },
-    {
-    field: "FromDate",
-    headerName: "From Date",
-    sortable: true,
-    flex: 1,
-    minWidth: 110
-    },
-    {
-    field: "ToDate",
-    headerName: "To Date",
-    sortable: true,
-    flex: 1,
-    minWidth: 110
-    },
-    {
-    field: "Reason",
-    headerName: "Reason",
-    sortable: true,
-    filter: true,
-    flex: 3,
-    minWidth: 200,
-    cellRenderer: function(params) {
-    var reason = params.value || "";
-    return reason.length > 60 ? reason.substring(0, 60) + "..." : reason;
-    }
-    },
-    {
-    field: "AppliedDate",
-    headerName: "Applied Date",
-    sortable: true,
-    flex: 1,
-    minWidth: 110
-    },
-    {
-    headerName: "Action",
-    sortable: false,
-    filter: false,
-    flex: 2,
-    minWidth: 220,
-    cellRenderer: function(params) {
-    var leaveId = params.data.LeaveId;
-    return '<div style="display: flex; gap: 5px; flex-wrap: nowrap;">' +
-    '<button type="button" class="btn btn-success" style="padding: 4px 10px; cursor: pointer; font-size: 12px; white-space: nowrap;" onclick="approveLeave(' + leaveId + ')">Approve</button>' +
-    '<button type="button" class="btn btn-danger" style="padding: 4px 10px; cursor: pointer; font-size: 12px; white-space: nowrap;" onclick="rejectLeave(' + leaveId + ')">Reject</button>' +
-    '<a href="/Leave/LeaveDetail/' + leaveId + '" class="btn btn-info" style="padding: 4px 10px; text-decoration: none; font-size: 12px; white-space: nowrap;">View</a>' +
-    '</div>';
-    }
-    }
+    
+    var columnDefs = 
+    [
+        {
+            field: "EmployeeName",
+            headerName: "Employee",
+            sortable: true,
+            filter: true,
+            flex: 2,
+            minWidth: 150
+        },
+        {
+            field: "LeaveType",
+            headerName: "Leave Type",
+            sortable: true,
+            filter: true,
+            flex: 1.5,
+            minWidth: 130
+        },
+        {
+            field: "FromDate",
+            headerName: "From Date",
+            sortable: true,
+            flex: 1,
+            minWidth: 110
+        },
+        {
+            field: "ToDate",
+            headerName: "To Date",
+            sortable: true,
+            flex: 1,
+            minWidth: 110
+        },
+        {
+            field: "Reason",
+            headerName: "Reason",
+            sortable: true,
+            filter: true,
+            flex: 3,
+            minWidth: 200,
+            cellRenderer: function(params) 
+            {
+                var reason = params.value || "";
+                return reason.length > 60 ? reason.substring(0, 60) + "..." : reason;
+            }
+        },
+        {
+            field: "AppliedDate",
+            headerName: "Applied Date",
+            sortable: true,
+            flex: 1,
+            minWidth: 110
+        },
+        {
+            headerName: "Action",
+            sortable: false,
+            filter: false,
+            flex: 2,
+            minWidth: 220,
+            cellRenderer: function(params) 
+            {
+                var leaveId = params.data.LeaveId;
+                return '<div style="display: flex; gap: 5px; flex-wrap: nowrap;">' +
+                '<button type="button" class="btn btn-success" style="padding: 4px 10px; cursor: pointer; font-size: 12px; white-space: nowrap;" onclick="approveLeave(' + leaveId + ')">Approve</button>' +
+                '<button type="button" class="btn btn-danger" style="padding: 4px 10px; cursor: pointer; font-size: 12px; white-space: nowrap;" onclick="rejectLeave(' + leaveId + ')">Reject</button>' +
+                '<a href="/Leave/LeaveDetail/' + leaveId + '" class="btn btn-info" style="padding: 4px 10px; text-decoration: none; font-size: 12px; white-space: nowrap;">View</a>' +
+                '</div>';
+            }
+        }
     ];
 
-    try {
-    gridApi = agGrid.createGrid(gridDiv, {
-    columnDefs: columnDefs,
-    rowData: window.leaveData,
-    domLayout: 'normal',
-    animateRows: true,
-    onGridReady: function(params) {
-    console.log("✅ Grid ready!");
-    setTimeout(function() {
-    params.api.sizeColumnsToFit();
-    }, 100);
-    }
-    });
-    console.log("✅ Grid created successfully!");
+    try 
+    {
+        gridApi = agGrid.createGrid(gridDiv, 
+            {
+                columnDefs: columnDefs,
+                rowData: window.leaveData,
+                domLayout: 'normal',
+                animateRows: true,
+                onGridReady: function(params) 
+                {
+                    console.log("Grid ready!");
+                    setTimeout(function() 
+                    {
+                        params.api.sizeColumnsToFit();
+                    }, 100);
+                }
+            });
 
-    // ✅ Handle window resize
-    window.addEventListener('resize', function() {
-    if (gridApi) {
-    setTimeout(function() {
-    gridApi.sizeColumnsToFit();
-    }, 100);
-    }
-    });
+        window.addEventListener('resize', function() 
+        {
+            if (gridApi) 
+            {
+                setTimeout(function() 
+                {
+                    gridApi.sizeColumnsToFit();
+                }, 100);
+            }
+        });
 
-    } catch (error) {
-    console.error("❌ Error creating grid:", error);
-    }
+        } 
+        catch (error) 
+        {
+            console.error("Error creating grid:", error);
+        }
     }
 
-    $(document).ready(function() {
-    console.log("📄 Document ready");
-    if (window.leaveData && window.leaveData.length > 0) {
-    setTimeout(initGrid, 500);
-    } else {
-    var gridDiv = document.getElementById('leaveGrid');
-    if (gridDiv) {
-    gridDiv.innerHTML = '<div style="text-align: center; padding: 2rem; color: #666;">No pending leave requests to display</div>';
-    }
-    }
+    $(document).ready(function() 
+    {
+        console.log("📄 Document ready");
+        if (window.leaveData && window.leaveData.length > 0) 
+        {
+            setTimeout(initGrid, 500);
+        } 
+        else 
+        {
+            var gridDiv = document.getElementById('leaveGrid');
+            if (gridDiv) 
+            {
+                gridDiv.innerHTML = '<div style="text-align: center; padding: 2rem; color: #666;">No pending leave requests to display</div>';
+            }
+        }
     });
 </script>
 
 <script>
-    // ========================================
-    // APPROVE/REJECT FUNCTIONS
-    // ========================================
     var currentLeaveId = null;
     var currentAction = null;
-
-    function approveLeave(leaveId) {
-        console.log("✅ Approve clicked:", leaveId);
+    function approveLeave(leaveId) 
+    {
         currentLeaveId = leaveId;
         currentAction = "Approved";
         document.getElementById('modalTitle').innerHTML = "Approve Leave Request";
         document.getElementById('modalMessage').innerHTML = "Are you sure you want to approve this leave request?";
         document.getElementById('actionModal').style.display = "flex";
         document.getElementById('remarks').value = '';
-
-
-
-
-
-
-
     }
-
-    function rejectLeave(leaveId) {
-        console.log("✅ Reject clicked:", leaveId);
+    function rejectLeave(leaveId) 
+    {
         currentLeaveId = leaveId;
         currentAction = "Rejected";
         document.getElementById('modalTitle').innerHTML = "Reject Leave Request";
@@ -276,64 +272,73 @@
         document.getElementById('actionModal').style.display = "flex";
         document.getElementById('remarks').value = '';
     }
-
-    function closeModal() {
+    function closeModal() 
+    {
         document.getElementById('actionModal').style.display = "none";
         currentLeaveId = null;
         currentAction = null;
     }
 
-    function confirmAction() {
-        if (!currentLeaveId || !currentAction) {
+    function confirmAction() 
+    {
+        if (!currentLeaveId || !currentAction) 
+        {
             alert("No action selected");
             return;
-         }
-
+        }
         var remarks = document.getElementById('remarks').value || "";
         var token = document.querySelector('input[name="__RequestVerificationToken"]')?.value || "";
-
-        if (!token) {
+        if (!token) 
+        {
             alert("Security token not found. Please refresh the page.");
             return;
         }
 
-    fetch('/Leave/ApproveReject', {
-    method: 'POST',
-    headers: {
-    'Content-Type': 'application/json',
-    'RequestVerificationToken': token
-    },
-    body: JSON.stringify({
-    leaveId: currentLeaveId,
-    status: currentAction,
-    remarks: remarks
+        fetch('/Leave/ApproveReject', 
+        {
+            method: 'POST',
+            headers: 
+            {
+                'Content-Type': 'application/json',
+                'RequestVerificationToken': token
+            },
+            body: JSON.stringify(
+                {
+                    leaveId: currentLeaveId,
+                    status: currentAction,
+                    remarks: remarks
+                })
+            })
+            .then(function(response) {
+        return response.json();
     })
-    })
-    .then(function(response) {
-    return response.json();
-    })
-    .then(function(data) {
-    if (data.success) {
-    if (gridApi) {
-    var allRows = [];
-    gridApi.forEachNode(function(node) {
-    allRows.push(node.data);
-    });
-    var updatedRows = allRows.filter(function(row) {
-    return row.LeaveId !== currentLeaveId;
+    .then(function(data) 
+    {
+        if (data.success) 
+        {
+            if (gridApi) 
+            {
+                var allRows = [];
+                gridApi.forEachNode(function(node) 
+                {
+                    allRows.push(node.data);
+                });
+             var updatedRows = allRows.filter(function(row) {
+        return row.LeaveId !== currentLeaveId;
     });
     gridApi.setGridOption('rowData', updatedRows);
-
     var pendingCountElem = document.getElementById('pendingCount');
     if (pendingCountElem) {
     pendingCountElem.innerHTML = updatedRows.length;
     }
 
-    if (updatedRows.length === 0) {
-    var gridDiv = document.getElementById('leaveGrid');
-    if (gridDiv) {
-    gridDiv.innerHTML = '<div style="text-align: center; padding: 2rem; color: #666;">✅ All pending leaves have been processed!</div>';
-    }
+    if (updatedRows.length === 0) 
+    {
+        var gridDiv = document.getElementById('leaveGrid');
+        if (gridDiv) 
+        {
+            gridDiv.innerHTML = '<div style="text-align: center; padding: 2rem; color: #666;">✅ All pending leaves have been processed!</div>';
+        }
     }
     }
     alert("✅ " + data.message);
@@ -348,10 +353,12 @@
     });
     }
 
-    window.onclick = function(event) {
-    var modal = document.getElementById('actionModal');
-    if (event.target === modal) {
-    closeModal();
-    }
+    window.onclick = function(event) 
+    {
+        var modal = document.getElementById('actionModal');
+        if (event.target === modal) 
+        {
+            closeModal();
+        }
     };
 </script>

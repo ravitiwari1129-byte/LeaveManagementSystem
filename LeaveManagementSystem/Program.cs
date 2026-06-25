@@ -5,17 +5,16 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllersWithViews();
 
-// ✅ Session services
 builder.Services.AddDistributedMemoryCache();
 
 builder.Services.AddSession(options =>
 {
-    options.IdleTimeout = TimeSpan.FromMinutes(30); // session expiry
+    options.IdleTimeout = TimeSpan.FromMinutes(30); 
     options.Cookie.HttpOnly = true;
     options.Cookie.IsEssential = true;
 });
 
-// ✅ Dependency Injection
+
 builder.Services.AddSingleton<DatabaseHelper>();
 builder.Services.AddScoped<IEmployeeRepository, EmployeeRepository>();
 builder.Services.AddScoped<ILeaveRepository, LeaveRepository>();
@@ -33,7 +32,6 @@ app.UseStaticFiles();
 
 app.UseRouting();
 
-// 🔥 MUST be BEFORE Authorization
 app.UseSession();
 
 app.UseAuthorization();
