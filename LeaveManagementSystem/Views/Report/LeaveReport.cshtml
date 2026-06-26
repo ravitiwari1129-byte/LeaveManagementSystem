@@ -1,5 +1,4 @@
-﻿@model LeaveManagementSystem.Models.UserSession
-@{
+﻿@{
     ViewBag.Title = "Leave Report";
     var employees = ViewBag.Employees as List<LeaveManagementSystem.Models.EmployeeModel>;
 }
@@ -17,7 +16,7 @@
         <div class="form-group">
             <label for="reportEmployeeId">Employee</label>
 
-            @if (ViewBag.userrole == "Employee")
+            @if (ViewBag.userrole == "Admin")
             {
                 <select id="reportEmployeeId" multiple>
                     <option value="All">All Employees</option>
@@ -36,7 +35,7 @@
             }
             else
             {
-                <input type="text" id="empid" class="form-control" value=@Model.EmployeeName"/>
+                <input type="text" id="empid" class="form-control" value=@ViewBag.Employees" />
             }
         </div>
 

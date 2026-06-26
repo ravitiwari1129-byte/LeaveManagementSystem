@@ -69,7 +69,8 @@ namespace LeaveManagementSystem.Controllers
             {
                 var role = GetCurrentUserRole();
                 var userName = HttpContext.Session.GetString("EmployeeName") ?? "User";
-                var employees = _employeeRepository.GetAllEmployees();
+                var Department="";
+                var employees = _employeeRepository.GetAllEmployees(Department,role, userName);
                 ViewBag.Employees = employees;
                 ViewBag.userrole = role;
                 return View(); 

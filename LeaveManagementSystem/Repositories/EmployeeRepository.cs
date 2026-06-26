@@ -16,12 +16,15 @@ namespace LeaveManagementSystem.Repositories
         }
 
 
-        public List<EmployeeModel> GetAllEmployees(int? departmentId = null)
+        public List<EmployeeModel> GetAllEmployees(string departmentId ,string Role,string USER_NAME)
         {
             var employees = new List<EmployeeModel>();
             Hashtable ht = new Hashtable();
             ht.Clear();
             ht.Add("DepartmentId", (object)departmentId ?? DBNull.Value);
+            ht.Add("Role",Role);
+            ht.Add("USER_NAME",USER_NAME);
+
             DataTable dt = _dbHelper.ExecuteStoredProcedure("USP_GetEmployees", ht);
             foreach (DataRow row in dt.Rows)
             {

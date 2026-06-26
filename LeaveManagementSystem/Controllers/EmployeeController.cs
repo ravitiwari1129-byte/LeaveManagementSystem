@@ -39,7 +39,9 @@ namespace LeaveManagementSystem.Controllers
             if (!IsAdmin())
                 return RedirectToAction("AccessDenied", "Account");
 
-            var employees = _employeeRepository.GetAllEmployees();
+            //var employees = _employeeRepository.GetAllEmployees();
+            
+            var employees = _employeeRepository.GetAllEmployees("", "","");
             LoadViewBagData();
             return View(employees);
         }
@@ -194,7 +196,7 @@ namespace LeaveManagementSystem.Controllers
             if (!IsAdmin())
                 return Json(new { success = false, message = "Unauthorized" });
 
-            var employees = _employeeRepository.GetAllEmployees(departmentId);
+            var employees = _employeeRepository.GetAllEmployees("","","");
             return Json(new { success = true, data = employees });
         }
 

@@ -34,7 +34,7 @@ namespace LeaveManagementSystem.Controllers
         public IActionResult Index()
         {
             if (!IsAdmin()) return RedirectToAction("AccessDenied", "Account");
-            var employees = _employeeRepository.GetAllEmployees();
+            var employees = _employeeRepository.GetAllEmployees("", "", ""  );
             ViewBag.Employees = employees;
             ViewBag.Statuses = new[] { "All", "Pending", "Approved", "Rejected" };
             return View();
