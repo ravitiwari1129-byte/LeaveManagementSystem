@@ -156,9 +156,83 @@
             console.log("✅ Leave Report Grid initialized");
         }
     }
-
-    // Generate Report
     function generateReport() {
+
+        console.log("🔍 Generate Report clicked");
+
+        var employeeId = [];
+
+        if ($("#reportEmployeeId").length > 0 && $("#reportEmployeeId").is("select")) {
+
+            employeeId = $("#reportEmployeeId option:selected").map(function () {
+                return $(this).val();
+            }).get();
+
+        } else {
+
+            var val = $("#empid").val();
+            if (val) {
+                employeeId.push(val);
+            }
+        }
+
+        var status = $("#reportStatus option:selected").map(function () {
+            return $(this).val();
+        }).get();
+
+        var fromDate = $("#reportFromDate").val();
+        var toDate = $("#reportToDate").val();
+
+        console.log("Employee IDs:", employeeId);
+        console.log("Statuses:", status);
+
+        if (gridApi) {
+            gridApi.setGridOption("loading", true);
+        }
+
+        $.ajax({
+            url: "/Report/GetLeaveReport",
+            type: "POST",
+            data: {
+                employeeId: employeeId,
+                status: status,
+                fromDate: fromDate,
+                toDate: toDate
+            },
+            success: function (response) {
+
+                console.log("Response received:", response);
+
+                if (response.success && gridApi) {
+
+                    gridApi.setGridOption("rowData", response.data || []);
+
+                    if (!response.data || response.data.length === 0) {
+                        showNotification("No records found");
+                    }
+
+                    gridApi.setGridOption("loading", false);
+
+                    setTimeout(function () {
+                        gridApi.sizeColumnsToFit();
+                    }, 100);
+                }
+            },
+            error: function (xhr, status, error) {
+
+                console.error("❌ AJAX Error:", error);
+
+                if (gridApi) {
+                    gridApi.setGridOption("rowData", []);
+                    gridApi.setGridOption("loading", false);
+                }
+
+                showError("Error loading report. Please try again.");
+            }
+        });
+    }
+    // Generate Report
+    function generateReport1() {
         console.log("🔍 Generate Report clicked");
         console.log("TEST REPORT JS UPDATED");
         console.log(

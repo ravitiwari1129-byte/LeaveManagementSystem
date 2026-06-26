@@ -85,10 +85,10 @@ namespace LeaveManagementSystem.Controllers
 
         public IActionResult GetLeaveReport(int[] employeeId,string[] status,DateTime? fromDate,DateTime? toDate)
         {
-            if (!IsAdmin())
-            {
-                return Json(new { success = false, message = "Unauthorized" });
-            }
+            //if (!IsAdmin())
+            //{
+            //    return Json(new { success = false, message = "Unauthorized" });
+            //}
             try
             {
                 var employeeNames = new List<string>();

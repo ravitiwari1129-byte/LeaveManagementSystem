@@ -70,7 +70,7 @@ namespace LeaveManagementSystem.Controllers
                     var result = _leaveRepository.ApplyLeave(leave);
                     if (result.Success)
                     {
-                        TempData["Success"] = result.Message ?? "Leave applied successfully!";
+                        TempData["Success"] = result.Message;
                         return RedirectToAction("Index", "LeaveHistory");
                     }
                     ModelState.AddModelError("", string.IsNullOrEmpty(result.Message) ? "Failed to apply leave. Please try again." : result.Message);

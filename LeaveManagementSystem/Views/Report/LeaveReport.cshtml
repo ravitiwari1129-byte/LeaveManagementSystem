@@ -1,6 +1,8 @@
 ﻿@{
     ViewBag.Title = "Leave Report";
     var employees = ViewBag.Employees as List<LeaveManagementSystem.Models.EmployeeModel>;
+    var userName = ViewBag.userrole;
+    var currentName = employees?.FirstOrDefault()?.EmployeeName;
 }
 
 
@@ -35,7 +37,7 @@
             }
             else
             {
-                <input type="text" id="empid" class="form-control" value=@ViewBag.Employees" />
+                <input type="text" id="empid" class="form-control" value="@currentName" />
             }
         </div>
 
