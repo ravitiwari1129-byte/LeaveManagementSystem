@@ -25,6 +25,7 @@
             filter: true,
             floatingFilter: true,
             flex: 1.5,
+            tooltipField: "leaveType",
             minWidth: 130
         },
         {
@@ -34,7 +35,7 @@
             filter: true,
             floatingFilter: true,
             flex: 1,
-            minWidth: 110,
+            minWidth: 130,
             valueFormatter: function (params) {
                 if (!params.value) return "";
                 var date = new Date(params.value);
@@ -43,6 +44,11 @@
                     month: "short",
                     year: "numeric"
                 });
+            },
+            floatingFilterComponentParams: {
+                suppressFilterButton: true,
+                suppressCalendarButton: true,
+                placeholder: ''
             }
         },
         {
@@ -52,7 +58,7 @@
             filter: true,
             floatingFilter: true,
             flex: 1,
-            minWidth: 110,
+            minWidth: 130,
             valueFormatter: function (params) {
                 if (!params.value) return "";
                 var date = new Date(params.value);
@@ -69,7 +75,7 @@
             filter: true,
             floatingFilter: true,
             flex: 0.5,
-            minWidth: 70,
+            minWidth: 100,
             cellStyle: { textAlign: "center", fontWeight: "bold" },
             valueGetter: function (params) {
                 if (params.data.fromDate && params.data.toDate) {
@@ -90,6 +96,11 @@
             flex: 2.5,
             minWidth: 200,
             tooltipField: "reason",
+            comparator: function (valueA, valueB) {
+                valueA = valueA || "";
+                valueB = valueB || "";
+                return valueA.localeCompare(valueB);
+            },
             cellRenderer: function (params) {
                 var reason = params.value || "";
                 return reason.length > 60 ? reason.substring(0, 60) + "..." : reason;
@@ -102,7 +113,7 @@
             filter: true,
             floatingFilter: true,
             flex: 1,
-            minWidth: 100,
+            minWidth: 130,
             cellRenderer: function (params) {
                 var status = params.value;
                 var badgeClass = "";
@@ -119,7 +130,7 @@
             filter: true,
             floatingFilter: true,
             flex: 1,
-            minWidth: 110,
+            minWidth: 130,
             valueFormatter: function (params) {
                 if (!params.value) return "";
                 var date = new Date(params.value);
