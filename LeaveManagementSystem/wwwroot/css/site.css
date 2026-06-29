@@ -148,7 +148,12 @@ body {
     width: 100%;
     max-width: 400px;
     padding: 2rem;
-    margin: 100px auto;
+    margin: 0;
+}
+
+.signup-container {
+    max-width: 320px;
+    padding: 1.5rem;
 }
 
 .login-header,
@@ -157,36 +162,51 @@ body {
     margin-bottom: 2rem;
 }
 
-    .login-header h1,
-    .signup-header h1 {
-        color: #333;
-        font-size: 1.8rem;
-    }
+.signup-header {
+    margin-bottom: 1.5rem;
+}
 
-    .login-header p,
-    .signup-header p {
-        color: #666;
-        margin-top: 0.5rem;
-    }
+.form-group {
+    margin-bottom: 1rem;
+}
+
+.signup-header h1 {
+    font-size: 1.6rem;
+}
+
+.signup-header p {
+    font-size: 0.9rem;
+}
+
+.login-header h1,
+.signup-header h1 {
+    color: #333;
+    font-size: 1.8rem;
+}
+
+.login-header p,
+.signup-header p {
+    color: #666;
+    margin-top: 0.5rem;
+}
 
 .signup-section,
 .login-link {
     text-align: center;
-    margin-top: 1.5rem;
-    padding-top: 1rem;
+    margin-top: 1rem;
     border-top: 1px solid #eee;
 }
 
-    .signup-section a,
-    .login-link a {
-        color: #667eea;
-        text-decoration: none;
-    }
+.signup-section a,
+.login-link a {
+    color: #667eea;
+    text-decoration: none;
+}
 
-        .signup-section a:hover,
-        .login-link a:hover {
-            text-decoration: underline;
-        }
+.signup-section a:hover,
+.login-link a:hover {
+    text-decoration: underline;
+}
 
 /* ========================================
    CARD STYLES
@@ -227,25 +247,25 @@ body {
     transition: transform 0.3s ease;
 }
 
-    .stat-card:hover {
-        transform: translateY(-5px);
-    }
+.stat-card:hover {
+    transform: translateY(-5px);
+}
 
-    .stat-card.pending {
-        border-top: 4px solid #f39c12;
-    }
+.stat-card.pending {
+    border-top: 4px solid #f39c12;
+}
 
-    .stat-card.approved {
-        border-top: 4px solid #27ae60;
-    }
+.stat-card.approved {
+    border-top: 4px solid #27ae60;
+}
 
-    .stat-card.rejected {
-        border-top: 4px solid #e74c3c;
-    }
+.stat-card.rejected {
+    border-top: 4px solid #e74c3c;
+}
 
-    .stat-card.total {
-        border-top: 4px solid #3498db;
-    }
+.stat-card.total {
+    border-top: 4px solid #3498db;
+}
 
 .stat-number {
     font-size: 2.5rem;
@@ -281,12 +301,12 @@ body {
     margin-bottom: 1.2rem;
 }
 
-    .form-group label {
-        display: block;
-        margin-bottom: 0.5rem;
-        font-weight: 500;
-        color: #555;
-    }
+.form-group label {
+    display: block;
+    margin-bottom: 0.5rem;
+    font-weight: 500;
+    color: #555;
+}
 
 .form-control {
     width: 100%;
@@ -297,10 +317,10 @@ body {
     transition: border-color 0.3s ease;
 }
 
-    .form-control:focus {
-        outline: none;
-        border-color: #3498db;
-    }
+.form-control:focus {
+    outline: none;
+    border-color: #3498db;
+}
 
 select.form-control,
 textarea.form-control {
@@ -331,45 +351,45 @@ textarea.form-control {
     color: white;
 }
 
-    .btn-primary:hover {
-        background: #2980b9;
-    }
+.btn-primary:hover {
+    background: #2980b9;
+}
 
 .btn-success {
     background: #27ae60;
     color: white;
 }
 
-    .btn-success:hover {
-        background: #229954;
-    }
+.btn-success:hover {
+    background: #229954;
+}
 
 .btn-danger {
     background: #e74c3c;
     color: white;
 }
 
-    .btn-danger:hover {
-        background: #c0392b;
-    }
+.btn-danger:hover {
+    background: #c0392b;
+}
 
 .btn-warning {
     background: #f39c12;
     color: white;
 }
 
-    .btn-warning:hover {
-        background: #e67e22;
-    }
+.btn-warning:hover {
+    background: #e67e22;
+}
 
 .btn-secondary {
     background: #95a5a6;
     color: white;
 }
 
-    .btn-secondary:hover {
-        background: #7f8f8d;
-    }
+.btn-secondary:hover {
+    background: #7f8f8d;
+}
 
 .btn-login,
 .btn-signup {
@@ -384,10 +404,10 @@ textarea.form-control {
     transition: opacity 0.3s ease;
 }
 
-    .btn-login:hover,
-    .btn-signup:hover {
-        opacity: 0.9;
-    }
+.btn-login:hover,
+.btn-signup:hover {
+    opacity: 0.9;
+}
 
 /* ========================================
    TABLE STYLES
@@ -400,29 +420,29 @@ textarea.form-control {
     overflow: hidden;
 }
 
-    .data-table thead {
-        background: #34495e;
-        color: white;
-    }
+.data-table thead {
+    background: #34495e;
+    color: white;
+}
 
-    .data-table th {
-        padding: 1rem;
-        text-align: left;
-        font-weight: 500;
-    }
+.data-table th {
+    padding: 1rem;
+    text-align: left;
+    font-weight: 500;
+}
 
-    .data-table td {
-        padding: 0.8rem 1rem;
-        border-bottom: 1px solid #ecf0f1;
-    }
+.data-table td {
+    padding: 0.8rem 1rem;
+    border-bottom: 1px solid #ecf0f1;
+}
 
-    .data-table tbody tr:hover {
-        background: #f8f9fa;
-    }
+.data-table tbody tr:hover {
+    background: #f8f9fa;
+}
 
-    .data-table tbody tr:last-child td {
-        border-bottom: none;
-    }
+.data-table tbody tr:last-child td {
+    border-bottom: none;
+}
 
 /* ========================================
    BADGE STYLES
@@ -513,11 +533,11 @@ textarea.form-control {
     flex-wrap: wrap;
 }
 
-    .action-links a,
-    .action-links button {
-        padding: 0.3rem 0.8rem;
-        font-size: 0.8rem;
-    }
+.action-links a,
+.action-links button {
+    padding: 0.3rem 0.8rem;
+    font-size: 0.8rem;
+}
 
 /* ========================================
    MODAL STYLES
@@ -535,9 +555,9 @@ textarea.form-control {
     align-items: center;
 }
 
-    .modal.show {
-        display: flex;
-    }
+.modal.show {
+    display: flex;
+}
 
 .modal-content {
     background: white;
@@ -555,9 +575,9 @@ textarea.form-control {
     border-bottom: 1px solid #ddd;
 }
 
-    .modal-header h3 {
-        margin: 0;
-    }
+.modal-header h3 {
+    margin: 0;
+}
 
 .modal-footer {
     margin-top: 1.5rem;
@@ -604,9 +624,9 @@ textarea.form-control {
         padding: 0.5rem 0;
     }
 
-        .sidebar a {
-            padding: 0.5rem 1rem;
-        }
+    .sidebar a {
+        padding: 0.5rem 1rem;
+    }
 
     .stats-grid {
         grid-template-columns: 1fr;
