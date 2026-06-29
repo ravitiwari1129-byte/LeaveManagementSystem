@@ -27,19 +27,19 @@
             <div id="errorAlert">@TempData["Error"]</div>
         }
 
-        <form method="post" action="/Account/Login">
+        <form method="post" action="/Account/Login" autocomplete="off">
             @Html.AntiForgeryToken()
             @Html.ValidationSummary(true, "", new { @class = "validation-summary" })
 
             <div class="form-group">
                 <label>Email</label>
-                @Html.TextBoxFor(m => m.Email, new { @class = "form-control", type = "email", placeholder = "Enter your email" })
+                @Html.TextBoxFor(m => m.Email, new { @class = "form-control", type = "email", placeholder = "Enter your email", autocomplete = "new-email" })
                 @Html.ValidationMessageFor(m => m.Email, "", new { @class = "field-validation-error" })
             </div>
 
             <div class="form-group">
                 <label>Password</label>
-                @Html.PasswordFor(m => m.Password, new { @class = "form-control", placeholder = "Enter your password" })
+                @Html.PasswordFor(m => m.Password, new { @class = "form-control", placeholder = "Enter your password", autocomplete = "new-password" })
                 @Html.ValidationMessageFor(m => m.Password, "", new { @class = "field-validation-error" })
             </div>
 
