@@ -85,7 +85,8 @@
                     Reason = l.Reason ?? "",
                     FullReason = l.Reason ?? "",
                     Status = l.Status ?? "",
-                    AppliedDate = l.AppliedDate.ToString("dd MMM yyyy")
+                    AppliedDate = l.AppliedDate.ToString("dd MMM yyyy"),
+                    AppliedDateRaw = l.AppliedDate.ToString("yyyy-MM-dd")
                 }));
             }
             catch
@@ -149,6 +150,7 @@
     headerName: "Leave Type",
     sortable: true,
     filter: true,
+    floatingFilter: true,
     flex: 1.5,
     minWidth: 130
     },
@@ -156,22 +158,34 @@
     field: "FromDate",
     headerName: "From Date",
     sortable: true,
+    filter: true,
+    floatingFilter: true,
     flex: 1,
-    minWidth: 110
+    minWidth: 130,
+    comparator: function (valueA, valueB, nodeA, nodeB) {
+        return new Date(nodeA.data.FromDateRaw) - new Date(nodeB.data.FromDateRaw);
+    }
     },
     {
     field: "ToDate",
     headerName: "To Date",
     sortable: true,
+    filter: true,
+    floatingFilter: true,
     flex: 1,
-    minWidth: 110
+    minWidth: 130,
+    comparator: function (valueA, valueB, nodeA, nodeB) {
+        return new Date(nodeA.data.ToDateRaw) - new Date(nodeB.data.ToDateRaw);
+    }
     },
     {
+    field: "Days",
     headerName: "Days",
     sortable: true,
     filter: true,
+    floatingFilter: true,
     flex: 0.5,
-    minWidth: 70,
+    minWidth: 100,
     cellStyle: { textAlign: "center", fontWeight: "bold" },
     valueGetter: function (params) {
     return calculateDays(params.data.FromDateRaw, params.data.ToDateRaw);
@@ -182,9 +196,13 @@
     headerName: "Reason",
     sortable: true,
     filter: true,
+    floatingFilter: true,
     flex: 2.5,
     minWidth: 200,
     tooltipField: "FullReason",
+    comparator: function (valueA, valueB) {
+        return (valueA || "").localeCompare(valueB || "");
+    },
     cellRenderer: function (params) {
     var reason = params.value || "";
     return reason.length > 50 ? reason.substring(0, 50) + "..." : reason;
@@ -195,8 +213,9 @@
     headerName: "Status",
     sortable: true,
     filter: true,
+    floatingFilter: true,
     flex: 1,
-    minWidth: 100,
+    minWidth: 130,
     cellRenderer: function (params) {
     var status = params.value;
     var badgeClass = status === "Pending" ? "badge-pending" :
@@ -208,8 +227,13 @@
     field: "AppliedDate",
     headerName: "Applied Date",
     sortable: true,
+    filter: true,
+    floatingFilter: true,
     flex: 1,
-    minWidth: 110
+    minWidth: 130,
+    comparator: function (valueA, valueB, nodeA, nodeB) {
+        return new Date(nodeA.data.AppliedDateRaw) - new Date(nodeB.data.AppliedDateRaw);
+    }
     },
     {
     headerName: "Action",
