@@ -61,16 +61,16 @@
     <div style="display: flex; gap: 1rem; flex-wrap: wrap;">
         @if (userRole == "Admin")
         {
-            <a href="@Url.Action("Index", "Leave")" class="btn btn-primary">✅ Approve Pending Leaves</a>
-            <a href="@Url.Action("Index", "Employee")" class="btn btn-success">👥 Manage Employees</a>
-            <a href="@Url.Action("Index", "Report")" class="btn btn-info">📋 Leave Report</a>
+            <a href="@Url.Action("Index", "Leave")" class="btn btn-primary">Approve Pending Leaves</a>
+            <a href="@Url.Action("Index", "Employee")" class="btn btn-success">Manage Employees</a>
+            <a href="@Url.Action("Index", "Report")" class="btn btn-info">Leave Report</a>
         }
         else
         {
-            <a href="@Url.Action("Apply", "Leave")" class="btn btn-primary">📝 Apply for Leave</a>
-            <a href="@Url.Action("Index", "LeaveHistory")" class="btn btn-success">📜 View Leave History</a>
+            <a href="@Url.Action("Apply", "Leave")" class="btn btn-primary">Apply for Leave</a>
+            <a href="@Url.Action("Index", "LeaveHistory")" class="btn btn-success">View Leave History</a>
         }
-        <a href="@Url.Action("Search", "Leave")" class="btn btn-warning">🔍 Search Leaves</a>
+        <a href="@Url.Action("Search", "Leave")" class="btn btn-warning">Search Leaves</a>
     </div>
 </div>
 

@@ -207,6 +207,9 @@ namespace LeaveManagementSystem.Controllers
         }
 
 
+
+        // ==================== LEAVE HISTORY ====================
+
         [HttpGet]
         public IActionResult History()
         {
