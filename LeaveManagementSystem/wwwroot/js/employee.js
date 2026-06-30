@@ -83,7 +83,7 @@ function initGrid() {
 }
 
 // ========================================
-// PROPER DELETE FUNCTION - FIXED
+// DELETE FUNCTION 
 // ========================================
 window.deleteEmployee = function (employeeId) {
     if (!confirm('Are you sure you want to delete this employee?\n\nNote: All leave requests of this employee will also be deleted.')) {
@@ -155,25 +155,3 @@ window.addEventListener('resize', function () {
     }, 100);
 });
 
-
-$(document).ready(function () {
-    $('#reportEmployeeId').select2({
-        placeholder: "Select Employee Name",
-        width: '100%'
-    });
-
-    $('#reportEmployeeId').on('change', function () {
-        let selectedValues = $(this).val() || [];
-        // If All is selected
-        if (selectedValues.includes("All")) {
-            // Select all except All
-            let allValues = [];
-            $('#reportEmployeeId option').each(function () {
-                if ($(this).val() !== "All") {
-                    allValues.push($(this).val());
-                }
-            });
-            $(this).val(allValues).trigger('change.select2');
-        }
-    });
-});

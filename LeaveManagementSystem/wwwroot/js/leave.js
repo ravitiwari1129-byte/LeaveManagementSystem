@@ -8,7 +8,6 @@
     let gridApi = null;
     let currentLeaveId = null;
     let currentAction = null;
-    // Helper function to calculate days
     function calculateDays(fromDateStr, toDateStr) {
         try {
             var fromDate = new Date(fromDateStr);
@@ -23,156 +22,156 @@
 // HISTORY GRID (Leave History Page)
 // ========================================
 
-// const historyColumnDefs = [
-//     {
-//         field: "LeaveType",
-//         headerName: "Leave Type",
-//         sortable: true,
-//         filter: true,
-//         floatingFilter: true,
-//         width: 130
-//     },
-//     {
-//         field: "FromDate",
-//         headerName: "From Date",
-//         sortable: true,
-//         filter: true,
-//         floatingFilter: true,
-//         width: 110
-//     },
-//     {
-//         field: "ToDate",
-//         headerName: "To Date",
-//         sortable: true,
-//         filter: true,
-//         floatingFilter: true,
-//         width: 110
-//     },
-//     {
-//         headerName: "Days",
-//         sortable: true,
-//         filter: true,
-//         floatingFilter: true,
-//         width: 70,
-//         cellStyle: { textAlign: "center", fontWeight: "bold" },
-//         valueGetter: function (params) {
-//             return calculateDays(params.data.FromDateRaw, params.data.ToDateRaw);
-//         }
-//     },
-//     {
-//         field: "Reason",
-//         headerName: "Reason",
-//         sortable: true,
-//         filter: true,
-//         floatingFilter: true,
-//         width: 200,
-//         tooltipField: "FullReason",
-//         cellRenderer: function (params) {
-//             var reason = params.value || "";
-//             return reason.length > 50 ? reason.substring(0, 50) + "..." : reason;
-//         }
-//     },
-//     {
-//         field: "Status",
-//         headerName: "Status",
-//         sortable: true,
-//         filter: true,
-//         floatingFilter: true,
-//         width: 100,
-//         cellRenderer: function (params) {
-//             var status = params.value;
-//             var badgeClass = status === "Pending" ? "badge-pending" :
-//                 (status === "Approved" ? "badge-approved" : "badge-rejected");
-//             return '<span class="badge ' + badgeClass + '">' + status + "</span>";
-//         }
-//     },
-//     {
-//         field: "AppliedDate",
-//         headerName: "Applied Date",
-//         sortable: true,
-//         filter: true,
-//         floatingFilter: true,
-//         width: 110
-//     },
-//     {
-//         headerName: "Action",
-//         sortable: true,
-//         filter: true,
-//         floatingFilter: true,
-//         width: 80,
-//         cellRenderer: function (params) {
-//             return '<a href="/LeaveDetails/Index.cshtml' + params.data.LeaveId + '" class="btn btn-warning" style="padding: 4px 10px; font-size: 11px;">View</a>';
-//         }
-//     }
-// ];
+const historyColumnDefs = [
+    {
+        field: "LeaveType",
+        headerName: "Leave Type",
+        sortable: true,
+        filter: true,
+        floatingFilter: true,
+        width: 130
+    },
+    {
+        field: "FromDate",
+        headerName: "From Date",
+        sortable: true,
+        filter: true,
+        floatingFilter: true,
+        width: 110
+    },
+    {
+        field: "ToDate",
+        headerName: "To Date",
+        sortable: true,
+        filter: true,
+        floatingFilter: true,
+        width: 110
+    },
+    {
+        headerName: "Days",
+        sortable: true,
+        filter: true,
+        floatingFilter: true,
+        width: 70,
+        cellStyle: { textAlign: "center", fontWeight: "bold" },
+        valueGetter: function (params) {
+            return calculateDays(params.data.FromDateRaw, params.data.ToDateRaw);
+        }
+    },
+    {
+        field: "Reason",
+        headerName: "Reason",
+        sortable: true,
+        filter: true,
+        floatingFilter: true,
+        width: 200,
+        tooltipField: "FullReason",
+        cellRenderer: function (params) {
+            var reason = params.value || "";
+            return reason.length > 50 ? reason.substring(0, 50) + "..." : reason;
+        }
+    },
+    {
+        field: "Status",
+        headerName: "Status",
+        sortable: true,
+        filter: true,
+        floatingFilter: true,
+        width: 100,
+        cellRenderer: function (params) {
+            var status = params.value;
+            var badgeClass = status === "Pending" ? "badge-pending" :
+                (status === "Approved" ? "badge-approved" : "badge-rejected");
+            return '<span class="badge ' + badgeClass + '">' + status + "</span>";
+        }
+    },
+    {
+        field: "AppliedDate",
+        headerName: "Applied Date",
+        sortable: true,
+        filter: true,
+        floatingFilter: true,
+        width: 110
+    },
+    {
+        headerName: "Action",
+        sortable: true,
+        filter: true,
+        floatingFilter: true,
+        width: 80,
+        cellRenderer: function (params) {
+            return '<a href="/Leave/Details/' + params.data.LeaveId + '" class="btn btn-warning" style="padding: 4px 10px; font-size: 11px;">View</a>';
+        }
+    }
+];
 
-// function initHistoryGrid() {
-//     var gridDiv = document.getElementById("leaveHistoryGrid");
-//     if (gridDiv && typeof agGrid !== "undefined" && window.leaveHistoryData) {
-//         gridApi = agGrid.createGrid(gridDiv, {
-//             columnDefs: historyColumnDefs,
-//             defaultColDef: { sortable: true, filter: true, resizable: true },
-//             rowData: window.leaveHistoryData,
-//             domLayout: "normal",
-//             ✅ SIRF YEH onGridReady FUNCTION ADD KARO
-//             onGridReady: function (params) {
-//                 var presetStatus = sessionStorage.getItem('presetStatus');
-//                 if (presetStatus) {
-//                     sessionStorage.removeItem('presetStatus');
-//                     setTimeout(function () {
-//                         params.api.setFilterModel({
-//                             Status: {
-//                                 type: 'equals',
-//                                 filter: presetStatus
-//                             }
-//                         });
-//                         params.api.onFilterChanged();
-//                         console.log("Auto-filtered by:", presetStatus);
-//                     }, 500);
-//                 }
-//             }
-//         });
-//         console.log("History Grid initialized with", window.leaveHistoryData?.length, "records");
-//         updateHistoryStats();
-//         setTimeout(function () { if (gridApi) gridApi.sizeColumnsToFit(); }, 100);
-//     }
-// }
+function initHistoryGrid() {
+    var gridDiv = document.getElementById("leaveHistoryGrid");
+    if (gridDiv && typeof agGrid !== "undefined" && window.leaveHistoryData) {
+        gridApi = agGrid.createGrid(gridDiv, {
+            columnDefs: historyColumnDefs,
+            defaultColDef: { sortable: true, filter: true, resizable: true },
+            rowData: window.leaveHistoryData,
+            domLayout: "normal",
+            ✅ SIRF YEH onGridReady FUNCTION ADD KARO
+            onGridReady: function (params) {
+                var presetStatus = sessionStorage.getItem('presetStatus');
+                if (presetStatus) {
+                    sessionStorage.removeItem('presetStatus');
+                    setTimeout(function () {
+                        params.api.setFilterModel({
+                            Status: {
+                                type: 'equals',
+                                filter: presetStatus
+                            }
+                        });
+                        params.api.onFilterChanged();
+                        console.log("Auto-filtered by:", presetStatus);
+                    }, 500);
+                }
+            }
+        });
+        console.log("History Grid initialized with", window.leaveHistoryData?.length, "records");
+        updateHistoryStats();
+        setTimeout(function () { if (gridApi) gridApi.sizeColumnsToFit(); }, 100);
+    }
+}
 
-// function updateHistoryStats() {
-//     if (!window.leaveHistoryData) return;
+function updateHistoryStats() {
+    if (!window.leaveHistoryData) return;
 
-//     var pendingCount = window.leaveHistoryData.filter(function (item) {
-//         return item.Status === "Pending";
-//     }).length;
+    var pendingCount = window.leaveHistoryData.filter(function (item) {
+        return item.Status === "Pending";
+    }).length;
 
-//     var approvedCount = window.leaveHistoryData.filter(function (item) {
-//         return item.Status === "Approved";
-//     }).length;
+    var approvedCount = window.leaveHistoryData.filter(function (item) {
+        return item.Status === "Approved";
+    }).length;
 
-//     var rejectedCount = window.leaveHistoryData.filter(function (item) {
-//         return item.Status === "Rejected";
-//     }).length;
+    var rejectedCount = window.leaveHistoryData.filter(function (item) {
+        return item.Status === "Rejected";
+    }).length;
 
-//     var totalDays = 0;
-//     for (var i = 0; i < window.leaveHistoryData.length; i++) {
-//         if (window.leaveHistoryData[i].Status === "Approved") {
-//             totalDays += calculateDays(
-//                 window.leaveHistoryData[i].FromDateRaw,
-//                 window.leaveHistoryData[i].ToDateRaw
-//             );
-//         }
-//     }
+    var totalDays = 0;
+    for (var i = 0; i < window.leaveHistoryData.length; i++) {
+        if (window.leaveHistoryData[i].Status === "Approved") {
+            totalDays += calculateDays(
+                window.leaveHistoryData[i].FromDateRaw,
+                window.leaveHistoryData[i].ToDateRaw
+            );
+        }
+    }
 
-//     var pendingElem = document.getElementById("pendingCount");
-//     var approvedElem = document.getElementById("approvedCount");
-//     var rejectedElem = document.getElementById("rejectedCount");
-//     var totalElem = document.getElementById("totalDays");
+    var pendingElem = document.getElementById("pendingCount");
+    var approvedElem = document.getElementById("approvedCount");
+    var rejectedElem = document.getElementById("rejectedCount");
+    var totalElem = document.getElementById("totalDays");
 
-//     if (pendingElem) pendingElem.textContent = pendingCount;
-//     if (approvedElem) approvedElem.textContent = approvedCount;
-//     if (rejectedElem) rejectedElem.textContent = rejectedCount;
-//     if (totalElem) totalElem.textContent = totalDays;
-// }
+    if (pendingElem) pendingElem.textContent = pendingCount;
+    if (approvedElem) approvedElem.textContent = approvedCount;
+    if (rejectedElem) rejectedElem.textContent = rejectedCount;
+    if (totalElem) totalElem.textContent = totalDays;
+}
 
 // ========================================
 // APPROVE LEAVE GRID (Pending Leaves)
@@ -390,3 +389,5 @@ window.addEventListener('resize', function () {
     }
     });
 })();
+
+

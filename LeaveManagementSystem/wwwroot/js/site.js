@@ -141,3 +141,5 @@ function showMessage(message, type) {
 function confirmAction(message) {
     return confirm(message);
 }
+
+

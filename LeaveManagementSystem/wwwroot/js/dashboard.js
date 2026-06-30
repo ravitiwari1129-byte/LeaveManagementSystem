@@ -104,7 +104,7 @@
 
                         // ✅ Redirect to Leave Report
                         if (window.userRole === 'Admin') {
-                            window.location.href = '/Report/LeaveReport';
+                            window.location.href = '/Report/Index';
                         } else {
                             window.location.href = '/LeaveHistory/Index';
                         }
@@ -123,3 +123,4 @@
     });
 
 })(jQuery);
+

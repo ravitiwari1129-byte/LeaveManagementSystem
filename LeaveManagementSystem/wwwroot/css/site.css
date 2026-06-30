@@ -586,19 +586,6 @@ textarea.form-control {
     gap: 0.5rem;
 }
 
-/* ========================================
-   NOTIFICATION
-   ======================================== */
-.chart-notification {
-    background: #2c3e50;
-    color: white;
-    padding: 8px 15px;
-    border-radius: 5px;
-    margin-bottom: 15px;
-    font-size: 14px;
-    animation: slideDown 0.3s ease;
-}
-
 @keyframes slideDown {
     from {
         opacity: 0;

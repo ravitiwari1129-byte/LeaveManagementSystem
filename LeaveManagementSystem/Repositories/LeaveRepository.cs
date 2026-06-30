@@ -3,11 +3,8 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
-using System.Net.NetworkInformation;
 using LeaveManagementSystem.Helpers;
 using LeaveManagementSystem.Models;
-using Microsoft.Data.SqlClient;
-using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace LeaveManagementSystem.Repositories
 {
@@ -178,6 +175,7 @@ namespace LeaveManagementSystem.Repositories
         }
     }
 }
+
 
 
 

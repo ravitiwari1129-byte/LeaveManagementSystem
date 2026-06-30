@@ -44,11 +44,6 @@
                     month: "short",
                     year: "numeric"
                 });
-            },
-            floatingFilterComponentParams: {
-                suppressFilterButton: true,
-                suppressCalendarButton: true,
-                placeholder: ''
             }
         },
         {
@@ -167,20 +162,17 @@
             console.log("✅ Leave Report Grid initialized");
         }
     }
-    function generateReport() {
 
+    function generateReport() {
         console.log("🔍 Generate Report clicked");
 
         var employeeId = [];
 
         if ($("#reportEmployeeId").length > 0 && $("#reportEmployeeId").is("select")) {
-
             employeeId = $("#reportEmployeeId option:selected").map(function () {
                 return $(this).val();
             }).get();
-
         } else {
-
             var val = $("#empid").val();
             if (val) {
                 employeeId.push(val);
@@ -211,11 +203,9 @@
                 toDate: toDate
             },
             success: function (response) {
-
                 console.log("Response received:", response);
 
                 if (response.success && gridApi) {
-
                     gridApi.setGridOption("rowData", response.data || []);
 
                     if (!response.data || response.data.length === 0) {
@@ -230,7 +220,6 @@
                 }
             },
             error: function (xhr, status, error) {
-
                 console.error("❌ AJAX Error:", error);
 
                 if (gridApi) {
@@ -238,72 +227,6 @@
                     gridApi.setGridOption("loading", false);
                 }
 
-                showError("Error loading report. Please try again.");
-            }
-        });
-    }
-    // Generate Report
-    function generateReport1() {
-        console.log("🔍 Generate Report clicked");
-        console.log("TEST REPORT JS UPDATED");
-        console.log(
-            $("#reportEmployeeId option:selected").map(function () {
-                return $(this).val();
-            }).get()
-        );
-        var employeeId = $("#reportEmployeeId option:selected").map(function () {
-            return $(this).val();
-        }).get();
-
-        var status = $("#reportStatus option:selected").map(function () {
-            return $(this).val();
-        }).get();
-
-        console.log("Employee IDs:", employeeId);
-        console.log("Statuses:", status);
-
-        var fromDate = $("#reportFromDate").val();
-        var toDate = $("#reportToDate").val();
-
-        console.log("Search params:", { employeeId, status, fromDate, toDate });
-
-        if (gridApi) {
-            gridApi.setGridOption("loading", true);
-        }
-
-        $.ajax({
-            url: "/Report/GetLeaveReport",
-            type: "POST",
-            data: {
-                employeeId: employeeId,
-                status: status,
-                fromDate: fromDate,
-                toDate: toDate
-            },
-            success: function (response) {
-                console.log("Response received:", response);
-
-                if (response.success && gridApi) {
-                    if (response.data && response.data.length > 0) {
-                        console.log("✅ Found " + response.data.length + " records");
-                        gridApi.setGridOption("rowData", response.data);
-                    } else {
-                        console.log("⚠️ No records found");
-                        gridApi.setGridOption("rowData", []);
-                        showNotification("No records found");
-                    }
-                    gridApi.setGridOption("loading", false);
-                    setTimeout(function () {
-                        gridApi.sizeColumnsToFit();
-                    }, 100);
-                }
-            },
-            error: function (xhr, status, error) {
-                console.error("❌ AJAX Error:", error);
-                if (gridApi) {
-                    gridApi.setGridOption("rowData", []);
-                    gridApi.setGridOption("loading", false);
-                }
                 showError("Error loading report. Please try again.");
             }
         });
@@ -349,11 +272,23 @@
 
         initGrid();
 
-        // ✅ Initialize Select2 for multi-select
         $('#reportEmployeeId').select2({
             placeholder: "Select Employee",
             width: '100%',
             allowClear: true
+        });
+
+        $('#reportEmployeeId').on('change', function () {
+            let selectedValues = $(this).val() || [];
+            if (selectedValues.includes("All")) {
+                let allValues = [];
+                $('#reportEmployeeId option').each(function () {
+                    if ($(this).val() !== "All") {
+                        allValues.push($(this).val());
+                    }
+                });
+                $(this).val(allValues).trigger('change.select2');
+            }
         });
 
         $('#reportStatus').select2({
@@ -362,17 +297,17 @@
             allowClear: true
         });
 
-        // ✅ Generate Report Button
+        
         $("#generateReportBtn").on("click", function () {
             generateReport();
         });
 
-        // ✅ Reset Button
+        
         $("#resetReportBtn").on("click", function () {
             resetFilters();
         });
 
-        // ✅ Enter key support
+        
         $("#reportEmployeeId, #reportStatus, #reportFromDate, #reportToDate").on("keypress", function (e) {
             if (e.which === 13) {
                 generateReport();
@@ -392,3 +327,5 @@
     });
 
 })();
+
+

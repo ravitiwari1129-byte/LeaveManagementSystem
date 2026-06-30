@@ -2,7 +2,6 @@
 // SEARCH.JS - Leave Search Functionality
 // ========================================
 
-// ✅ Make gridApi GLOBAL
 var gridApi = null;
 
 (function ($) {
@@ -196,15 +195,12 @@ var gridApi = null;
 
             // Admin Multi Select
             if (employeeControl.tagName === "SELECT") {
-
                 selectedEmployees = $(employeeControl).val() || [];
             }
 
             // Employee Textbox
             else {
-
                 var employeeName = employeeControl.value.trim();
-
                 if (employeeName !== "") {
                     selectedEmployees.push(employeeName);
                 }
@@ -248,7 +244,7 @@ var gridApi = null;
 
         // Make AJAX call
         $.ajax({
-            url: '/SearchLeaves/SearchLeaves',
+            url: '/Leave/SearchLeaves',
             type: 'POST',
             headers: {
                 'RequestVerificationToken': token
@@ -391,3 +387,5 @@ var gridApi = null;
     });
 
 })(jQuery);
+
+

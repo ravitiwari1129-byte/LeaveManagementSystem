@@ -45,13 +45,13 @@ namespace LeaveManagementSystem.Controllers
             {
                 return RedirectToAction("Dashboard", "Report");
             }
-            return View(new LoginModel());
+            return View(new AccountModel());
         }
 
         
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Login(LoginModel model)
+        public IActionResult Login(AccountModel model)
         {
             if (!ModelState.IsValid)
             {
@@ -158,3 +158,4 @@ namespace LeaveManagementSystem.Controllers
         }
     }
 }
+
