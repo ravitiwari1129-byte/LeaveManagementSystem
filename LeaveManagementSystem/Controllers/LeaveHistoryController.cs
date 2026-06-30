@@ -10,12 +10,10 @@ namespace LeaveManagementSystem.Controllers
     public class LeaveHistoryController : Controller
     {
         private readonly ILeaveRepository _leaveRepository;
-        private readonly IEmployeeRepository _employeeRepository;
 
-        public LeaveHistoryController(ILeaveRepository leaveRepository, IEmployeeRepository employeeRepository)
+        public LeaveHistoryController(ILeaveRepository leaveRepository)
         {
             _leaveRepository = leaveRepository;
-            _employeeRepository = employeeRepository;
         }
 
 
@@ -31,6 +29,13 @@ namespace LeaveManagementSystem.Controllers
             return HttpContext.Session.GetString("UserRole") ?? "Employee";
         }
 
+        private bool IsAdmin()
+        {
+            return GetCurrentUserRole() == "Admin";
+        }
+
+
+        // ==================== LEAVE HISTORY (Current User) ====================
 
         [HttpGet]
         public IActionResult Index()
@@ -39,7 +44,7 @@ namespace LeaveManagementSystem.Controllers
                 return RedirectToAction("Login", "Account");
             try
             {
-                var leaves = _leaveRepository.SearchLeaves(null,null,null,null,GetCurrentUserRole(),GetCurrentUserId());
+                var leaves = _leaveRepository.SearchLeaves(null, null, null, null, GetCurrentUserRole(), GetCurrentUserId());
                 return View(leaves ?? new List<LeaveRequestModel>());
             }
             catch (Exception ex)
@@ -47,6 +52,32 @@ namespace LeaveManagementSystem.Controllers
                 TempData["Error"] = "Error loading history: " + ex.Message;
                 return View(new List<LeaveRequestModel>());
             }
+        }
+
+
+
+        // ==================== LEAVE HISTORY (Admin viewing specific employee) ====================
+
+        [HttpGet]
+        public IActionResult History(int id)
+        {
+            if (GetCurrentUserId() == 0)
+                return RedirectToAction("Login", "Account");
+
+            if (!IsAdmin() && GetCurrentUserId() != id)
+                return RedirectToAction("AccessDenied", "Account");
+
+            try
+            {
+                var leaves = _leaveRepository.SearchLeaves(null, null, null, null, GetCurrentUserRole(), id);
+                return View("Index", leaves ?? new List<LeaveRequestModel>());
+            }
+            catch (Exception ex)
+            {
+                TempData["Error"] = "Error loading history: " + ex.Message;
+                return View("Index", new List<LeaveRequestModel>());
+            }
+
         }
     }
 }

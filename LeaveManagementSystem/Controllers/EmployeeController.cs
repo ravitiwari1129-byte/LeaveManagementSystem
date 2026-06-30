@@ -32,21 +32,25 @@ namespace LeaveManagementSystem.Controllers
             ViewBag.Roles = new[] { "Employee", "Admin" };
         }
 
-       
+
+
+        // ==================== EMPLOYEE LIST ====================
+
         [HttpGet]
         public IActionResult Index()
         {
             if (!IsAdmin())
                 return RedirectToAction("AccessDenied", "Account");
-
-            //var employees = _employeeRepository.GetAllEmployees();
             
-            var employees = _employeeRepository.GetAllEmployees("", "","");
+            var employees = _employeeRepository.GetAllEmployees(null,null,null);
             LoadViewBagData();
             return View(employees);
         }
 
-        
+
+
+        // ==================== ADD EMPLOYEE ====================
+
         [HttpGet]
         public IActionResult Create()
         {
@@ -103,12 +107,16 @@ namespace LeaveManagementSystem.Controllers
             return View(employee);
         }
 
-        
+
+
+        // ==================== EDIT EMPLOYEE ====================
+
         [HttpGet]
         public IActionResult Edit(int id)
         {
             if (!IsAdmin())
                 return RedirectToAction("AccessDenied", "Account");
+
             var employee = _employeeRepository.GetEmployeeById(id);
             if (employee == null)
             {
@@ -126,29 +134,22 @@ namespace LeaveManagementSystem.Controllers
         {
             if (!IsAdmin())
                 return RedirectToAction("AccessDenied", "Account");
+
             ModelState.Remove("DepartmentName");
             ModelState.Remove("IsActive");
             ModelState.Remove("Password");
-            if (_employeeRepository == null)
-            {
-                throw new Exception("_employeeRepository is NULL");
-            }
-            if (employee == null)
-            {
-                throw new Exception("employee is NULL");
-            }
+            
             var existingEmployee = _employeeRepository.GetEmployeeById(employee.EmployeeId);
-            if (existingEmployee != null &&
-                existingEmployee.Role == "Admin" &&
-                employee.Role != "Admin")
+
+            if (existingEmployee != null && existingEmployee.Role == "Admin" && employee.Role != "Admin")
             {
                 int adminCount = _employeeRepository.GetAdminCount();
                 if (adminCount <= 1)
                 {
-                    ModelState.AddModelError("",
-                        "System mein kam se kam ek Admin hona zaroori hai.");
+                    ModelState.AddModelError("", "At least one Admin must exist in the system.");
                 }
             }
+
             if (ModelState.IsValid)
             {
                 try
@@ -167,6 +168,9 @@ namespace LeaveManagementSystem.Controllers
         }
 
 
+
+        // ==================== DELETE EMPLOYEE ====================
+
         [HttpPost]
         [ValidateAntiForgeryToken]
         public IActionResult Delete([FromBody] DeleteRequest request)
@@ -175,8 +179,10 @@ namespace LeaveManagementSystem.Controllers
             {
                 if (!IsAdmin())
                     return Json(new { success = false, message = "Unauthorized" });
+
                 if (request == null || request.Id <= 0)
                     return Json(new { success = false, message = "Invalid employee ID" });
+
                 bool result = _employeeRepository.DeleteEmployee(request.Id);
                 if (result)
                     return Json(new { success = true, message = "Employee deleted successfully" });
@@ -189,14 +195,16 @@ namespace LeaveManagementSystem.Controllers
             }
         }
 
-        
+
+        // ==================== GET EMPLOYEES (AJAX) ====================
+
         [HttpGet]
         public IActionResult GetEmployees(int? departmentId)
         {
             if (!IsAdmin())
                 return Json(new { success = false, message = "Unauthorized" });
 
-            var employees = _employeeRepository.GetAllEmployees("","","");
+            var employees = _employeeRepository.GetAllEmployees(null,null,null);
             return Json(new { success = true, data = employees });
         }
 

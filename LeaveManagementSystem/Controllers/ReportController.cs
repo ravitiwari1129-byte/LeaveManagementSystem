@@ -3,6 +3,7 @@ using LeaveManagementSystem.Repositories;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Http;
 using System;
+using System.Linq;
 using System.Collections.Generic;
 
 namespace LeaveManagementSystem.Controllers
@@ -36,7 +37,41 @@ namespace LeaveManagementSystem.Controllers
             return GetCurrentUserRole() == "Admin";
         }
 
-        
+
+
+        // ==================== DASHBOARD SCREEN ====================
+
+        [HttpGet]
+        public IActionResult Dashboard()
+        {
+            var userId = GetCurrentUserId();
+            if (userId == 0)
+            {
+                return RedirectToAction("Login", "Account");
+            }
+
+            var role = GetCurrentUserRole();
+            var userName = HttpContext.Session.GetString("EmployeeName") ?? "User";
+
+            var dashboard = _leaveRepository.GetDashboardCounts(role, userId);
+            var summary = new DashboardModel();
+            if (role != "Admin")
+            {
+                summary = _leaveRepository.GetLeaveSummary(userId);
+            }
+
+            ViewBag.Dashboard = dashboard;
+            ViewBag.Summary = summary;
+            ViewBag.UserName = userName;
+            ViewBag.UserRole = role;
+
+            return View("~/Views/Dashboard/Index.cshtml");
+        }
+
+
+
+        // ==================== REPORTS SCREEN ====================
+
         [HttpGet]
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Index()
@@ -46,53 +81,40 @@ namespace LeaveManagementSystem.Controllers
             {
                 return RedirectToAction("Login", "Account");
             }
-            var role = GetCurrentUserRole();
-            var userName = HttpContext.Session.GetString("EmployeeName") ?? "User";
-            var dashboard = _leaveRepository.GetDashboardCounts(role, userId);
-            var summary = new DashboardModel();
-            if (role != "Admin")
-            {
-                summary = _leaveRepository.GetLeaveSummary(userId);
-            }
-            ViewBag.Dashboard = dashboard;
-            ViewBag.Summary = summary;
-            ViewBag.UserName = userName;
-            ViewBag.UserRole = role;
-            return View("Index"); 
-        }
 
-        
-        [HttpGet]
-        public IActionResult LeaveReport()
-        {
             try
             {
                 var role = GetCurrentUserRole();
                 var userName = HttpContext.Session.GetString("EmployeeName") ?? "User";
-                var Department="";
-                var employees = _employeeRepository.GetAllEmployees(Department,role, userName);
+                var employees = _employeeRepository.GetAllEmployees(null, role, userName);
                 ViewBag.Employees = employees;
-                ViewBag.userrole = role;
-                return View(); 
+                ViewBag.UserRole = role;
+                ViewBag.UserName = userName;
+                return View();
             }
-            catch (Exception ex)
+            catch(Exception ex)
             {
-                TempData["Error"] = "Error loading leave report: " + ex.Message;
+                TempData["Error"] = "Error loading reports: " + ex.Message;
                 return View();
             }
         }
 
 
+
+        // ==================== LEAVE REPORT (AJAX) ====================
+
+        [HttpPost]
         public IActionResult GetLeaveReport(int[] employeeId,string[] status,DateTime? fromDate,DateTime? toDate)
         {
-            //if (!IsAdmin())
-            //{
-            //    return Json(new { success = false, message = "Unauthorized" });
-            //}
+            if (!IsAdmin())
+            {
+                return Json(new { success = false, message = "Unauthorized" });
+            }
+
             try
             {
                 var employeeNames = new List<string>();
-                if (employeeId != null)
+                if (employeeId != null && employeeId.Any())
                 {
                     foreach (var id in employeeId)
                     {
@@ -103,16 +125,20 @@ namespace LeaveManagementSystem.Controllers
                         }
                     }
                 }
-                var leaves = _leaveRepository.SearchLeaves(null,null,fromDate,toDate,"Admin",null);
+
+                var leaves = _leaveRepository.SearchLeaves(null,null,fromDate,toDate,GetCurrentUserRole(),GetCurrentUserId());
+                
                 if (employeeNames.Any())
                 {
                     leaves = leaves.Where(x => employeeNames.Contains(x.EmployeeName)).ToList();
                 }
-                bool isAllSelected = status != null &&status.Any(s => s.Equals("All", StringComparison.OrdinalIgnoreCase));
+
+                bool isAllSelected = status != null && status.Any(s => s.Equals("All", StringComparison.OrdinalIgnoreCase));
                 if (!isAllSelected && status != null && status.Length > 0)
                 {
                     leaves = leaves.Where(x => status.Contains(x.Status)).ToList();
                 }
+
                 return Json(new
                 {
                     success = true,

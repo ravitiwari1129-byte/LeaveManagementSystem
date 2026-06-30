@@ -43,7 +43,7 @@ namespace LeaveManagementSystem.Controllers
         {
             if (IsLoggedIn())
             {
-                return RedirectToAction("Index", "Report");
+                return RedirectToAction("Dashboard", "Report");
             }
             return View(new LoginModel());
         }
@@ -66,7 +66,7 @@ namespace LeaveManagementSystem.Controllers
                     return View(model);
                 }
                 SetUserSession(user);
-                return RedirectToAction("Index", "Report");
+                return RedirectToAction("Dashboard", "Report");
             }
             catch (Exception ex)
             {
@@ -81,7 +81,7 @@ namespace LeaveManagementSystem.Controllers
         {
             if (IsLoggedIn())
             {
-                return RedirectToAction("Index", "Report");
+                return RedirectToAction("Dashboard", "Report");
             }
             return View(new SignupModel());
         }

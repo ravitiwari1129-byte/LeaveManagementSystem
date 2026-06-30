@@ -36,6 +36,83 @@ namespace LeaveManagementSystem.Controllers
         }
 
 
+
+
+        [HttpGet]
+        public IActionResult Apply()
+        {
+            if (GetCurrentUserId() == 0)
+                return RedirectToAction("Login", "Account");
+
+            ViewBag.LeaveTypes = new[] { "Sick Leave", "Vacation", "Personal Leave", "Maternity Leave", "Paternity Leave", "Bereavement Leave" };
+            return View(new LeaveRequestModel());
+        }
+
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult Apply(LeaveRequestModel leave)
+        {
+            if (leave == null)
+            {
+                TempData["Error"] = "Invalid form data";
+                return RedirectToAction("Apply");
+            }
+
+            var leaveTypes = new[] { "Sick Leave", "Vacation", "Personal Leave", "Maternity Leave", "Paternity Leave", "Bereavement Leave" };
+            ViewBag.LeaveTypes = leaveTypes;
+
+            ModelState.Remove("EmployeeName");
+            ModelState.Remove("Status");
+            ModelState.Remove("ApprovedByName");
+            ModelState.Remove("Remarks");
+            ModelState.Remove("ApprovedBy");
+            ModelState.Remove("LeaveId");
+            ModelState.Remove("AppliedDate");
+            ModelState.Remove("EmployeeId");
+            ModelState.Remove("TotalDays");
+
+            leave.EmployeeId = GetCurrentUserId();
+            leave.Status = "Pending";
+            leave.AppliedDate = DateTime.Now;
+
+
+            // ========== Date Validation ==========
+            if (leave.FromDate > leave.ToDate)
+            {
+                ModelState.AddModelError("ToDate", "To date cannot be before from date");
+            }
+            if (leave.FromDate < DateTime.Today)
+            {
+                ModelState.AddModelError("FromDate", "Leave cannot be applied for past dates");
+            }
+            if (leave.ToDate < DateTime.Today)
+            {
+                ModelState.AddModelError("ToDate", "Leave cannot be applied for past dates");
+            }
+
+            if (ModelState.IsValid)
+            {
+                try
+                {
+                    var result = _leaveRepository.ApplyLeave(leave);
+                    if (result.Success)
+                    {
+                        TempData["Success"] = result.Message;
+                        return RedirectToAction("Index", "LeaveHistory");
+                    }
+                    ModelState.AddModelError("", string.IsNullOrEmpty(result.Message) ? "Failed to apply leave. Please try again." : result.Message);
+                }
+                catch (Exception ex)
+                {
+                    ModelState.AddModelError("", "Error applying leave: " + ex.Message);
+                }
+            }
+            return View(leave);
+        }
+
+
+
         [HttpGet]
         public IActionResult Index()
         {
@@ -125,31 +202,6 @@ namespace LeaveManagementSystem.Controllers
 
 
         [HttpGet]
-        public IActionResult Apply()
-        {
-            if (GetCurrentUserId() == 0)
-            {
-                return RedirectToAction("Login", "Account");
-            }
-            ViewBag.LeaveTypes = new[] {"Sick Leave","Vacation","Personal Leave","Maternity Leave","Paternity Leave","Bereavement Leave"};
-            return View(new LeaveRequestModel());
-        }
-
-
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public IActionResult Apply(LeaveRequestModel leave)
-        {
-            var result = _leaveRepository.ApplyLeave(leave);
-            if (result.Success)
-            {
-                return RedirectToAction("History");
-            }
-            return View(leave);
-        }
-
-
-        [HttpGet]
         public IActionResult History()
         {
             try
@@ -186,6 +238,9 @@ namespace LeaveManagementSystem.Controllers
         }
 
 
+
+        // ==================== SEARCH LEAVE (AJAX) ====================
+
         [HttpGet]
         public IActionResult Search()
         {
@@ -194,14 +249,30 @@ namespace LeaveManagementSystem.Controllers
 
 
         [HttpPost]
-        public IActionResult SearchLeaves(string employeeName, string status, DateTime? fromDate, DateTime? toDate)
+        [ValidateAntiForgeryToken]
+        public IActionResult SearchLeaves(List<string> employeeNames,List<string> statuses, DateTime? fromDate, DateTime? toDate)
         {
             try
             {
-                var employeeNames = string.IsNullOrEmpty(employeeName) ? null : new List<string> { employeeName };
-                var statuses = string.IsNullOrEmpty(status) ? null : new List<string> { status };
-                var leaves = _leaveRepository.SearchLeaves(employeeNames,statuses,fromDate,toDate,GetCurrentUserRole(),GetCurrentUserId());
-                return Json(new { success = true, data = leaves ?? new List<LeaveRequestModel>() });
+                if (statuses != null && statuses.Contains("All"))
+                {
+                    statuses = null;
+                }
+
+                var leaves = _leaveRepository.SearchLeaves(employeeNames, statuses, fromDate, toDate, GetCurrentUserRole(), GetCurrentUserId());
+                
+                var result = leaves.Select(leave => new
+                {
+                    employeeName = leave.EmployeeName,
+                    leaveType = leave.LeaveType,
+                    fromDate = leave.FromDate.ToString("yyyy-MM-dd"),
+                    toDate = leave.ToDate.ToString("yyyy-MM-dd"),
+                    reason = leave.Reason,
+                    status = leave.Status,
+                    appliedDate = leave.AppliedDate.ToString("yyyy-MM-dd")
+                }).ToList();
+
+                return Json(new { success = true, data = result});
             }
             catch (Exception ex)
             {
