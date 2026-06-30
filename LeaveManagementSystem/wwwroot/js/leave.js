@@ -113,20 +113,18 @@ function initHistoryGrid() {
             defaultColDef: { sortable: true, filter: true, resizable: true },
             rowData: window.leaveHistoryData,
             domLayout: "normal",
-            ✅ SIRF YEH onGridReady FUNCTION ADD KARO
             onGridReady: function (params) {
-                var presetStatus = sessionStorage.getItem('presetStatus');
-                if (presetStatus) {
-                    sessionStorage.removeItem('presetStatus');
+                if (window.presetStatus) {
                     setTimeout(function () {
                         params.api.setFilterModel({
                             Status: {
                                 type: 'equals',
-                                filter: presetStatus
+                                filter: window.presetStatus
                             }
                         });
                         params.api.onFilterChanged();
-                        console.log("Auto-filtered by:", presetStatus);
+                        console.log("Auto-filtered by:", window.presetStatus);
+                        window.presetStatus = null;
                     }, 500);
                 }
             }

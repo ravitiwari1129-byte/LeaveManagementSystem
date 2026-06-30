@@ -8,15 +8,6 @@
     <p>View all your leave requests and their status</p>
 </div>
 
-@if (TempData["Success"] != null)
-{
-    <div class="alert alert-success">✅ @TempData["Success"]</div>
-}
-@if (TempData["Error"] != null)
-{
-    <div class="alert alert-error">❌ @TempData["Error"]</div>
-}
-
 <div class="stats-grid">
     <div class="stat-card pending">
         <div class="stat-label">Pending Requests</div>
