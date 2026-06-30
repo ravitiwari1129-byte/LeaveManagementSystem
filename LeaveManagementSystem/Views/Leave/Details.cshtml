@@ -64,7 +64,8 @@
         <a href="javascript:history.back()" class="btn btn-secondary">Back</a>
         @if (Model.Status == "Pending" && Context.Session.GetString("UserRole") == "Admin")
         {
-            <a href="@Url.Action("Index", "ApproveLeave")" class="btn btn-primary">Go to Approvals</a>
+            <a href="@Url.Action("Index", "Leave")" class="btn btn-primary">Go to Approvals</a>
         }
     </div>
 </div>
+

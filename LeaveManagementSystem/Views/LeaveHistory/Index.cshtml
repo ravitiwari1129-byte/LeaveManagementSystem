@@ -1,11 +1,7 @@
 ﻿@model IEnumerable<LeaveManagementSystem.Models.LeaveRequestModel>
 @{
     ViewBag.Title = "Leave History";
-    Layout = "~/Views/Shared/_Layout.cshtml";
 }
-
-<!-- ✅ CSS Link -->
-<link rel="stylesheet" href="~/css/site.css" />
 
 <div class="page-header">
     <h2>Leave History</h2>
@@ -24,15 +20,15 @@
 <div class="stats-grid">
     <div class="stat-card pending">
         <div class="stat-label">Pending Requests</div>
-        <div class="stat-number" id="pendingCount">@(Model?.Count(l => l.Status == "Pending") ?? 0)</div>
+        <div class="stat-number" id="pendingCount">@Model?.Count(l => l.Status == "Pending")</div>
     </div>
     <div class="stat-card approved">
         <div class="stat-label">Approved Requests</div>
-        <div class="stat-number" id="approvedCount">@(Model?.Count(l => l.Status == "Approved") ?? 0)</div>
+        <div class="stat-number" id="approvedCount">@Model?.Count(l => l.Status == "Approved")</div>
     </div>
     <div class="stat-card rejected">
         <div class="stat-label">Rejected Requests</div>
-        <div class="stat-number" id="rejectedCount">@(Model?.Count(l => l.Status == "Rejected") ?? 0)</div>
+        <div class="stat-number" id="rejectedCount">@Model?.Count(l => l.Status == "Rejected")</div>
     </div>
     <div class="stat-card total">
         <div class="stat-label">Total Leaves Taken</div>
@@ -40,315 +36,46 @@
     </div>
 </div>
 
-<!-- Grid Container -->
 <div class="card">
     <div class="card-title">Leave Requests</div>
     @if (Model != null && Model.Any())
     {
-        <div style="width: 100%; overflow: hidden; position: relative;">
-            <div id="leaveHistoryGrid" style="width: 100%; height: 500px; overflow: auto;" class="ag-theme-alpine"></div>
-        </div>
+        <div id="leaveHistoryGrid" class="ag-theme-alpine" style="width: 100%; height: 500px;"></div>
     }
     else
     {
         <div class="alert alert-info" style="text-align: center; padding: 2rem;">
             <h3>No Leave Requests Found</h3>
             <p>You haven't applied for any leaves yet.</p>
-            <!-- ✅ FIXED: Correct URL -->
-            <a href="@Url.Action("Index", "ApplyLeave")" class="btn btn-primary" style="margin-top: 10px;">Apply for Leave</a>
+            <a href="@Url.Action("Apply", "Leave")" class="btn btn-primary" style="margin-top: 10px;">Apply for Leave</a>
         </div>
     }
 </div>
 
-<!-- Scripts -->
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/ag-grid-community@35.3.1/styles/ag-theme-alpine.css">
 <script src="https://cdn.jsdelivr.net/npm/ag-grid-community@35.3.1/dist/ag-grid-community.min.js"></script>
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
-            
 <script>
-    @{
-        var hasData = Model != null && Model.Any();
-        var jsonData = "[]";
-        if (hasData)
-        {
-            try
-            {
-                jsonData = Newtonsoft.Json.JsonConvert.SerializeObject(Model.Select(l => new
-                {
-                    LeaveId = l.LeaveId,
-                    LeaveType = l.LeaveType ?? "",
-                    FromDate = l.FromDate.ToString("dd MMM yyyy"),
-                    FromDateRaw = l.FromDate.ToString("yyyy-MM-dd"),
-                    ToDate = l.ToDate.ToString("dd MMM yyyy"),
-                    ToDateRaw = l.ToDate.ToString("yyyy-MM-dd"),
-                    Reason = l.Reason ?? "",
-                    FullReason = l.Reason ?? "",
-                    Status = l.Status ?? "",
-                    AppliedDate = l.AppliedDate.ToString("dd MMM yyyy"),
-                    AppliedDateRaw = l.AppliedDate.ToString("yyyy-MM-dd")
-                }));
-            }
-            catch
-            {
-                jsonData = "[]";
-            }
-        }
-    }
-
-    window.leaveHistoryData = @Html.Raw(jsonData);
-
-    console.log("Has Data:", @(hasData ? "true" : "false"));
-    console.log("Records Count:", window.leaveHistoryData.length);
-
-    // ✅ Check for preset status from chart
+    window.leaveHistoryData = @Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(Model.Select(l => new
+    {
+        LeaveId = l.LeaveId,
+        LeaveType = l.LeaveType,
+        FromDate = l.FromDate.ToString("dd MMM yyyy"),
+        FromDateRaw = l.FromDate.ToString("yyyy-MM-dd"),
+        ToDate = l.ToDate.ToString("dd MMM yyyy"),
+        ToDateRaw = l.ToDate.ToString("yyyy-MM-dd"),
+        Reason = l.Reason?.Length > 60 ? l.Reason.Substring(0, 60) + "..." : l.Reason,
+        FullReason = l.Reason,
+        Status = l.Status,
+        AppliedDate = l.AppliedDate.ToString("dd MMM yyyy")
+    })));
     var presetStatus = sessionStorage.getItem('presetStatus');
     if (presetStatus) {
-    console.log("🎯 Found preset status from chart:", presetStatus);
-    window.presetStatus = presetStatus;
-    } else {
-    window.presetStatus = null;
+        window.presetStatus = presetStatus;
+        sessionStorage.removeItem('presetStatus');
     }
 </script>
 
-<script>
-    function calculateDays(fromDateStr, toDateStr) {
-    try {
-    var fromDate = new Date(fromDateStr);
-    var toDate = new Date(toDateStr);
-    return Math.ceil(Math.abs(toDate - fromDate) / (1000 * 60 * 60 * 24)) + 1;
-    } catch (error) {
-    return 1;
-    }
-    }
+<script src="~/js/leave.js"></script>
 
-    var gridApi = null;
-
-    function initGrid() {
-    console.log("🔍 Initializing history grid...");
-    console.log("Preset Status:", window.presetStatus);
-
-    var gridDiv = document.getElementById('leaveHistoryGrid');
-    if (!gridDiv) {
-    console.error("❌ Grid container not found!");
-    return;
-    }
-
-    if (typeof agGrid === 'undefined') {
-    console.error("❌ AG Grid not loaded!");
-    return;
-    }
-
-    if (!window.leaveHistoryData || window.leaveHistoryData.length === 0) {
-    console.log("⚠️ No data to display");
-    return;
-    }
-
-    var columnDefs = [
-    {
-    field: "LeaveType",
-    headerName: "Leave Type",
-    sortable: true,
-    filter: true,
-    floatingFilter: true,
-    flex: 1.5,
-    minWidth: 130
-    },
-    {
-    field: "FromDate",
-    headerName: "From Date",
-    sortable: true,
-    filter: true,
-    floatingFilter: true,
-    flex: 1,
-    minWidth: 130,
-    comparator: function (valueA, valueB, nodeA, nodeB) {
-        return new Date(nodeA.data.FromDateRaw) - new Date(nodeB.data.FromDateRaw);
-    }
-    },
-    {
-    field: "ToDate",
-    headerName: "To Date",
-    sortable: true,
-    filter: true,
-    floatingFilter: true,
-    flex: 1,
-    minWidth: 130,
-    comparator: function (valueA, valueB, nodeA, nodeB) {
-        return new Date(nodeA.data.ToDateRaw) - new Date(nodeB.data.ToDateRaw);
-    }
-    },
-    {
-    field: "Days",
-    headerName: "Days",
-    sortable: true,
-    filter: true,
-    floatingFilter: true,
-    flex: 0.5,
-    minWidth: 100,
-    cellStyle: { textAlign: "center", fontWeight: "bold" },
-    valueGetter: function (params) {
-    return calculateDays(params.data.FromDateRaw, params.data.ToDateRaw);
-    }
-    },
-    {
-    field: "Reason",
-    headerName: "Reason",
-    sortable: true,
-    filter: true,
-    floatingFilter: true,
-    flex: 2.5,
-    minWidth: 200,
-    tooltipField: "FullReason",
-    comparator: function (valueA, valueB) {
-        return (valueA || "").localeCompare(valueB || "");
-    },
-    cellRenderer: function (params) {
-    var reason = params.value || "";
-    return reason.length > 50 ? reason.substring(0, 50) + "..." : reason;
-    }
-    },
-    {
-    field: "Status",
-    headerName: "Status",
-    sortable: true,
-    filter: true,
-    floatingFilter: true,
-    flex: 1,
-    minWidth: 130,
-    cellRenderer: function (params) {
-    var status = params.value;
-    var badgeClass = status === "Pending" ? "badge-pending" :
-    (status === "Approved" ? "badge-approved" : "badge-rejected");
-    return '<span class="badge ' + badgeClass + '">' + status + "</span>";
-    }
-    },
-    {
-    field: "AppliedDate",
-    headerName: "Applied Date",
-    sortable: true,
-    filter: true,
-    floatingFilter: true,
-    flex: 1,
-    minWidth: 130,
-    comparator: function (valueA, valueB, nodeA, nodeB) {
-        return new Date(nodeA.data.AppliedDateRaw) - new Date(nodeB.data.AppliedDateRaw);
-    }
-    },
-    {
-    headerName: "Action",
-    sortable: false,
-    filter: false,
-    flex: 0.5,
-    minWidth: 80,
-    cellRenderer: function (params) {
-    // ✅ FIXED: Correct URL to LeaveDetail
-    return '<a href="/Leave/LeaveDetail/' + params.data.LeaveId + '" class="btn btn-warning" style="padding: 4px 10px; font-size: 11px; text-decoration: none; border-radius: 4px; color: white; background: #f39c12;">View</a>';
-    }
-    }
-    ];
-
-    try {
-    gridApi = agGrid.createGrid(gridDiv, {
-    columnDefs: columnDefs,
-    rowData: window.leaveHistoryData,
-    domLayout: 'normal',
-    animateRows: true,
-    onGridReady: function(params) {
-    console.log("✅ Grid ready!");
-
-    var presetStatus = window.presetStatus;
-    if (presetStatus) {
-    setTimeout(function () {
-    params.api.setFilterModel({
-    Status: {
-    type: 'equals',
-    filter: presetStatus
-    }
-    });
-    params.api.onFilterChanged();
-    console.log("✅ Auto-filtered by:", presetStatus);
-
-    showNotification("Showing: " + presetStatus + " leaves");
-    sessionStorage.removeItem('presetStatus');
-    }, 500);
-    }
-
-    setTimeout(function() {
-    params.api.sizeColumnsToFit();
-    }, 100);
-    }
-    });
-    console.log("✅ Grid created successfully!");
-
-    updateHistoryStats();
-
-    window.addEventListener('resize', function() {
-    if (gridApi) {
-    setTimeout(function() {
-    gridApi.sizeColumnsToFit();
-    }, 100);
-    }
-    });
-
-    } catch (error) {
-    console.error("❌ Error creating grid:", error);
-    }
-    }
-
-    function updateHistoryStats() {
-    if (!window.leaveHistoryData) return;
-
-    var pendingCount = window.leaveHistoryData.filter(function (item) {
-    return item.Status === "Pending";
-    }).length;
-
-    var approvedCount = window.leaveHistoryData.filter(function (item) {
-    return item.Status === "Approved";
-    }).length;
-
-    var rejectedCount = window.leaveHistoryData.filter(function (item) {
-    return item.Status === "Rejected";
-    }).length;
-
-    var totalDays = 0;
-    for (var i = 0; i < window.leaveHistoryData.length; i++) {
-    if (window.leaveHistoryData[i].Status === "Approved") {
-    totalDays += calculateDays(
-    window.leaveHistoryData[i].FromDateRaw,
-    window.leaveHistoryData[i].ToDateRaw
-    );
-    }
-    }
-
-    var pendingElem = document.getElementById("pendingCount");
-    var approvedElem = document.getElementById("approvedCount");
-    var rejectedElem = document.getElementById("rejectedCount");
-    var totalElem = document.getElementById("totalDays");
-
-    if (pendingElem) pendingElem.textContent = pendingCount;
-    if (approvedElem) approvedElem.textContent = approvedCount;
-    if (rejectedElem) rejectedElem.textContent = rejectedCount;
-    if (totalElem) totalElem.textContent = totalDays;
-    }
-
-    function showNotification(message) {
-    var notification = $('<div class="chart-notification" style="background: #2c3e50; color: white; padding: 10px 20px; border-radius: 6px; margin-bottom: 15px; font-size: 14px; animation: slideDown 0.3s ease;">🎯 ' + message + '</div>');
-    $(".card:has(#leaveHistoryGrid)").prepend(notification);
-    setTimeout(function () {
-    notification.fadeOut(300, function () { $(this).remove(); });
-    }, 3000);
-    }
-
-    $(document).ready(function() {
-    console.log("📄 Document ready");
-    if (window.leaveHistoryData && window.leaveHistoryData.length > 0) {
-    setTimeout(initGrid, 500);
-    } else {
-    var gridDiv = document.getElementById('leaveHistoryGrid');
-    if (gridDiv) {
-    gridDiv.innerHTML = '<div style="text-align: center; padding: 2rem; color: #666;">No leave requests found</div>';
-    }
-    }
-    });
-</script>

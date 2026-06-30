@@ -12,7 +12,6 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.5/jquery.validate.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validation-unobtrusive/3.2.12/jquery.validate.unobtrusive.min.js"></script>
     <script src="~/js/site.js"></script>
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     @RenderSection("Scripts", required: false)
 </head>
 <body>
@@ -36,21 +35,19 @@
         </div>
         <div class="container">
             <div class="sidebar">
-                <a href="@Url.Action("Index", "Report")" class="@(ViewContext.RouteData.Values["controller"]?.ToString() == "Report" && ViewContext.RouteData.Values["action"]?.ToString() == "Index" ? "active" : "")">📊 Dashboard</a>
+                <a href="@Url.Action("Dashboard", "Report")" class="@(ViewContext.RouteData.Values["controller"]?.ToString() == "Report" && ViewContext.RouteData.Values["action"]?.ToString() == "Dashboard" ? "active" : "")">📊 Dashboard</a>
                 @if (userRole == "Admin")
                 {
                     <a href="@Url.Action("Index", "Employee")" class="@(ViewContext.RouteData.Values["controller"]?.ToString() == "Employee" ? "active" : "")">👥 Employees</a>
-@*                     <a href="@Url.Action("Index", "ApproveLeaves")" class="@(ViewContext.RouteData.Values["controller"]?.ToString() == "ApproveLeaves" ? "active" : "")">✅ Approve Leave</a>*@                    
-                    <a href="@Url.Action("Index", "Leave")" class="@(ViewContext.RouteData.Values["controller"]?.ToString() == "ApproveLeaves" ? "active" : "")">✅  Leave</a>
-
-                    <a href="@Url.Action("LeaveReport", "Report")" class="@(ViewContext.RouteData.Values["action"]?.ToString() == "LeaveReport" ? "active" : "")">📋  Report</a>
+                    <a href="@Url.Action("Index", "Leave")" class="@(ViewContext.RouteData.Values["controller"]?.ToString() == "Leave" && ViewContext.RouteData.Values["action"]?.ToString() == "Index" ? "active" : "")">✅ Approve Leave</a>
+                    <a href="@Url.Action("Index", "Report")" class="@(ViewContext.RouteData.Values["action"]?.ToString() == "Index" ? "active" : "")">📋  Report</a>
                 }
                 else
                 {
-                    <a href="@Url.Action("Index", "ApplyLeave")" class="@(ViewContext.RouteData.Values["controller"]?.ToString() == "ApplyLeave" ? "active" : "")">📝 Apply Leave</a>
+                    <a href="@Url.Action("Apply", "Leave")" class="@(ViewContext.RouteData.Values["controller"]?.ToString() == "Apply" ? "active" : "")">📝 Apply Leave</a>
                     <a href="@Url.Action("Index", "LeaveHistory")" class="@(ViewContext.RouteData.Values["controller"]?.ToString() == "LeaveHistory" ? "active" : "")">📜 Leave History</a>
                 }
-                @* <a href="@Url.Action("Index", "SearchLeaves")" class="@(ViewContext.RouteData.Values["action"]?.ToString() == "Search" ? "active" : "")">🔍 Search Leave</a> *@
+                 <a href="@Url.Action("Search", "Leave")" class="@(ViewContext.RouteData.Values["action"]?.ToString() == "Search" ? "active" : "")">🔍 Search Leave</a> 
             </div>
             <div class="main-content">
                 @if (TempData["Success"] != null)
@@ -71,3 +68,4 @@
     }
 </body>
 </html>
+
