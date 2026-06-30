@@ -36,7 +36,7 @@ namespace LeaveManagementSystem.Controllers
         }
 
 
-
+        // ==================== APPLY LEAVE (Employee) ====================
 
         [HttpGet]
         public IActionResult Apply()
@@ -78,6 +78,7 @@ namespace LeaveManagementSystem.Controllers
 
 
             // ========== Date Validation ==========
+
             if (leave.FromDate > leave.ToDate)
             {
                 ModelState.AddModelError("ToDate", "To date cannot be before from date");
@@ -112,6 +113,7 @@ namespace LeaveManagementSystem.Controllers
         }
 
 
+        // ==================== PENDING APPROVALS (Admin) ====================
 
         [HttpGet]
         public IActionResult Index()
@@ -140,6 +142,8 @@ namespace LeaveManagementSystem.Controllers
             }
         }
 
+
+        // ==================== APPROVE/REJECT ====================
 
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -176,8 +180,10 @@ namespace LeaveManagementSystem.Controllers
         }
 
 
+        // ==================== LEAVE DETAILS ====================
+
         [HttpGet]
-        public IActionResult LeaveDetail(int id)
+        public IActionResult Details(int id)
         {
             try
             {

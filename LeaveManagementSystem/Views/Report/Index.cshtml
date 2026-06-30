@@ -17,15 +17,15 @@
             @if (ViewBag.userrole == "Admin")
             {
                 <select id="reportEmployeeId" multiple>
-                    <option value="All">All Employees</option>
-                    @if (employees != null)  
+                <option value="All">All Employees</option>
+                @if (employees != null)  
+                {
+                    foreach (var emp in employees)
                     {
-                        foreach (var emp in employees)
-                        {
-                            <option value="@emp.EmployeeId">@emp.EmployeeName</option>
-                        }
+                         <option value="@emp.EmployeeId">@emp.EmployeeName</option>
                     }
-                <select/>
+                }
+                </select>
             }
             else
             {
