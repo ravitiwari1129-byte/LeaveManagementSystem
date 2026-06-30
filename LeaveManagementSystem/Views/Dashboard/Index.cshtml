@@ -59,11 +59,14 @@
 <div class="card">
     <div class="card-title">Quick Actions</div>
     <div style="display: flex; gap: 1rem; flex-wrap: wrap;">
-        @if (userRole == "Admin")
+        @if (userRole == "Admin" || userRole == "Manager")
         {
             <a href="@Url.Action("Index", "Leave")" class="btn btn-primary">Approve Pending Leaves</a>
-            <a href="@Url.Action("Index", "Employee")" class="btn btn-success">Manage Employees</a>
-            <a href="@Url.Action("Index", "Report")" class="btn btn-info">Leave Report</a>
+            @if (userRole == "Admin")
+            {
+                <a href="@Url.Action("Index", "Employee")" class="btn btn-success">Manage Employees</a>
+                <a href="@Url.Action("Index", "Report")" class="btn btn-info">Leave Report</a>
+            }
         }
         else
         {

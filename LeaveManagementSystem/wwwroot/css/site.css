@@ -81,42 +81,39 @@ body {
     flex-shrink: 0;
 }
 
-    .sidebar a {
-        display: flex;
-        align-items: center;
-        gap: 0.5rem;
-        padding: 0.75rem 1.5rem;
-        color: #333;
-        text-decoration: none;
-        transition: all 0.3s;
-        border-left: 3px solid transparent;
-        white-space: normal;
-        overflow-wrap: break-word;
-        word-break: break-all; /* Add this */
-        line-height: 1.4;
-    }
+.sidebar a {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.75rem 1.5rem;
+    color: #333;
+    text-decoration: none;
+    transition: all 0.3s;
+    border-left: 3px solid transparent;
+    white-space: normal;
+    overflow-wrap: break-word;
+    word-break: break-word;
+    line-height: 1.4;
+    min-width: 0;
+}
 
-    .sidebar a {
-        min-width: 0;
-    }
+.sidebar a span {
+    min-width: 0;
+    overflow-wrap: break-word;
+    word-break: break-all;
+}
 
-        .sidebar a span {
-            min-width: 0;
-            overflow-wrap: break-word;
-            word-break: break-all;
-        }
+.sidebar a:hover {
+    background: #f0f2f5;
+    border-left-color: #3498db;
+}
 
-        .sidebar a:hover {
-            background: #f0f2f5;
-            border-left-color: #3498db;
-        }
-
-        .sidebar a.active {
-            background: #e8f4fd;
-            border-left-color: #3498db;
-            color: #3498db;
-            font-weight: 500;
-        }
+.sidebar a.active {
+    background: #e8f4fd;
+    border-left-color: #3498db;
+    color: #3498db;
+    font-weight: 500;
+}
 
 /* ========================================
    MAIN CONTENT
@@ -164,10 +161,6 @@ body {
 
 .signup-header {
     margin-bottom: 1.5rem;
-}
-
-.form-group {
-    margin-bottom: 1rem;
 }
 
 .signup-header h1 {
@@ -586,17 +579,6 @@ textarea.form-control {
     gap: 0.5rem;
 }
 
-@keyframes slideDown {
-    from {
-        opacity: 0;
-        transform: translateY(-10px);
-    }
-
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
-}
 
 /* ========================================
    RESPONSIVE STYLES

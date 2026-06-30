@@ -126,7 +126,7 @@ namespace LeaveManagementSystem.Controllers
                     }
                 }
 
-                var leaves = _leaveRepository.SearchLeaves(null,null,fromDate,toDate,GetCurrentUserRole(),GetCurrentUserId());
+                var leaves = _leaveRepository.SearchLeaves(employeeNames, status?.ToList(), fromDate,toDate,GetCurrentUserRole(),GetCurrentUserId());
                 
                 if (employeeNames.Any())
                 {

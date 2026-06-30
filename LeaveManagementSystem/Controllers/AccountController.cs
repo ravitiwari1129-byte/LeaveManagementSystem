@@ -12,7 +12,6 @@ namespace LeaveManagementSystem.Controllers
     public class AccountController : Controller
     {
         private readonly IEmployeeRepository _employeeRepository;
-        private readonly DatabaseHelper _db;
 
         public AccountController(IEmployeeRepository employeeRepository)
         {

@@ -30,11 +30,12 @@ namespace LeaveManagementSystem.Controllers
         {
             return HttpContext.Session.GetString("UserRole") ?? "Employee";
         }
-        private bool IsAdmin()
-        {
-            return GetCurrentUserRole() == "Admin";
-        }
 
+        private bool CanApproveLeave()
+        {
+            var role = GetCurrentUserRole();
+            return role == "Admin" || role == "Manager";
+        }
 
         // ==================== APPLY LEAVE (Employee) ====================
 
@@ -122,7 +123,7 @@ namespace LeaveManagementSystem.Controllers
             {
                 return RedirectToAction("Login", "Account");
             }
-            if (!IsAdmin())
+            if (!CanApproveLeave())
             {
                 return RedirectToAction("AccessDenied", "Account");
             }
@@ -151,7 +152,7 @@ namespace LeaveManagementSystem.Controllers
         {
             try
             {
-                if (!IsAdmin())
+                if (!CanApproveLeave())
                 {
                     return Json(new { success = false, message = "Unauthorized" });
                 }
@@ -163,6 +164,7 @@ namespace LeaveManagementSystem.Controllers
                 {
                     return Json(new { success = false, message = "Invalid status" });
                 }
+
                 var repoResult = _leaveRepository.ApproveRejectLeave(request.LeaveId,request.Status,GetCurrentUserId(),request.Remarks);
                 if (repoResult.Success)
                 {
@@ -193,7 +195,7 @@ namespace LeaveManagementSystem.Controllers
                     TempData["Error"] = "Leave request not found";
                     return RedirectToAction("Index", "LeaveHistory");
                 }
-                if (!IsAdmin() && leave.EmployeeId != GetCurrentUserId())
+                if (!CanApproveLeave() && leave.EmployeeId != GetCurrentUserId())
                 {
                     return RedirectToAction("AccessDenied", "Account");
                 }
@@ -229,7 +231,7 @@ namespace LeaveManagementSystem.Controllers
         [HttpGet]
         public IActionResult ApproveLeave()
         {
-            if (!IsAdmin())
+            if (!CanApproveLeave())
             {
                 return RedirectToAction("AccessDenied", "Account");
             }

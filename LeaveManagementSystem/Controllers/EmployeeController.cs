@@ -29,7 +29,7 @@ namespace LeaveManagementSystem.Controllers
         private void LoadViewBagData()
         {
             ViewBag.Departments = _employeeRepository.GetDepartments();
-            ViewBag.Roles = new[] { "Employee", "Admin" };
+            ViewBag.Roles = new[] { "Employee", "Manager", "Admin" };
         }
 
 
@@ -214,7 +214,7 @@ namespace LeaveManagementSystem.Controllers
             {
                 -1 => "Email already exists in the system",
                 -2 => "Selected department is invalid",
-                -3 => "Invalid role selected. Must be 'Admin' or 'Employee'",
+                -3 => "Invalid role selected. Must be 'Admin', 'Manager' or 'Employee'",
                 -4 => "Employee name cannot be empty",
                 -5 => "Invalid email format",
                 -6 => "Password must be at least 4 characters",
