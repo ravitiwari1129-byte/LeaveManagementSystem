@@ -10,6 +10,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Sign Up - Leave Management System</title>
     <link rel="stylesheet" href="~/css/site.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 </head>
 <body style="background: linear-gradient(135deg, #B5BAFF, #9FA1FF, #8A90FF); display: flex; justify-content: center; align-items: center; min-height: 100vh; overflow: hidden;">
     <div class="signup-container" style="max-width: 500px;">
@@ -47,15 +48,21 @@
                 @Html.ValidationMessageFor(m => m.Email, "", new { @class = "field-validation-error" })
             </div>
 
-            <div class="form-group">
+            <div class="form-group password-wrapper">
                 <label>Password</label>
-                @Html.PasswordFor(m => m.Password, new { @class = "form-control", placeholder = "Enter password", autocomplete = "new-password" })
+                <div style="position:relative;">
+                    @Html.PasswordFor(m => m.Password, new { @class = "form-control", placeholder = "Enter password", autocomplete = "new-password", id = "Password" })
+                    <span class="toggle-password" data-target="Password"><i class="fa-regular fa-eye"></i></span>
+                </div>
                 @Html.ValidationMessageFor(m => m.Password, "", new { @class = "field-validation-error" })
             </div>
 
-            <div class="form-group">
+            <div class="form-group password-wrapper">
                 <label>Confirm Password</label>
-                @Html.PasswordFor(m => m.ConfirmPassword, new { @class = "form-control", placeholder = "Confirm password", autocomplete = "new-password" })
+                <div style="position:relative;">
+                    @Html.PasswordFor(m => m.ConfirmPassword, new { @class = "form-control", placeholder = "Confirm password", id = "ConfirmPassword" })
+                    <span class="toggle-password" data-target="ConfirmPassword"><i class="fa-regular fa-eye"></i></span>
+                </div>
                 @Html.ValidationMessageFor(m => m.ConfirmPassword, "", new { @class = "field-validation-error" })
             </div>
 

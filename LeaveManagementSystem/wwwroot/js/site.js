@@ -86,3 +86,23 @@ function confirmAction(message) {
 }
 
 
+document.addEventListener("click", function (e) {
+    var iconWrapper = e.target.closest(".toggle-password");
+    if (!iconWrapper) return;
+
+    var id = iconWrapper.getAttribute("data-target");
+    var input = document.getElementById(id);
+    var icon = iconWrapper.querySelector("i");
+
+    if (!input) return;
+
+    if (input.type === "password") {
+        input.type = "text";
+        icon.classList.remove("fa-eye");
+        icon.classList.add("fa-eye-slash");
+    } else {
+        input.type = "password";
+        icon.classList.remove("fa-eye-slash");
+        icon.classList.add("fa-eye");
+    }
+});
