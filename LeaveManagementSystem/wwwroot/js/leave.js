@@ -68,7 +68,7 @@ const historyColumnDefs = [
         tooltipField: "FullReason",
         cellRenderer: function (params) {
             var reason = params.value || "";
-            return reason.length > 50 ? reason.substring(0, 50) + "..." : reason;
+            return reason.length > 50 ? reason.substring(0, 50) : reason;
         }
     },
     {
@@ -218,7 +218,7 @@ const pendingColumnDefs = [
         tooltipField: "FullReason",
         cellRenderer: function (params) {
             var reason = params.value || "";
-            return reason.length > 50 ? reason.substring(0, 50) + "..." : reason;
+            return reason.length > 50 ? reason.substring(0, 50) : reason;
         }
     },
     {

@@ -94,7 +94,7 @@ var gridApi = null;
             tooltipField: "reason",
             cellRenderer: function (params) {
                 var reason = params.value || "";
-                return reason.length > 60 ? reason.substring(0, 60) + "..." : reason;
+                return reason.length > 60 ? reason.substring(0, 60) : reason;
             }
         },
         {
