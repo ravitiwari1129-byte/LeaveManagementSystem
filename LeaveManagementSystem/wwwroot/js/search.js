@@ -134,6 +134,19 @@ var gridApi = null;
         }
     ];
 
+
+    window.exportSearchLeave = function () {
+        if (gridApi) {
+            gridApi.exportDataAsCsv({
+                fileName: "SearchLeave.csv"
+            });
+        }
+        else {
+            alert("Grid not initialized.");
+        }
+    };
+
+
     // ========================================
     // INITIALIZE GRID
     // ========================================

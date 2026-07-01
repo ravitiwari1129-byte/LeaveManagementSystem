@@ -28,7 +28,13 @@
 </div>
 
 <div class="card">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;">
     <div class="card-title">Leave Requests</div>
+
+    <button class="btn btn-success" onclick="exportLeaveHistory()">
+        Export to Excel
+    </button>
+</div>
     @if (Model != null && Model.Any())
     {
         <div id="leaveHistoryGrid" class="ag-theme-alpine" style="width: 100%; height: 500px;"></div>

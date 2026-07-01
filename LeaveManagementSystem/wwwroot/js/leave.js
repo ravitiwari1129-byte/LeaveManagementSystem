@@ -247,6 +247,17 @@ const pendingColumnDefs = [
     }
 ];
 
+    window.exportApproveLeave = function () {
+        if (gridApi) {
+            gridApi.ApproveLeave({
+                fileName: "LeaveHistory.csv"
+            });
+        }
+        else {
+            alert("Grid not initialized.");
+        }
+    };
+
 function initPendingGrid() {
     var gridDiv = document.getElementById("leaveGrid");
     if (gridDiv && typeof agGrid !== "undefined" && window.leaveData) {
@@ -354,6 +365,17 @@ function showAlertMessage(message, type) {
     }, 3000);
 }
 
+    window.exportLeaveHistory = function () {
+        if (gridApi) {
+            gridApi.exportDataAsCsv({
+                fileName: "LeaveHistory.csv"
+            });
+        }
+        else {
+            alert("Grid not initialized.");
+        }
+    };
+
 // ========================================
 // INITIALIZE BASED ON PAGE
 // ========================================
@@ -387,4 +409,5 @@ window.addEventListener('resize', function () {
     }
     });
 })();
+
 

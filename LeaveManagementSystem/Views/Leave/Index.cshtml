@@ -27,7 +27,13 @@
 </div>
 
 <div class="card">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;">
     <div class="card-title">Pending Leave Requests</div>
+
+    <button class="btn btn-success" onclick="exportApproveLeave()">
+        Export to Excel
+    </button>
+</div>
     @if (Model != null && Model.Any())
     {
         <div style="width: 100%; overflow: hidden; position: relative;">
