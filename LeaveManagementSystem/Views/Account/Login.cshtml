@@ -10,6 +10,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login - Leave Management System</title>
     <link rel="stylesheet" href="~/css/site.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 </head>
 <body style="background: linear-gradient(135deg, #B5BAFF, #9FA1FF, #8A90FF); display: flex; justify-content: center; align-items: center; min-height: 100vh; overflow: hidden;">
     <div class="login-container">
@@ -37,9 +38,14 @@
                 @Html.ValidationMessageFor(m => m.Email, "", new { @class = "field-validation-error" })
             </div>
 
-            <div class="form-group">
+            <div class="form-group password-wrapper">
                 <label>Password</label>
-                @Html.PasswordFor(m => m.Password, new { @class = "form-control", placeholder = "Enter your password", autocomplete = "new-password" })
+                <div style="position:relative;">
+                    @Html.PasswordFor(m => m.Password, new { @class = "form-control", id = "LoginPassword", placeholder = "Enter your password" })
+                    <span class="toggle-password" data-target="LoginPassword">
+                        <i class="fa-regular fa-eye"></i>
+                    </span>
+                </div>
                 @Html.ValidationMessageFor(m => m.Password, "", new { @class = "field-validation-error" })
             </div>
 
