@@ -13,6 +13,19 @@
 </head>
 <body style="background: linear-gradient(135deg, #B5BAFF, #9FA1FF, #8A90FF); display: flex; justify-content: center; align-items: center; min-height: 100vh; overflow: hidden;">
     <div class="signup-container" style="max-width: 500px;">
+        @if (TempData["Message"] != null)
+        {
+            <div class="alert alert-success">
+                @TempData["Message"]
+            </div>
+        }
+
+        @if (TempData["Error"] != null)
+        {
+            <div class="alert alert-error">
+                @TempData["Error"]
+            </div>
+        }
         <div class="signup-header">
             <h1>Create Account</h1>
             <p>Sign up to get started</p>

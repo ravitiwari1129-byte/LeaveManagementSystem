@@ -143,11 +143,16 @@ namespace LeaveManagementSystem.Repositories
             Hashtable ht = new Hashtable();
             ht.Clear();
             ht.Add("Email", email);
-            ht.Add("Password", password);
+
             DataTable dt = _dbHelper.ExecuteStoredProcedure("USP_ValidateUser", ht);
             if (dt.Rows.Count > 0)
             {
                 DataRow row = dt.Rows[0];
+                string storedPassword = row["Password"].ToString();
+                if (!string.Equals(storedPassword, password, StringComparison.Ordinal))
+                {
+                    return null;
+                }
                 return new UserSession
                 {
                     EmployeeId = Convert.ToInt32(row["EmployeeId"]),

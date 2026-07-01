@@ -120,6 +120,7 @@ body {
    ======================================== */
 .main-content {
     flex: 1;
+    padding-top: 80px;
     padding: 2rem;
     min-width: 0;
     overflow-x: auto;
@@ -149,8 +150,9 @@ body {
 }
 
 .signup-container {
-    max-width: 320px;
-    padding: 1.5rem;
+    margin: 50px auto;
+    display: flex;
+    flex-direction: column;
 }
 
 .login-header,
@@ -467,9 +469,13 @@ textarea.form-control {
    ALERT STYLES
    ======================================== */
 .alert {
-    padding: 1rem;
-    border-radius: 5px;
-    margin-bottom: 1rem;
+    position: fixed;
+    top: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 9999;
+    min-width: 300px;
+    text-align: center;
 }
 
 .alert-success {
@@ -614,6 +620,11 @@ textarea.form-control {
     .header {
         flex-direction: column;
         text-align: center;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        z-index: 1000;
     }
 
     .user-info {

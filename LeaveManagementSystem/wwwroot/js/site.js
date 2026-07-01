@@ -6,111 +6,46 @@
 $(document).ready(function () {
 
     $('form').submit(function (e) {
-        if (window.location.pathname.toLowerCase().includes("signup")) {
-
-            var fullName = $("#FullName").val().trim();
-            var fullNameRegex = /^[A-Z][a-z]+(?: [A-Z][a-z]+)*$/;
-            if (fullName === "") {
-                showMessage("Full Name is required", "error");
-                e.preventDefault();
-                return false;
-            }
-            if (fullName.length < 3) {
-                showMessage("Full Name must contain at least 3 characters", "error");
-                e.preventDefault();
-                return false;
-            }
-
-            if (fullName.length > 50) {
-                showMessage("Full Name cannot exceed 50 characters", "error");
-                e.preventDefault();
-                return false;
-            }
-            if (!fullNameRegex.test(fullName)) {
-                showMessage("Full Name must contain only letters and every word must start with a capital letter");
-                e.preventDefault();
-                return false;
-            }
-
-
-            var email = $("#Email").val().trim();
-            var emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-            if (email === "") {
-                showMessage("Email is required", "error");
-                e.preventDefault();
-                return false;
-            }
-            if (email.length < 6) {
-                showMessage("Email must contain at least 6 characters", "error");
-                e.preventDefault();
-                return false;
-            }
-            if (email.length > 30) {
-                showMessage("Email cannot exceed 30 characters", "error");
-                e.preventDefault();
-                return false;
-            }
-            if (!emailRegex.test(email)) {
-                showMessage(
-                    "Please enter a valid email address","error");
-                e.preventDefault();
-                return false;
-            }
-
-
-            var password = $("#Password").val().trim();
-            var passwordRegex = /^(?=.*[0-9])(?=.*[@$!%*?&])[A-Z][A-Za-z0-9@$!%*?&]*$/;
-            if (password === "") {
-                showMessage("Password is required", "error");
-                e.preventDefault();
-                return false;
-            }
-            if (password.length < 7) {
-                showMessage("Password must contain at least 7 characters","error");
-                e.preventDefault();
-                return false;
-            }
-            if (password.length > 20) {
-                showMessage("Password cannot exceed 20 characters","error");
-                e.preventDefault();
-                return false;
-            }
-            if (!passwordRegex.test(password)) {
-                showMessage("Password must start with a capital letter and contain at least one number and one special character.","error");
-                e.preventDefault();
-                return false;
-            }
-
-
-            var confirmPassword = $("#ConfirmPassword").val().trim();
-            if (confirmPassword === "") {
-                showMessage("Confirm Password is required", "error");
-                e.preventDefault();
-                return false;
-            }
-            if (confirmPassword.length < 7) {
-                showMessage("Confirm Password must contain at least 7 characters", "error");
-                e.preventDefault();
-                return false;
-            }
-            if (confirmPassword.length > 20) {
-                showMessage("Confirm Password cannot exceed 20 characters", "error");
-                e.preventDefault();
-                return false;
-            }
-            if (!passwordRegex.test(confirmPassword)) {
-                showMessage("Confirm Password must start with a capital letter and contain at least one number and one special character.","error");
-                e.preventDefault();
-                return false;
-            }
-            if (password !== confirmPassword) {
-                showMessage("Password and Confirm Password do not match", "error");
-                e.preventDefault();
-                return false;
-            }
-
+        if (!window.location.pathname.toLowerCase().includes("signup")) {
+            return true;
         }
-    });
+
+        e.preventDefault();
+
+        var fullName = $("#FullName").val().trim();
+        var email = $("#Email").val().trim();
+        var password = $("#Password").val().trim();
+        var confirmPassword = $("#ConfirmPassword").val().trim();
+        var fullNameRegex = /^[A-Z][a-z]+(?: [A-Z][a-z]+)*$/;
+        var emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        var passwordRegex = /^(?=.*[A-Z])(?=.*[0-9])(?=.*[@$!%*?&])[A-Za-z0-9@$!%*?&]{7,20}$/;
+
+        // ================= FULL NAME
+        if (fullName === "") return showError("Full Name is required");
+        if (fullName.length < 3) return showError("Full Name must be at least 3 characters");
+        if (fullName.length > 50) return showError("Full Name cannot exceed 50 characters");
+        if (!fullNameRegex.test(fullName)) return showError("Full Name must start with capital letters");
+
+        // ================= EMAIL
+        if (email === "") return showError("Email is required");
+        if (email.length < 6) return showError("Email must be at least 6 characters");
+        if (email.length > 50) return showError("Email cannot exceed 50 characters");
+        if (!emailRegex.test(email)) return showError("Invalid email format");
+
+        // ================= PASSWORD
+        if (password === "") return showError("Password is required");
+        if (password.length < 7) return showError("Password must be at least 7 characters");
+        if (password.length > 20) return showError("Password cannot exceed 20 characters");
+        if (!passwordRegex.test(password))
+            return showError("Password must start with capital letter, contain number & special char");
+
+        // ================= CONFIRM PASSWORD
+        if (confirmPassword === "") return showError("Confirm Password is required");
+        if (password !== confirmPassword)
+            return showError("Password and Confirm Password do not match");
+
+    this.off('submit').submit();
+});
 
     // Hide success/error alerts after 5 seconds
     setTimeout(function () {
@@ -126,14 +61,22 @@ $(document).ready(function () {
     });
 });
 
+function showError(msg) {
+    showMessage(msg, "error");
+    return false;
+}
+
 // Global function to show messages
 function showMessage(message, type) {
+    $('.alert').remove();
     var className = type === 'success' ? 'alert-success' : 'alert-error';
-    var alertHtml = '<div class="alert ' + className + '" style="position: fixed; top: 80px; right: 20px; z-index: 9999; min-width: 250px; padding: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.2);">' + message + '</div>';
-    document.body.insertAdjacentHTML('beforeend', alertHtml);
+    var alertHtml = '<div class="alert ' + className + '">' + message + '</div>';
+    var container = document.querySelector('.signup-container') || document.body;
+    container.insertAdjacentHTML('afterbegin', alertHtml);
     setTimeout(function () {
-        var alert = document.querySelector('.alert');
-        if (alert) alert.remove();
+        $('.alert').fadeOut('slow', function () {
+            $(this).remove();
+        });
     }, 3000);
 }
 
