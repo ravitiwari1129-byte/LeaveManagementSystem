@@ -212,13 +212,10 @@ var gridApi = null;
 
         // Get selected statuses from multi-select
         var selectedStatuses = $('#searchStatus').val() || [];
+        console.log("Selected Statuses:", selectedStatuses);
 
         if (selectedStatuses.includes("All")) {
             selectedStatuses = [];
-        }
-
-        if (selectedStatuses.length === 0) {
-            selectedStatuses = null;
         }
 
         console.log("Selected Employees:", selectedEmployees);

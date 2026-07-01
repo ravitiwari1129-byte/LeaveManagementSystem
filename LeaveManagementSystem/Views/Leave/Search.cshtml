@@ -69,39 +69,43 @@
 
 <script>
     $(document).ready(function() {
-        var isAdmin = @isAdmin.ToString().ToLower();
 
-        if (isAdmin) {
-            $('#searchStatus').select2({
-                placeholder: "Select Status",
-                width: '100%',
-                allowClear: true
-            });
+    var isAdmin = @isAdmin.ToString().ToLower();
 
-    
-            $('#searchStatus').on('change', function() {
-                var selectedValues = $(this).val() || [];
+    $('#searchStatus').select2({
+        placeholder: "Select Status",
+        width: '100%',
+        allowClear: true,
+        closeOnSelect: false
+    });
 
-                if (selectedValues.includes("All")) {
-                    var allValues = [];
-                    $('#searchStatus option').each(function() {
-                        var value = $(this).val();
-                        if (value && value !== "All") {
-                            allValues.push(value);
-                        }
-                    });
-                    $(this).val(allValues).trigger('change.select2');
+    $('#searchStatus').on('change', function () {
+
+        var selectedValues = $(this).val() || [];
+
+        if (selectedValues.includes("All")) {
+
+            var allValues = [];
+
+            $('#searchStatus option').each(function () {
+                var value = $(this).val();
+
+                if (value !== "All") {
+                    allValues.push(value);
                 }
             });
-        }
 
-        if (!isAdmin && '@loggedInEmployeeName') {
-            setTimeout(function() {
-                if (typeof performSearch === 'function') {
-                    performSearch();
-                }
-            }, 500);
+            $('#searchStatus').val(allValues).trigger('change.select2');
         }
     });
+
+    if (!isAdmin && '@loggedInEmployeeName') {
+        setTimeout(function () {
+            if (typeof performSearch === 'function') {
+                performSearch();
+            }
+        }, 500);
+    }
+});
 </script>
 

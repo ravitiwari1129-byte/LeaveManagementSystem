@@ -16,7 +16,7 @@
 
         <div class="form-group">
             <label>Leave Type *</label>
-            <select id="LeaveType" name="LeaveType" class="form-control">
+            <select asp-for="LeaveType" class="form-control">
                 <option value="">Select Leave Type</option>
                 @foreach (var type in leaveTypes)
                 {
@@ -28,19 +28,19 @@
 
         <div class="form-group">
             <label>From Date *</label>
-            <input type="date" id="FromDate" name="FromDate" class="form-control" />
+            @Html.TextBoxFor(m => m.FromDate, Model.FromDate == DateTime.MinValue ? "" : Model.FromDate.ToString("yyyy-MM-dd"), new { @type = "date", @class = "form-control" })
             @Html.ValidationMessageFor(m => m.FromDate, "", new { @class = "field-validation-error" })
         </div>
 
         <div class="form-group">
             <label>To Date *</label>
-            <input type="date" id="ToDate" name="ToDate" class="form-control" />
+            @Html.TextBoxFor(m => m.ToDate, Model.ToDate == DateTime.MinValue ? "" : Model.ToDate.ToString("yyyy-MM-dd"), new { @type = "date", @class = "form-control" })
             @Html.ValidationMessageFor(m => m.ToDate, "", new { @class = "field-validation-error" })
         </div>
 
         <div class="form-group">
             <label>Reason *</label>
-            <textarea id="Reason" name="Reason" class="form-control" placeholder="Please provide reason for leave" rows="4"></textarea>
+            @Html.TextAreaFor(m => m.Reason, new { @class = "form-control", placeholder = "Please provide reason for leave", rows = "4" })
             @Html.ValidationMessageFor(m => m.Reason, "", new { @class = "field-validation-error" })
         </div>
 

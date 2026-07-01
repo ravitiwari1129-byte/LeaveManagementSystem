@@ -106,7 +106,7 @@
                         if (window.userRole === 'Admin') {
                             window.location.href = '/Report/Index';
                         } else {
-                            window.location.href = '/Report/Dashboard';
+                            window.location.href = '/LeaveHistory/Index';
                         }
                     }
                 }

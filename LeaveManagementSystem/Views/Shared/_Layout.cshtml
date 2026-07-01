@@ -49,8 +49,8 @@
                 {
                     <a href="@Url.Action("Apply", "Leave")" class="@(ViewContext.RouteData.Values["controller"]?.ToString() == "Apply" ? "active" : "")">📝 Apply Leave</a>
                     <a href="@Url.Action("Index", "LeaveHistory")" class="@(ViewContext.RouteData.Values["controller"]?.ToString() == "LeaveHistory" ? "active" : "")">📜 Leave History</a>
+                    <a href="@Url.Action("Search", "Leave")" class="@(ViewContext.RouteData.Values["action"]?.ToString() == "Search" ? "active" : "")">🔍 Search Leave</a> 
                 }
-                <a href="@Url.Action("Search", "Leave")" class="@(ViewContext.RouteData.Values["action"]?.ToString() == "Search" ? "active" : "")">🔍 Search Leave</a> 
             </div>
             <div class="main-content">
                 @if (TempData["Success"] != null)
