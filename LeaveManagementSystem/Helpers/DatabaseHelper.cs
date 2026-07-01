@@ -53,7 +53,6 @@ namespace LeaveManagementSystem.Helpers
             }
         }
 
-
         public int ExecuteNonQuery(string procedureName, Hashtable parameters = null)
         {
             using (SqlConnection conn = GetConnection())

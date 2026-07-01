@@ -252,7 +252,7 @@ function initPendingGrid() {
     if (gridDiv && typeof agGrid !== "undefined" && window.leaveData) {
         gridApi = agGrid.createGrid(gridDiv, {
             columnDefs: pendingColumnDefs,
-            defaultColDef: { sortable: true, filter: true, resizable: true },
+            defaultColDef: { sortable: true, filter: true, floatingFilter: true, resizable: true },
             rowData: window.leaveData,
             domLayout: "normal"
         });
@@ -387,5 +387,4 @@ window.addEventListener('resize', function () {
     }
     });
 })();
-
 

@@ -130,6 +130,7 @@
                 headerName: "Employee",
                 sortable: true,
                 filter: true,
+                floatingFilter: true,
                 flex: 2,
                 minWidth: 150
             },
@@ -138,6 +139,7 @@
                 headerName: "Leave Type",
                 sortable: true,
                 filter: true,
+                floatingFilter: true,
                 flex: 1.5,
                 minWidth: 130
             },
@@ -145,6 +147,8 @@
                 field: "FromDate",
                 headerName: "From Date",
                 sortable: true,
+                filter: true,
+                floatingFilter: true,
                 flex: 1,
                 minWidth: 110
             },
@@ -152,6 +156,8 @@
                 field: "ToDate",
                 headerName: "To Date",
                 sortable: true,
+                filter: true,
+                floatingFilter: true,
                 flex: 1,
                 minWidth: 110
             },
@@ -160,6 +166,7 @@
                 headerName: "Reason",
                 sortable: true,
                 filter: true,
+                floatingFilter: true,
                 flex: 3,
                 minWidth: 200,
                 cellRenderer: function(params) {
@@ -171,6 +178,8 @@
                 field: "AppliedDate",
                 headerName: "Applied Date",
                 sortable: true,
+                filter: true,
+                floatingFilter: true,
                 flex: 1,
                 minWidth: 110
             },
@@ -195,6 +204,12 @@
         try {
             gridApi = agGrid.createGrid(gridDiv, {
                 columnDefs: columnDefs,
+                defaultColDef: {
+                    sortable: true,
+                    filter: true,
+                    floatingFilter: true,
+                    resizable: true
+                },
                 rowData: window.leaveData,
                 domLayout: 'normal',
                 animateRows: true,
