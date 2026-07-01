@@ -36,7 +36,7 @@ var gridApi = null;
             filter: true,
             floatingFilter: true,
             flex: 1,
-            minWidth: 110,
+            minWidth: 130,
             valueFormatter: function (params) {
                 if (!params.value) return "";
                 var date = new Date(params.value);
@@ -54,7 +54,7 @@ var gridApi = null;
             filter: true,
             floatingFilter: true,
             flex: 1,
-            minWidth: 110,
+            minWidth: 130,
             valueFormatter: function (params) {
                 if (!params.value) return "";
                 var date = new Date(params.value);
@@ -71,7 +71,7 @@ var gridApi = null;
             filter: true,
             floatingFilter: true,
             flex: 0.5,
-            minWidth: 70,
+            minWidth: 100,
             cellStyle: { textAlign: "center", fontWeight: "bold" },
             valueGetter: function (params) {
                 if (params.data.fromDate && params.data.toDate) {
@@ -104,7 +104,7 @@ var gridApi = null;
             filter: true,
             floatingFilter: true,
             flex: 1,
-            minWidth: 100,
+            minWidth: 130,
             cellRenderer: function (params) {
                 var status = params.value;
                 var badgeClass = "";
@@ -121,7 +121,7 @@ var gridApi = null;
             filter: true,
             floatingFilter: true,
             flex: 1,
-            minWidth: 110,
+            minWidth: 130,
             valueFormatter: function (params) {
                 if (!params.value) return "";
                 var date = new Date(params.value);

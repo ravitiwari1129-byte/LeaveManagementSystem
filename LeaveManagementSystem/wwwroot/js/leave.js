@@ -29,7 +29,7 @@ const historyColumnDefs = [
         sortable: true,
         filter: true,
         floatingFilter: true,
-        width: 130
+        minWidth: 130
     },
     {
         field: "FromDate",
@@ -37,7 +37,7 @@ const historyColumnDefs = [
         sortable: true,
         filter: true,
         floatingFilter: true,
-        width: 110
+        minWidth: 130
     },
     {
         field: "ToDate",
@@ -45,14 +45,14 @@ const historyColumnDefs = [
         sortable: true,
         filter: true,
         floatingFilter: true,
-        width: 110
+        minWidth: 130
     },
     {
         headerName: "Days",
         sortable: true,
         filter: true,
         floatingFilter: true,
-        width: 70,
+        minWidth: 100,
         cellStyle: { textAlign: "center", fontWeight: "bold" },
         valueGetter: function (params) {
             return calculateDays(params.data.FromDateRaw, params.data.ToDateRaw);
@@ -64,7 +64,7 @@ const historyColumnDefs = [
         sortable: true,
         filter: true,
         floatingFilter: true,
-        width: 200,
+        minWidth: 200,
         tooltipField: "FullReason",
         cellRenderer: function (params) {
             var reason = params.value || "";
@@ -77,7 +77,7 @@ const historyColumnDefs = [
         sortable: true,
         filter: true,
         floatingFilter: true,
-        width: 100,
+        minWidth: 130,
         cellRenderer: function (params) {
             var status = params.value;
             var badgeClass = status === "Pending" ? "badge-pending" :
@@ -91,14 +91,14 @@ const historyColumnDefs = [
         sortable: true,
         filter: true,
         floatingFilter: true,
-        width: 110
+        minWidth: 130
     },
     {
         headerName: "Action",
         sortable: true,
         filter: true,
         floatingFilter: true,
-        width: 80,
+        minWidth: 100,
         cellRenderer: function (params) {
             return '<a href="/Leave/Details/' + params.data.LeaveId + '" class="btn btn-warning" style="padding: 4px 10px; font-size: 11px;">View</a>';
         }
@@ -182,7 +182,7 @@ const pendingColumnDefs = [
         sortable: true,
         filter: true,
         floatingFilter: true,
-        width: 160
+        minWidth: 160
     },
     {
         field: "LeaveType",
@@ -190,7 +190,7 @@ const pendingColumnDefs = [
         sortable: true,
         filter: true,
         floatingFilter: true,
-        width: 140
+        minWidth: 130
     },
     {
         field: "FromDate",
@@ -198,7 +198,7 @@ const pendingColumnDefs = [
         sortable: true,
         filter: true,
         floatingFilter: true,
-        width: 130
+        minWidth: 140
     },
     {
         field: "ToDate",
@@ -206,7 +206,7 @@ const pendingColumnDefs = [
         sortable: true,
         filter: true,
         floatingFilter: true,
-        width: 130
+        minWidth: 140
     },
     {
         field: "Reason",
@@ -214,7 +214,7 @@ const pendingColumnDefs = [
         sortable: true,
         filter: true,
         floatingFilter: true,
-        width: 250,
+        minWidth: 250,
         tooltipField: "FullReason",
         cellRenderer: function (params) {
             var reason = params.value || "";
@@ -227,7 +227,7 @@ const pendingColumnDefs = [
         sortable: true,
         filter: true,
         floatingFilter: true,
-        width: 140
+        minWidth: 130
     },
     {
         field: "Actions",
@@ -235,7 +235,7 @@ const pendingColumnDefs = [
         sortable: true,
         filter: true,
         floatingFilter: true,
-        width: 220,
+        minWidth: 220,
         cellRenderer: function (params) {
             var leaveId = params.data.LeaveId;
             return '<div class="action-buttons" style="display: flex; gap: 5px;">' +
