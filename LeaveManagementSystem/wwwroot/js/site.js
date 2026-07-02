@@ -17,27 +17,26 @@ $(document).ready(function () {
         var password = $("#Password").val().trim();
         var confirmPassword = $("#ConfirmPassword").val().trim();
         var fullNameRegex = /^[A-Z][a-z]+(?: [A-Z][a-z]+)*$/;
-        var emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-        var passwordRegex = /^(?=.*[A-Z])(?=.*[0-9])(?=.*[@$!%*?&])[A-Za-z0-9@$!%*?&]{7,20}$/;
+        var emailRegex = /^(?=.{5,50}$)[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        var passwordRegex = /^(?=.*[A-Z])(?=.*[0-9])(?=.*[@$!%*?&])[A-Za-z0-9@$!%*?&]{5,20}$/;
 
         // ================= FULL NAME
         if (fullName === "") return showError("Full Name is required");
         if (fullName.length < 3) return showError("Full Name must be at least 3 characters");
         if (fullName.length > 50) return showError("Full Name cannot exceed 50 characters");
-        if (!fullNameRegex.test(fullName)) return showError("Full Name must start with capital letters");
+        if (!fullNameRegex.test(fullName)) return showError("Each word must start with a capital letter and contain only alphabets");
 
         // ================= EMAIL
         if (email === "") return showError("Email is required");
-        if (email.length < 6) return showError("Email must be at least 6 characters");
+        if (email.length < 5) return showError("Email must be at least 5 characters");
         if (email.length > 50) return showError("Email cannot exceed 50 characters");
         if (!emailRegex.test(email)) return showError("Invalid email format");
 
         // ================= PASSWORD
         if (password === "") return showError("Password is required");
-        if (password.length < 7) return showError("Password must be at least 7 characters");
+        if (password.length < 5) return showError("Password must be at least 5 characters");
         if (password.length > 20) return showError("Password cannot exceed 20 characters");
-        if (!passwordRegex.test(password))
-            return showError("Password must start with capital letter, contain number & special char");
+        if (!passwordRegex.test(password)) return showError("Password must contain at least one uppercase letter, one number and one special character");
 
         // ================= CONFIRM PASSWORD
         if (confirmPassword === "") return showError("Confirm Password is required");

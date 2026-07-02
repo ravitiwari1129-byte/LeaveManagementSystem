@@ -9,10 +9,13 @@ namespace LeaveManagementSystem.Models
     {
         [Required(ErrorMessage = "Email is required")]
         [EmailAddress(ErrorMessage = "Invalid email format")]
+        [StringLength(50, MinimumLength = 5, ErrorMessage = "Email must be between 5 and 50 characters")]
         public string Email { get; set; }
 
         [Required(ErrorMessage = "Password is required")]
         [DataType(DataType.Password)]
+        [StringLength(20, MinimumLength = 5, ErrorMessage = "Password must be between 5 and 20 characters")]
+        [RegularExpression(@"^(?=.*[A-Z])(?=.*[0-9])(?=.*[@$!%*?&])[A-Za-z0-9@$!%*?&]{5,20}$", ErrorMessage = "Password must contain uppercase letter, number and special character")]
         public string Password { get; set; }
     }
 
@@ -29,15 +32,19 @@ namespace LeaveManagementSystem.Models
     {
         [Required(ErrorMessage = "Full name is required")]
         [Display(Name = "Full Name")]
+        [StringLength(50, MinimumLength = 3, ErrorMessage = "Full Name must be between 3 and 50 characters")]
+        [RegularExpression(@"^[A-Z][a-z]+(?: [A-Z][a-z]+)*$", ErrorMessage = "Each word must start with a capital letter and contain only alphabets")]
         public string FullName { get; set; }
 
         [Required(ErrorMessage = "Email is required")]
         [EmailAddress(ErrorMessage = "Invalid email format")]
+        [StringLength(50, MinimumLength = 5, ErrorMessage = "Email must be between 5 and 50 characters")]
         public string Email { get; set; }
 
         [Required(ErrorMessage = "Password is required")]
-        [MinLength(4, ErrorMessage = "Password must be at least 4 characters")]
+        [StringLength(20, MinimumLength = 5, ErrorMessage = "Password must be between 5 and 20 characters")]
         [DataType(DataType.Password)]
+        [RegularExpression(@"^(?=.*[A-Z])(?=.*[0-9])(?=.*[@$!%*?&])[A-Za-z0-9@$!%*?&]{5,20}$", ErrorMessage = "Password must contain uppercase letter, number and special character")]
         public string Password { get; set; }
 
         [Required(ErrorMessage = "Confirm password is required")]

@@ -8,12 +8,14 @@ namespace LeaveManagementSystem.Models
         public int EmployeeId { get; set; }
 
         [Required(ErrorMessage = "Employee name is required")]
-        [StringLength(100, MinimumLength = 2, ErrorMessage = "Name must be between 2 and 100 characters")]
+        [StringLength(50, MinimumLength = 3, ErrorMessage = "Name must be between 3 and 50 characters")]
         [Display(Name = "Employee Name")]
+        [RegularExpression(@"^[A-Z][a-z]+(?: [A-Z][a-z]+)*$", ErrorMessage = "Each word must start with a capital letter and contain only alphabets")]
         public string EmployeeName { get; set; }
 
         [Required(ErrorMessage = "Email is required")]
         [EmailAddress(ErrorMessage = "Invalid email format")]
+        [StringLength(50, MinimumLength = 5, ErrorMessage = "Email must be between 5 and 50 characters")]
         public string Email { get; set; }
 
         [Required(ErrorMessage = "Department is required")]
@@ -27,8 +29,9 @@ namespace LeaveManagementSystem.Models
         public bool IsActive { get; set; }
 
         [Required(ErrorMessage = "Password is required")]
-        [StringLength(100, MinimumLength = 4, ErrorMessage = "Password must be at least 4 characters")]
+        [StringLength(20, MinimumLength = 5, ErrorMessage = "Password must be between 5 and 20 characters")]
         [DataType(DataType.Password)]
+        [RegularExpression(@"^(?=.*[A-Z])(?=.*[0-9])(?=.*[@$!%*?&])[A-Za-z0-9@$!%*?&]{5,20}$", ErrorMessage = "Password must contain uppercase letter, number and special character")]
         public string Password { get; set; }
     }
 
