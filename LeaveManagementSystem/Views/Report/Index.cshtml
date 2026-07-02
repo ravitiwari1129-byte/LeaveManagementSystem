@@ -61,9 +61,13 @@
 </div>
 
 <div class="card">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;">
     <div class="card-title">Leave Report Results</div>
-    <div id="leaveReportGrid" class="ag-theme-alpine" style="width: 100%; height: 500px;"></div>
+    <button class="btn btn-success" onclick="exportApproveLeave()">
+        Export to Excel
+    </button>
 </div>
+    <div id="leaveReportGrid" class="ag-theme-alpine" style="width: 100%; height: 500px;"></div>
 
 <script>
     $(document).ready(function() {

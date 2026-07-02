@@ -5,7 +5,7 @@ namespace LeaveManagementSystem.Repositories
 {
     public interface IEmployeeRepository
     {
-        List<EmployeeModel> GetAllEmployees(string departmentId , string Role,string USER_NAME);
+        List<EmployeeModel> GetAllEmployees(string departmentId , string Role,string userName);
         EmployeeModel GetEmployeeById(int employeeId);
         int GetAdminCount();
         int InsertEmployee(EmployeeModel employee);
