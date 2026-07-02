@@ -23,16 +23,24 @@
 
     @if (isLoggedIn)
     {
-        <div class="header">
-            <div class="logo">
+        <header class="top-header">
+            <div class="header-left">
                 <h1>Leave Management System</h1>
                 <p>Track and manage leave requests efficiently</p>
             </div>
-            <div class="user-info">
-                <span class="user-name">👤 @userName (@userRole)</span>
-                <a href="@Url.Action("Logout", "Account")" class="logout-btn">Logout</a>
+
+            <div class="header-right">
+                <span class="user-name">
+                    <i class="fas fa-user"></i>
+                    @Context.Session.GetString("EmployeeName")
+                    (@Context.Session.GetString("UserRole"))
+                </span>
+
+                <a href="@Url.Action("Logout","Account")" class="logout-btn">
+                    Logout
+                </a>
             </div>
-        </div>
+        </header>
         <div class="container">
             <div class="sidebar">
                 <a href="@Url.Action("Dashboard", "Report")" class="@(ViewContext.RouteData.Values["controller"]?.ToString() == "Report" && ViewContext.RouteData.Values["action"]?.ToString() == "Dashboard" ? "active" : "")">📊 Dashboard</a>

@@ -65,6 +65,64 @@ body {
         background: #c0392b;
     }
 
+
+.top-header {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 80px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 25px;
+    background: linear-gradient(to right, #243b55, #141e30);
+    z-index: 1000;
+    box-sizing: border-box;
+}
+
+.header-left {
+    min-width: 0;
+}
+
+.header-left h1 {
+    color: white;
+    margin: 0;
+    font-size: 32px;
+}
+
+.header-left p {
+    color: #dcdcdc;
+    margin: 5px 0 0;
+}
+
+.header-right {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    max-width: 40%;
+    min-width: 0;
+    flex-wrap: wrap;
+}
+
+.user-name {
+    color: white;
+    font-weight: 600;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 250px;
+}
+
+.logout-btn {
+    background: #ff5a3c;
+    color: white;
+    padding: 12px 20px;
+    border-radius: 8px;
+    text-decoration: none;
+    flex-shrink: 0;
+}
+
 /* ========================================
    CONTAINER & SIDEBAR
    ======================================== */
@@ -74,11 +132,17 @@ body {
 }
 
 .sidebar {
+    position: fixed;
+    top: 80px;
+    left: 0;
     width: 260px;
-    background: #e8edf2;
-    box-shadow: 2px 0 5px rgba(0, 0, 0, 0.05);
+    height: calc(100vh - 80px);
+    overflow-y: auto;
+    background: #f4f7fa;
+    box-shadow: 2px 0 5px rgba(0,0,0,0.05);
     padding: 1.5rem 0;
     flex-shrink: 0;
+    z-index: 999;
 }
 
 .sidebar a {
@@ -118,9 +182,14 @@ body {
 /* ========================================
    MAIN CONTENT
    ======================================== */
+
 .main-content {
     flex: 1;
-    padding: 70px 2rem 2rem 2rem; 
+    margin-left: 260px;
+    margin-top: 80px;
+    padding: 20px;
+    min-height: calc(100vh - 80px);
+    width: calc(100% - 260px);
     overflow-x: auto;
 }
 
@@ -128,10 +197,10 @@ body {
     margin-bottom: 2rem;
 }
 
-    .page-header h2 {
-        color: #2c3e50;
-        font-size: 1.8rem;
-    }
+.page-header h2 {
+    color: #2c3e50;
+    font-size: 1.8rem;
+}
 
 /* ========================================
    AUTHENTICATION PAGES
@@ -536,6 +605,13 @@ textarea.form-control {
     font-size: 0.8rem;
 }
 
+.search-buttons {
+    margin-top: 15px;
+    display: flex;
+    justify-content: flex-start;
+    gap: 10px;
+}
+
 /* ========================================
    MODAL STYLES
    ======================================== */
@@ -588,6 +664,27 @@ textarea.form-control {
    RESPONSIVE STYLES
    ======================================== */
 @media (max-width: 768px) {
+    .top-header {
+        flex-direction: column;
+        height: auto;
+        padding: 15px;
+    }
+
+    .header-right {
+        width: 100%;
+        justify-content: space-between;
+        max-width: 100%;
+        margin-top: 10px;
+    }
+
+    .user-name {
+        max-width: 180px;
+    }
+
+    .header-left h1 {
+        font-size: 24px;
+    }
+
     .container {
         flex-direction: column;
     }
@@ -641,6 +738,49 @@ textarea.form-control {
     .signup-container {
         margin: 50px auto;
         padding: 1.5rem;
+    }
+}
+
+
+
+@media screen and (max-width: 1200px) {
+
+    .top-header {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: auto;
+        min-height: 80px;
+        padding: 15px 20px;
+        flex-wrap: wrap;
+        z-index: 1000;
+    }
+
+    .header-left,
+    .header-right {
+        width: 100%;
+    }
+
+    .header-right {
+        display: flex;
+        justify-content: space-between;
+        margin-top: 10px;
+    }
+
+    .sidebar {
+        position: fixed;
+        top: 130px; 
+        left: 0;
+        width: 260px;
+        height: calc(100vh - 130px);
+        overflow-y: auto;
+    }
+
+    .main-content {
+        margin-left: 260px;
+        margin-top: 130px;
+        width: calc(100% - 260px);
     }
 }
 
