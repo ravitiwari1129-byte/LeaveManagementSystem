@@ -66,6 +66,23 @@ const columnDefs = [
     }
 ];
 
+window.exportEmployeeManagement = function () {
+    console.log("Button clicked");
+
+    if (gridApi) {
+        console.log("Export starting");
+
+        gridApi.exportDataAsCsv({
+            fileName: "EmployeeManagement.csv"
+        });
+
+        console.log("Export completed");
+    }
+    else {
+        alert("Grid not initialized.");
+    }
+};
+
 function initGrid() {
     var gridDiv = document.getElementById('employeeGrid');
     if (gridDiv && typeof agGrid !== 'undefined') {

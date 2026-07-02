@@ -2,10 +2,10 @@
 // LEAVE REPORT - Complete Working
 // ========================================
 
+var gridApi = null;
+
 (function () {
     'use strict';
-
-    let gridApi = null;
 
     // Column Definitions
     var columnDefs = [
@@ -137,6 +137,7 @@
             }
         }
     ];
+
 
     // Initialize Grid
     function initGrid() {
@@ -329,3 +330,13 @@
 })();
 
 
+window.exportLeaveReport = function () {
+    if (gridApi) {
+        gridApi.exportDataAsCsv({
+            fileName: "LeaveReport.csv"
+        });
+    }
+    else {
+        alert("Grid not initialized.");
+    }
+};

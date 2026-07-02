@@ -247,16 +247,16 @@ const pendingColumnDefs = [
     }
 ];
 
-    window.exportApproveLeave = function () {
-        if (gridApi) {
-            gridApi.ApproveLeave({
-                fileName: "LeaveHistory.csv"
-            });
-        }
-        else {
-            alert("Grid not initialized.");
-        }
-    };
+window.exportApproveLeave = function () {
+    if (gridApi) {
+        gridApi.exportDataAsCsv({
+            fileName: "ApproveLeave.csv"
+        });
+    }
+    else {
+        alert("Grid not initialized.");
+    }
+};
 
 function initPendingGrid() {
     var gridDiv = document.getElementById("leaveGrid");
