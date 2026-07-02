@@ -45,7 +45,7 @@ namespace LeaveManagementSystem.Controllers
             if (GetCurrentUserId() == 0)
                 return RedirectToAction("Login", "Account");
 
-            ViewBag.LeaveTypes = new[] { "Sick Leave", "Vacation", "Personal Leave", "Maternity Leave", "Paternity Leave", "Bereavement Leave" };
+            ViewBag.LeaveTypes = new[] { "Sick Leave", "Vacation", "Personal Leave", "Maternity Leave", "Paternity Leave", "Bereavement Leave", "Absent" };
             return View(new LeaveRequestModel());
         }
 
@@ -60,7 +60,7 @@ namespace LeaveManagementSystem.Controllers
                 return RedirectToAction("Apply");
             }
 
-            var leaveTypes = new[] { "Sick Leave", "Vacation", "Personal Leave", "Maternity Leave", "Paternity Leave", "Bereavement Leave" };
+            var leaveTypes = new[] { "Sick Leave", "Vacation", "Personal Leave", "Maternity Leave", "Paternity Leave", "Bereavement Leave", "Absent"};
             ViewBag.LeaveTypes = leaveTypes;
 
             ModelState.Remove("EmployeeName");
