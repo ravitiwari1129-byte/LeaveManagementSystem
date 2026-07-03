@@ -252,20 +252,19 @@ var gridApi = null;
         var token = document.querySelector('input[name="__RequestVerificationToken"]')?.value || "";
         console.log("Token found:", token ? "Yes" : "No");
 
-        // Make AJAX call
         $.ajax({
             url: '/Leave/SearchLeaves',
             type: 'POST',
             headers: {
                 'RequestVerificationToken': token
             },
-            contentType: 'application/json',
-            data: JSON.stringify({
+            traditional: true,
+            data: {
                 employeeNames: selectedEmployees,
                 statuses: selectedStatuses,
                 fromDate: fromDate || null,
                 toDate: toDate || null
-            }),
+            },
             success: function (response) {
                 console.log("✅ AJAX Success:", response);
 
