@@ -280,11 +280,9 @@ var gridApi = null;
                             gridApi.setGridOption("rowData", response.data);
                         }
                     } else {
-                        console.log("⚠️ No records found");
                         if (gridApi) {
                             gridApi.setGridOption("rowData", []);
                         }
-                        showMessage("⚠️ No records found", "info");
                     }
                 } else {
                     showMessage("❌ " + (response.message || "Error searching leaves"), "error");

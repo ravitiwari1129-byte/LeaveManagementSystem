@@ -43,7 +43,7 @@ $(document).ready(function () {
         if (password !== confirmPassword)
             return showError("Password and Confirm Password do not match");
 
-    this.off('submit').submit();
+    $(this).off('submit').submit();
 });
 
     // Hide success/error alerts after 5 seconds
