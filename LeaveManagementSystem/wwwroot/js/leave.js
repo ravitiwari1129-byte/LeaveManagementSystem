@@ -338,7 +338,7 @@ window.confirmAction = function () {
                     });
                     gridApi.applyTransaction({ remove: rowsToRemove.map(function (r) { return r.data; }) });
 
-                    var remainingRows = gridApi.getModel().getRowCount();
+                    var remainingRows = gridApi.getDisplayedRowCount();
                     var pendingCountElem = document.querySelector(".stats-grid .stat-card.pending .stat-number");
                     if (pendingCountElem) pendingCountElem.textContent = remainingRows;
                 }
