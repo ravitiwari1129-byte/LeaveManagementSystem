@@ -29,15 +29,36 @@ body {
     gap: 1rem;
 }
 
-.logo h1 {
-    font-size: 1.5rem;
-    font-weight: 600;
+.logo-container {
+    display: flex;
+    align-items: center;
+    gap: 15px;
 }
 
-.logo p {
-    font-size: 0.8rem;
-    opacity: 0.8;
+.logo {
+    width: 70px;
+    height: 70px;
+    object-fit: contain;
+    border-radius: 50%;
+    flex-shrink: 0;
 }
+
+.title-section {
+    display: flex;
+    flex-direction: column;
+}
+
+.title-section h1 {
+    color: white;
+    margin: 0;
+    font-size: 32px;
+}
+
+.title-section p {
+    color: #dcdcdc;
+    margin: 5px 0 0;
+}
+
 
 .user-info {
     display: flex;
