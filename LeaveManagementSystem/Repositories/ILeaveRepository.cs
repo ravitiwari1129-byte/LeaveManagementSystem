@@ -11,5 +11,6 @@ namespace LeaveManagementSystem.Repositories
         DashboardModel GetDashboardCounts(string role, int employeeId);
         LeaveRequestModel GetLeaveById(int leaveId);
         DashboardModel GetLeaveSummary(int employeeId);
+        List<LeaveTypeModel> GetLeaveTypes();
     }
 }
