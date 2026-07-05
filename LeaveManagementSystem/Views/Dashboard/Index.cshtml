@@ -1,7 +1,6 @@
 ﻿@{
     ViewBag.Title = "Dashboard";
     var dashboard = ViewBag.Dashboard as LeaveManagementSystem.Models.DashboardModel;
-    var summary = ViewBag.Summary as LeaveManagementSystem.Models.DashboardModel;
     var userRole = Context.Session.GetString("UserRole");
     var userName = Context.Session.GetString("EmployeeName") ?? "User";
 }
@@ -36,15 +35,15 @@
         <div class="card-title">Your Leave Summary</div>
         <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; text-align: center;">
             <div>
-                <div style="font-size: 1.8rem; font-weight: bold; color: #f39c12;">@(summary?.PendingLeaves ?? 0)</div>
+                <div style="font-size: 1.8rem; font-weight: bold; color: #f39c12;">@(dashboard?.PendingLeaves ?? 0)</div>
                 <div style="color: #666;">Pending</div>
             </div>
             <div>
-                <div style="font-size: 1.8rem; font-weight: bold; color: #27ae60;">@(summary?.ApprovedLeaves ?? 0)</div>
+                <div style="font-size: 1.8rem; font-weight: bold; color: #27ae60;">@(dashboard?.ApprovedLeaves ?? 0)</div>
                 <div style="color: #666;">Approved</div>
             </div>
             <div>
-                <div style="font-size: 1.8rem; font-weight: bold; color: #3498db;">@(summary?.TotalDaysTaken ?? 0)</div>
+                <div style="font-size: 1.8rem; font-weight: bold; color: #3498db;">@(dashboard?.TotalDaysTaken ?? 0)</div>
                 <div style="color: #666;">Days Taken</div>
             </div>
         </div>

@@ -53,15 +53,9 @@ namespace LeaveManagementSystem.Controllers
             var role = GetCurrentUserRole();
             var userName = HttpContext.Session.GetString("EmployeeName") ?? "User";
 
-            var dashboard = _leaveRepository.GetDashboardCounts(role, userId);
-            var summary = new DashboardModel();
-            if (role != "Admin")
-            {
-                summary = _leaveRepository.GetLeaveSummary(userId);
-            }
+            DashboardModel dashboard = _leaveRepository.GetDashboardData(role, userId);
 
             ViewBag.Dashboard = dashboard;
-            ViewBag.Summary = summary;
             ViewBag.UserName = userName;
             ViewBag.UserRole = role;
 
@@ -125,20 +119,8 @@ namespace LeaveManagementSystem.Controllers
                         }
                     }
                 }
-
                 var leaves = _leaveRepository.SearchLeaves(employeeNames, status?.ToList(), fromDate,toDate,GetCurrentUserRole(),GetCurrentUserId());
-                
-                if (employeeNames.Any())
-                {
-                    leaves = leaves.Where(x => employeeNames.Contains(x.EmployeeName)).ToList();
-                }
-
                 bool isAllSelected = status != null && status.Any(s => s.Equals("All", StringComparison.OrdinalIgnoreCase));
-                if (!isAllSelected && status != null && status.Length > 0)
-                {
-                    leaves = leaves.Where(x => status.Contains(x.Status)).ToList();
-                }
-
                 return Json(new
                 {
                     success = true,

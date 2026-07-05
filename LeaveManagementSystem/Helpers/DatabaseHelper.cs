@@ -159,5 +159,24 @@ namespace LeaveManagementSystem.Helpers
                 return outputParam.Value != DBNull.Value? Convert.ToInt32(outputParam.Value): 0;
             }
         }
+
+
+        public DataSet ExecuteStoredProcedureDataSet(string spName, Hashtable ht)
+        {
+            DataSet ds = new DataSet();
+            using (SqlConnection con = new SqlConnection(_connectionString))
+            {
+                SqlCommand cmd = new SqlCommand(spName, con);
+                cmd.CommandType = CommandType.StoredProcedure;
+                foreach (DictionaryEntry item in ht)
+                {
+                    cmd.Parameters.AddWithValue(item.Key.ToString(), item.Value);
+                }
+                SqlDataAdapter da = new SqlDataAdapter(cmd);
+                da.Fill(ds);
+            }
+            return ds;
+        }
+
     }
 }

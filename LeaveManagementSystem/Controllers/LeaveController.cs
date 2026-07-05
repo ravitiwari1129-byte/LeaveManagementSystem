@@ -128,7 +128,7 @@ namespace LeaveManagementSystem.Controllers
             }
             try
             {
-                var pendingLeaves = _leaveRepository.SearchLeaves(null,new List<string> { "Pending" },null,null,"Admin",null);
+                var pendingLeaves = _leaveRepository.SearchLeaves(null,new List<string> { "Pending" },null,null, GetCurrentUserRole(),GetCurrentUserId());
                 if (pendingLeaves == null)
                 {
                     pendingLeaves = new List<LeaveRequestModel>();
@@ -237,7 +237,7 @@ namespace LeaveManagementSystem.Controllers
             try
             {
                 var statuses = new List<string> { "Pending" };
-                var pendingLeaves = _leaveRepository.SearchLeaves(null,statuses,null,null,"Admin",null);
+                var pendingLeaves = _leaveRepository.SearchLeaves(null,statuses,null,null, GetCurrentUserRole(),GetCurrentUserId());
                 return View(pendingLeaves ?? new List<LeaveRequestModel>());
             }
             catch (Exception ex)

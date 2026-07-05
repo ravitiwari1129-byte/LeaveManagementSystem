@@ -12,11 +12,9 @@ namespace LeaveManagementSystem.Repositories
     {
 
         private readonly DatabaseHelper _dbHelper;
-        private readonly string _connectionString;
         public LeaveRepository(DatabaseHelper dbHelper, IConfiguration configuration)
         {
             _dbHelper = dbHelper;
-            _connectionString = configuration.GetConnectionString("DefaultConnection");
         }
 
         public (bool Success, string Message) ApplyLeave(LeaveRequestModel leave)
@@ -133,48 +131,6 @@ namespace LeaveManagementSystem.Repositories
         }
 
 
-        public DashboardModel GetDashboardCounts(string role,int employeeId)
-        {
-            Hashtable ht = new Hashtable();
-            ht.Add("Role", role);
-            ht.Add("EmployeeId", employeeId);
-            DataTable dt = _dbHelper.ExecuteStoredProcedure("USP_GetLeaveDashboard",ht);
-            if (dt.Rows.Count > 0)
-            {
-                DataRow row = dt.Rows[0];
-                return new DashboardModel
-                {
-                    PendingCount = row["PendingCount"] != DBNull.Value ? Convert.ToInt32(row["PendingCount"]) : 0,
-                    ApprovedCount = row["ApprovedCount"] != DBNull.Value ? Convert.ToInt32(row["ApprovedCount"]) : 0,
-                    RejectedCount = row["RejectedCount"] != DBNull.Value ? Convert.ToInt32(row["RejectedCount"]) : 0,
-                    MonthlyCount = row["MonthlyCount"] != DBNull.Value ? Convert.ToInt32(row["MonthlyCount"]) : 0
-                };
-            }
-            return new DashboardModel();
-        }
-
-
-        public DashboardModel GetLeaveSummary(int employeeId)
-        {
-            Hashtable ht = new Hashtable();
-            ht.Clear();
-            ht.Add("EmployeeId", employeeId);
-            DataTable dt = _dbHelper.ExecuteStoredProcedure("USP_GetLeaveSummary", ht);
-            if (dt.Rows.Count > 0)
-            {
-                DataRow row = dt.Rows[0];
-                return new DashboardModel
-                {
-                    PendingLeaves = row["PendingLeaves"] != DBNull.Value ? Convert.ToInt32(row["PendingLeaves"]) : 0,
-                    ApprovedLeaves = row["ApprovedLeaves"] != DBNull.Value ? Convert.ToInt32(row["ApprovedLeaves"]) : 0,
-                    RejectedLeaves = row["RejectedLeaves"] != DBNull.Value ? Convert.ToInt32(row["RejectedLeaves"]) : 0,
-                    TotalDaysTaken = row["TotalDaysTaken"] != DBNull.Value ? Convert.ToInt32(row["TotalDaysTaken"]) : 0
-                };
-            }
-            return new DashboardModel();
-        }
-
-
         public List<LeaveTypeModel> GetLeaveTypes()
         {
             List<LeaveTypeModel> leaveTypes = new List<LeaveTypeModel>();
@@ -190,6 +146,33 @@ namespace LeaveManagementSystem.Repositories
                 });
             }
             return leaveTypes;
+        }
+
+
+        public DashboardModel GetDashboardData(string role, int employeeId)
+        {
+            Hashtable ht = new Hashtable();
+            ht.Add("Role", role);
+            ht.Add("EmployeeId", employeeId);
+            DataSet ds = _dbHelper.ExecuteStoredProcedureDataSet("USP_GetDashboardData", ht);
+            DashboardModel model = new DashboardModel();
+            if (ds.Tables.Count > 0 && ds.Tables[0].Rows.Count > 0)
+            {
+                DataRow row1 = ds.Tables[0].Rows[0];
+                model.PendingCount = Convert.ToInt32(row1["PendingCount"]);
+                model.ApprovedCount = Convert.ToInt32(row1["ApprovedCount"]);
+                model.RejectedCount = Convert.ToInt32(row1["RejectedCount"]);
+                model.MonthlyCount = Convert.ToInt32(row1["MonthlyCount"]);
+            }
+            if (ds.Tables.Count > 1 && ds.Tables[1].Rows.Count > 0)
+            {
+                DataRow row2 = ds.Tables[1].Rows[0];
+                model.PendingLeaves = Convert.ToInt32(row2["PendingLeaves"]);
+                model.ApprovedLeaves = Convert.ToInt32(row2["ApprovedLeaves"]);
+                model.RejectedLeaves = Convert.ToInt32(row2["RejectedLeaves"]);
+                model.TotalDaysTaken = Convert.ToInt32(row2["TotalDaysTaken"]);
+            }
+            return model;
         }
 
     }
