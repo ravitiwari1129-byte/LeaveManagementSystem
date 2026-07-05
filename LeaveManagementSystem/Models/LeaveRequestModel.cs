@@ -51,8 +51,11 @@ namespace LeaveManagementSystem.Models
         public int Id { get; set; }
     }
 
-    
+    public class LeaveTypeModel
+    {
+        public int LeaveTypeId { get; set; }
+
+        public string LeaveTypeName { get; set; }
+    }
 }
-
-
 

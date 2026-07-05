@@ -173,9 +173,25 @@ namespace LeaveManagementSystem.Repositories
             }
             return new DashboardModel();
         }
+
+
+        public List<LeaveTypeModel> GetLeaveTypes()
+        {
+            List<LeaveTypeModel> leaveTypes = new List<LeaveTypeModel>();
+            Hashtable ht = new Hashtable();
+            ht.Clear();     
+            DataTable dt = _dbHelper.ExecuteStoredProcedure("USP_GetLeaveTypes", ht);
+            foreach (DataRow row in dt.Rows)
+            {
+                leaveTypes.Add(new LeaveTypeModel
+                {
+                    LeaveTypeId = Convert.ToInt32(row["LeaveTypeId"]),
+                    LeaveTypeName = row["LeaveTypeName"].ToString()
+                });
+            }
+            return leaveTypes;
+        }
+
     }
 }
-
-
-
 

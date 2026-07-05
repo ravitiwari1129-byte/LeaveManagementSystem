@@ -1,7 +1,6 @@
 ﻿@model LeaveManagementSystem.Models.LeaveRequestModel
 @{
     ViewBag.Title = "Apply for Leave";
-    var leaveTypes = new List<string> { "Sick Leave", "Vacation", "Personal Leave", "Maternity Leave", "Paternity Leave", "Bereavement Leave", "Absent" };
 }
 
 <div class="page-header">
@@ -18,9 +17,9 @@
             <label>Leave Type *</label>
             <select asp-for="LeaveType" class="form-control">
                 <option value="">Select Leave Type</option>
-                @foreach (var type in leaveTypes)
+                @foreach (var type in ViewBag.LeaveTypes)
                 {
-                    <option value="@type">@type</option>
+                    <option value="@type.LeaveTypeName">@type.LeaveTypeName</option>
                 }
             </select>
             @Html.ValidationMessageFor(m => m.LeaveType, "", new { @class = "field-validation-error" })
