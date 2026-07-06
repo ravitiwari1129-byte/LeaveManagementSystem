@@ -233,12 +233,12 @@ body {
     box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
     width: 100%;
     max-width: 400px;
-    padding: 2rem;
+    padding: 1.3rem;
     margin: 0;
 }
 
 .signup-container {
-    margin: 50px auto;
+    margin: 0 auto;
     display: flex;
     flex-direction: column;
 }
@@ -250,15 +250,15 @@ body {
 }
 
 .signup-header {
-    margin-bottom: 1.5rem;
+    margin-bottom: 12px;
 }
 
 .signup-header h1 {
-    font-size: 1.6rem;
+    font-size: 24px;
 }
 
 .signup-header p {
-    font-size: 0.9rem;
+    font-size: 14px;
 }
 
 .login-header h1,
@@ -270,14 +270,16 @@ body {
 .login-header p,
 .signup-header p {
     color: #666;
-    margin-top: 0.5rem;
+    margin-top: 2px;
 }
 
 .signup-section,
 .login-link {
     text-align: center;
-    margin-top: 1rem;
+    margin-top: 10px;
     border-top: 1px solid #eee;
+    padding-top: 10px;
+    font-size:abs() 14px;
 }
 
 .signup-section a,
@@ -381,22 +383,23 @@ body {
    FORM STYLES
    ======================================== */
 .form-group {
-    margin-bottom: 1.2rem;
+    margin-bottom: 8px;
 }
 
 .form-group label {
     display: block;
-    margin-bottom: 0.5rem;
+    margin-bottom: 3px;
     font-weight: 500;
     color: #555;
+    font-size: 14px;
 }
 
 .form-control {
     width: 100%;
-    padding: 0.7rem 1rem;
+    padding: 8px 12px;
     border: 1px solid #ddd;
     border-radius: 5px;
-    font-size: 1rem;
+    font-size: 14px;
     transition: border-color 0.3s ease;
 }
 
@@ -484,10 +487,10 @@ textarea.form-control {
     width: 100%;
     background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
     color: white;
-    padding: 0.8rem;
+    padding: 10px;
     border: none;
     border-radius: 5px;
-    font-size: 1rem;
+    font-size: 15px;
     cursor: pointer;
     transition: opacity 0.3s ease;
 }
@@ -930,5 +933,12 @@ body.signup-page {
 }
 
 body.signup-page .signup-container {
-    margin: 50px auto;
+    margin: 0 auto;
+}
+
+.signup-container {
+    max-width: 440px;
+    padding: 18px;
+    transform: scale(0.92);
+    transform-origin: top center;
 }
