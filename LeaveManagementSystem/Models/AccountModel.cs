@@ -53,13 +53,14 @@ namespace LeaveManagementSystem.Models
         [Display(Name = "Confirm Password")]
         public string ConfirmPassword { get; set; }
         
-        [Required]
+        [Required(ErrorMessage = "Date of Birth is required")]
         [DataType(DataType.Date)]
         public DateTime DateOfBirth { get; set; }
 
-        [Required]
+        [Required(ErrorMessage = "Gender is required")]
         public string Gender { get; set; }
 
+        [Required(ErrorMessage = "Profile Image is required")]
         [Display(Name = "Profile Image")]
         public IFormFile ProfileImage { get; set; }
 

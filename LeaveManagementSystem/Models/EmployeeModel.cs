@@ -44,18 +44,16 @@ namespace LeaveManagementSystem.Models
         {
             get
             {
-                var age = DateTime.Today.Year - DateOfBirth.Year;
-
-                if (DateOfBirth.Date > DateTime.Today.AddYears(-age))
+                int age = DateTime.Today.Year - DateOfBirth.Year;
+                if (DateOfBirth > DateTime.Today.AddYears(-age))
+                {
                     age--;
-
+                }
                 return age;
             }
         }
 
     }
-
-
 
     public class DashboardModel
     {
@@ -68,5 +66,6 @@ namespace LeaveManagementSystem.Models
         public int ApprovedLeaves { get; set; }
         public int RejectedLeaves { get; set; }
     }
+
 }
 

@@ -130,6 +130,13 @@ namespace LeaveManagementSystem.Controllers
                     Gender = model.Gender,
                     ProfileImage = imageName
                 };
+
+                if (model.DateOfBirth >= DateTime.Today)
+                {
+                    ModelState.AddModelError("DateOfBirth", "Date of Birth must be before today.");
+                    return View(model);
+                }
+
                 int employeeId = _employeeRepository.InsertEmployee(employee);
                 if (employeeId > 0)
                 {
