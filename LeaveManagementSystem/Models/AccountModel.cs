@@ -1,6 +1,6 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
-
+using Microsoft.AspNetCore.Http;
 
 namespace LeaveManagementSystem.Models
 {
@@ -52,6 +52,16 @@ namespace LeaveManagementSystem.Models
         [DataType(DataType.Password)]
         [Display(Name = "Confirm Password")]
         public string ConfirmPassword { get; set; }
+        
+        [Required]
+        [DataType(DataType.Date)]
+        public DateTime DateOfBirth { get; set; }
+
+        [Required]
+        public string Gender { get; set; }
+
+        [Display(Name = "Profile Image")]
+        public IFormFile ProfileImage { get; set; }
 
     }
 
@@ -65,7 +75,4 @@ namespace LeaveManagementSystem.Models
     }
 
 }
-
-
-
 

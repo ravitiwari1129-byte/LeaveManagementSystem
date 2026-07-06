@@ -33,6 +33,26 @@ namespace LeaveManagementSystem.Models
         [DataType(DataType.Password)]
         [RegularExpression(@"^(?=.*[A-Z])(?=.*[0-9])(?=.*[@$!%*?&])[A-Za-z0-9@$!%*?&]{5,20}$", ErrorMessage = "Password must contain uppercase letter, number and special character")]
         public string Password { get; set; }
+
+        public DateTime DateOfBirth { get; set; }
+
+        public string Gender { get; set; }
+
+        public string ProfileImage { get; set; }
+
+        public int Age
+        {
+            get
+            {
+                var age = DateTime.Today.Year - DateOfBirth.Year;
+
+                if (DateOfBirth.Date > DateTime.Today.AddYears(-age))
+                    age--;
+
+                return age;
+            }
+        }
+
     }
 
 

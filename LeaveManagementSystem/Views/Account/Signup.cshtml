@@ -32,7 +32,7 @@
             <p>Sign up to get started</p>
         </div>
 
-        <form method="post" action="/Account/Signup" autocomplete="off">
+        <form method="post" action="/Account/Signup" enctype="multipart/form-data" autocomplete="off">
             @Html.AntiForgeryToken()
             @Html.ValidationSummary(true, "", new { @class = "validation-summary" })
 
@@ -64,6 +64,22 @@
                     <span class="toggle-password" data-target="ConfirmPassword"><i class="fa-regular fa-eye"></i></span>
                 </div>
                 @Html.ValidationMessageFor(m => m.ConfirmPassword, "", new { @class = "field-validation-error" })
+            </div>
+
+            <div class="form-group">
+                <label>Date of Birth</label>
+                @Html.TextBoxFor(m => m.DateOfBirth,"{0:yyyy-MM-dd}", new { @class = "form-control", type = "date" })
+                @Html.ValidationMessageFor(m => m.DateOfBirth)
+            </div>
+
+            <div class="form-group">
+                <label>Gender</label>
+                @Html.DropDownListFor(m => m.Gender, new SelectList(new[] { "Male", "Female", "Other" }), "Select Gender", new { @class = "form-control" })
+            </div>
+
+            <div class="form-group">
+                <label>Profile Image</label>
+                <input type="file" name="ProfileImage" class="form-control" accept=".jpg,.jpeg,.png" />
             </div>
 
             <button type="submit" class="btn-signup">Sign Up</button>

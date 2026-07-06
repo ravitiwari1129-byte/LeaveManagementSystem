@@ -96,13 +96,39 @@ namespace LeaveManagementSystem.Controllers
             }
             try
             {
+                if (model.ProfileImage != null)
+                {
+                    var extension = Path.GetExtension(model.ProfileImage.FileName).ToLower();
+
+                    if (extension != ".jpg" && extension != ".jpeg" && extension != ".png")
+                    {
+                        ModelState.AddModelError("ProfileImage", "Only JPG, JPEG and PNG files are allowed.");
+                        return View(model);
+                    }
+                }
+                string imageName = null;
+                if (model.ProfileImage != null)
+                {
+                    imageName = Guid.NewGuid() + Path.GetExtension(model.ProfileImage.FileName);
+                    string folder = Path.Combine(Directory.GetCurrentDirectory(),"wwwroot/uploads/profile");
+                    if (!Directory.Exists(folder))
+                        Directory.CreateDirectory(folder);
+                    string path = Path.Combine(folder, imageName);
+                    using (var stream = new FileStream(path, FileMode.Create))
+                    {
+                        model.ProfileImage.CopyTo(stream);
+                    }
+                }
                 EmployeeModel employee = new EmployeeModel
                 {
                     EmployeeName = model.FullName,
                     Email = model.Email,
                     DepartmentId = 1,
                     Role = "Employee",
-                    Password = model.Password
+                    Password = model.Password,
+                    DateOfBirth = model.DateOfBirth,
+                    Gender = model.Gender,
+                    ProfileImage = imageName
                 };
                 int employeeId = _employeeRepository.InsertEmployee(employee);
                 if (employeeId > 0)

@@ -36,7 +36,10 @@ namespace LeaveManagementSystem.Repositories
                     DepartmentId = row["DepartmentId"] != DBNull.Value ? Convert.ToInt32(row["DepartmentId"]) : 0,
                     DepartmentName = row["DepartmentName"] == DBNull.Value ? string.Empty : row["DepartmentName"].ToString(),
                     Role = row["Role"] == DBNull.Value ? string.Empty : row["Role"].ToString(),
-                    IsActive = row["IsActive"] != DBNull.Value && Convert.ToBoolean(row["IsActive"])
+                    IsActive = row["IsActive"] != DBNull.Value && Convert.ToBoolean(row["IsActive"]),
+                    DateOfBirth = row["DateOfBirth"] != DBNull.Value ? Convert.ToDateTime(row["DateOfBirth"]) : DateTime.MinValue,
+                    Gender = row["Gender"] == DBNull.Value ? "" : row["Gender"].ToString(),
+                    ProfileImage = row["ProfileImage"] == DBNull.Value ? "" : row["ProfileImage"].ToString(),
                 });
             }
             return employees;
@@ -60,7 +63,10 @@ namespace LeaveManagementSystem.Repositories
                     DepartmentId = row["DepartmentId"] != DBNull.Value ? Convert.ToInt32(row["DepartmentId"]) : 0,
                     DepartmentName = row["DepartmentName"] == DBNull.Value ? string.Empty : row["DepartmentName"].ToString(),
                     Role = row["Role"] == DBNull.Value ? string.Empty : row["Role"].ToString(),
-                    IsActive = row["IsActive"] != DBNull.Value && Convert.ToBoolean(row["IsActive"])
+                    IsActive = row["IsActive"] != DBNull.Value && Convert.ToBoolean(row["IsActive"]),
+                    DateOfBirth = row["DateOfBirth"] != DBNull.Value ? Convert.ToDateTime(row["DateOfBirth"]) : DateTime.MinValue,
+                    Gender = row["Gender"] == DBNull.Value ? "" : row["Gender"].ToString(),
+                    ProfileImage = row["ProfileImage"] == DBNull.Value ? "" : row["ProfileImage"].ToString(),
                 };
             }
             return null;
@@ -85,6 +91,9 @@ namespace LeaveManagementSystem.Repositories
             ht.Add("DepartmentId", employee.DepartmentId);
             ht.Add("Role", employee.Role);
             ht.Add("Password", employee.Password);
+            ht.Add("DateOfBirth", employee.DateOfBirth);
+            ht.Add("Gender", employee.Gender);
+            ht.Add("ProfileImage", employee.ProfileImage);
             return _dbHelper.ExecuteWithOutputParameter("USP_InsertEmployee",ht,"@EmployeeId");
         }
 
