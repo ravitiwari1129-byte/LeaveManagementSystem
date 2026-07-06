@@ -922,3 +922,13 @@ textarea.form-control {
     color: #666;
     z-index: 2;
 }
+
+
+body.signup-page {
+    overflow-y: auto;
+    overflow-x: hidden;
+}
+
+body.signup-page .signup-container {
+    margin: 50px auto;
+}
