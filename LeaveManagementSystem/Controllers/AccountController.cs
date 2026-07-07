@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Data;
 using LeaveManagementSystem.Helpers;
 using LeaveManagementSystem.Models;
 using LeaveManagementSystem.Repositories;
@@ -79,10 +80,16 @@ namespace LeaveManagementSystem.Controllers
         [HttpGet]
         public IActionResult Signup()
         {
-            if (IsLoggedIn())
+            if (!IsLoggedIn())
             {
-                return RedirectToAction("Dashboard", "Report");
+                return RedirectToAction("Login");
             }
+
+            if (HttpContext.Session.GetString("UserRole") != "Admin")
+            {
+                return RedirectToAction("AccessDenied");
+            }
+
             SignupModel model = new SignupModel();
 
             model.DepartmentList = _employeeRepository.GetDepartments()
@@ -94,17 +101,8 @@ namespace LeaveManagementSystem.Controllers
 
             model.RoleList = new List<SelectListItem>()
             {
-                new SelectListItem
-                {
-                    Text="Employee",
-                    Value="Employee"
-                },
-            
-                new SelectListItem
-                {
-                    Text="Manager",
-                    Value="Manager"
-                }
+                new SelectListItem { Text="Employee", Value="Employee" },
+                new SelectListItem { Text="Manager", Value="Manager" }
             };
             return View(model);
         }
@@ -114,6 +112,16 @@ namespace LeaveManagementSystem.Controllers
         [ValidateAntiForgeryToken]
         public IActionResult Signup(SignupModel model)
         {
+            if (!IsLoggedIn())
+            {
+                return RedirectToAction("Login");
+            }
+
+            if (HttpContext.Session.GetString("UserRole") != "Admin")
+            {
+                return RedirectToAction("AccessDenied");
+            }
+
             model.DepartmentList = _employeeRepository.GetDepartments()
                 .Select(x => new SelectListItem
                 {

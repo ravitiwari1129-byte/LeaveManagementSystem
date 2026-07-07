@@ -255,6 +255,7 @@ body {
 
 .signup-header h1 {
     font-size: 24px;
+    margin-bottom: 15px;
 }
 
 .signup-header p {
@@ -383,7 +384,7 @@ body {
    FORM STYLES
    ======================================== */
 .form-group {
-    margin-bottom: 8px;
+    margin-bottom: 15px;
 }
 
 .form-group label {
@@ -937,7 +938,7 @@ body.signup-page .signup-container {
 }
 
 .signup-container {
-    max-width: 440px;
+    max-width: 480px;
     padding: 18px;
     transform: scale(0.92);
     transform-origin: top center;

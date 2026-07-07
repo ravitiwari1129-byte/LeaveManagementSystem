@@ -34,20 +34,34 @@ namespace LeaveManagementSystem.Models
         [RegularExpression(@"^(?=.*[A-Z])(?=.*[0-9])(?=.*[@$!%*?&])[A-Za-z0-9@$!%*?&]{5,20}$", ErrorMessage = "Password must contain uppercase letter, number and special character")]
         public string Password { get; set; }
 
+        [Required(ErrorMessage = "Date of Birth is required")]
+        [DataType(DataType.Date)]
         public DateTime DateOfBirth { get; set; }
 
+        [Required(ErrorMessage = "Gender is required")]
         public string Gender { get; set; }
 
+        [Required(ErrorMessage = "Mobile Number is required")]
+        [RegularExpression(@"^[6-9]\d{9}$", ErrorMessage = "Enter valid 10 digit Mobile Number")]
         public string MobileNo { get; set; }
 
+        [Required(ErrorMessage = "Salary is required")]
+        [Range(1000, 1000000, ErrorMessage = "Salary must be between 1000 and 1000000")]
         public decimal Salary { get; set; }
 
+        [Required(ErrorMessage = "Joining Date is required")]
+        [DataType(DataType.Date)]
         public DateTime JoiningDate { get; set; }
 
+        [Required(ErrorMessage = "Address is required")]
+        [StringLength(300, MinimumLength = 10, ErrorMessage = "Address must be between 10 and 300 characters")]
         public string Address { get; set; }
 
+        [Required(ErrorMessage = "Select at least one Skill")]
         public string Skills { get; set; }
 
+        [Required(ErrorMessage = "Profile Image is required")]
+        [Display(Name = "Profile Image")]
         public string ProfileImage { get; set; }
 
         public int Age

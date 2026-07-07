@@ -91,10 +91,6 @@ namespace LeaveManagementSystem.Models
         [StringLength(300, MinimumLength = 10, ErrorMessage = "Address must be between 10 and 300 characters")]
         public string Address { get; set; }
 
-        public decimal Number1 { get; set; }
-
-        public decimal Number2 { get; set; }
-
         [Required(ErrorMessage = "Profile Image is required")]
         [Display(Name = "Profile Image")]
         public IFormFile ProfileImage { get; set; }
