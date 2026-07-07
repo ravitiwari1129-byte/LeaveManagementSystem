@@ -38,6 +38,16 @@ namespace LeaveManagementSystem.Models
 
         public string Gender { get; set; }
 
+        public string MobileNo { get; set; }
+
+        public decimal Salary { get; set; }
+
+        public DateTime JoiningDate { get; set; }
+
+        public string Address { get; set; }
+
+        public string Skills { get; set; }
+
         public string ProfileImage { get; set; }
 
         public int Age

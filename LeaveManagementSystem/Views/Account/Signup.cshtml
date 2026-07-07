@@ -12,7 +12,7 @@
     <link rel="stylesheet" href="~/css/site.css" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 </head>
-<body class="signup-page" style="background: linear-gradient(135deg, #B5BAFF, #9FA1FF, #8A90FF); display: flex; justify-content: center; align-items:center; padding:5px; overflow:hidden;">
+<body class="signup-page">
     <div class="signup-container">
         @if (TempData["Message"] != null)
         {
@@ -33,6 +33,7 @@
         </div>
 
         <form method="post" action="/Account/Signup" enctype="multipart/form-data" autocomplete="off">
+            @Html.HiddenFor(m => m.UserId)
             @Html.AntiForgeryToken()
             @Html.ValidationSummary(true, "", new { @class = "validation-summary" })
 
@@ -40,6 +41,12 @@
                 <label>Full Name</label>
                 @Html.TextBoxFor(m => m.FullName, new { @class = "form-control", placeholder = "Enter your full name" })
                 @Html.ValidationMessageFor(m => m.FullName, "", new { @class = "field-validation-error" })
+            </div>
+
+            <div class="form-group">
+                <label>Mobile Number</label>
+                @Html.TextBoxFor(m => m.MobileNo, new { @class = "form-control", type = "text", maxlength = "10", placeholder = "Enter Mobile Number" })
+                @Html.ValidationMessageFor(m => m.MobileNo, "", new { @class = "field-validation-error" })
             </div>
 
             <div class="form-group">
@@ -68,23 +75,87 @@
 
             <div class="form-group">
                 <label>Date of Birth</label>
-                @Html.TextBoxFor(m => m.DateOfBirth,"{0:yyyy-MM-dd}", new { @class = "form-control", type = "date" })
+                @Html.TextBoxFor(m => m.DateOfBirth, "{0:yyyy-MM-dd}", new { @class = "form-control", type = "date", id = "DateOfBirth" })
                 @Html.ValidationMessageFor(m => m.DateOfBirth, "", new { @class = "field-validation-error" })
             </div>
 
             <div class="form-group">
+                <label>Age</label>
+                <input type="text" id="Age" class="form-control" readonly placeholder="Age will be calculated automatically" />
+            </div>
+
+            <div class="form-group">
+                <label>Salary</label>
+                @Html.TextBoxFor(m => m.Salary, new { @class = "form-control", step = "0.01", type = "number" })
+                @Html.ValidationMessageFor(m => m.Salary)
+            </div>
+
+            <div class="form-group">
+                <label>Joining Date</label>
+                @Html.TextBoxFor(m => m.JoiningDate, "{0:yyyy-MM-dd}", new { @class = "form-control", type = "date" })
+                @Html.ValidationMessageFor(m => m.JoiningDate)
+            </div>
+
+            <div class="form-group">
                 <label>Gender</label>
-                @Html.DropDownListFor(m => m.Gender, new SelectList(new[] { "Male", "Female", "Other" }), "Select Gender", new { @class = "form-control" })
-                @Html.ValidationMessageFor(m => m.Gender, "", new { @class = "field-validation-error" })
+                <div>
+                    <label style="margin-left:20px;">
+                        @Html.RadioButtonFor(m => m.Gender, "Male") Male
+                    </label>
+                    <label style="margin-left:20px;">
+                        @Html.RadioButtonFor(m => m.Gender, "Female") Female
+                    </label>
+                    <label style="margin-left:20px;">
+                        @Html.RadioButtonFor(m => m.Gender, "Other") Other
+                    </label>
+                </div>
+                @Html.ValidationMessageFor(m => m.Gender)
+            </div>
+
+            <div class="form-group">
+                <label>Department</label>
+                @Html.DropDownListFor(m => m.DepartmentId, Model.DepartmentList, "Select Department", new { @class = "form-control" })
+                @Html.ValidationMessageFor(m => m.DepartmentId, "", new { @class = "field-validation-error" })
+            </div>
+
+            <div class="form-group">
+                <label>Role</label>
+                @Html.DropDownListFor(m => m.Role, Model.RoleList, "Select Role", new { @class = "form-control" })
+            </div>
+
+            <div class="form-group">
+                <label>Skills</label>
+                <div>
+                    <label style="margin-left:20px;">
+                        <input type="checkbox" name="Skills" value="C#" @(Model.Skills.Contains("C#") ? "checked" : "") /> C#
+                    </label>
+                    <label style="margin-left:20px;">
+                        <input type="checkbox" name="Skills" value="SQL" @(Model.Skills.Contains("SQL") ? "checked" : "") /> SQL
+                    </label>
+                    <label style="margin-left:20px;">
+                        <input type="checkbox" name="Skills" value="MVC" @(Model.Skills.Contains("MVC") ? "checked" : "") /> MVC
+                    </label>
+                    <label style="margin-left:20px;">
+                        <input type="checkbox" name="Skills" value="JavaScript" @(Model.Skills.Contains("JavaScript") ? "checked" : "") /> JavaScript
+                    </label>
+                </div>
+                @Html.ValidationMessageFor(m => m.Skills,"", new { @class = "field-validation-error" })
+            </div>
+
+            <div class="form-group">
+                <label>Address</label>
+                @Html.TextAreaFor(m => m.Address, 5, 30, new { @class = "form-control", placeholder = "Enter Address" })
+                @Html.ValidationMessageFor(m => m.Address)
             </div>
 
             <div class="form-group">
                 <label>Profile Image</label>
                 @Html.ValidationMessageFor(m => m.ProfileImage, "", new { @class = "field-validation-error" })
-                <input type="file" name="ProfileImage" class="form-control" accept=".jpg,.jpeg,.png" />
+                @Html.TextBoxFor(m => m.ProfileImage,new{ type = "file", @class = "form-control", accept = ".jpg,.jpeg,.png"})
             </div>
 
             <button type="submit" class="btn-signup">Sign Up</button>
+            <input type="reset" value="Reset" class="btn-signup" style="background:red;margin-top:10px;" />
         </form>
 
         <div class="login-link">

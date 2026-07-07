@@ -105,3 +105,26 @@ document.addEventListener("click", function (e) {
         icon.classList.add("fa-eye");
     }
 });
+
+
+document.getElementById("DateOfBirth").addEventListener("change", function () {
+
+    if (this.value === "") {
+        document.getElementById("Age").value = "";
+        return;
+    }
+
+    var dob = new Date(this.value);
+    var today = new Date();
+
+    var age = today.getFullYear() - dob.getFullYear();
+
+    var monthDifference = today.getMonth() - dob.getMonth();
+
+    if (monthDifference < 0 ||
+        (monthDifference === 0 && today.getDate() < dob.getDate())) {
+        age--;
+    }
+
+    document.getElementById("Age").value = age ;
+});

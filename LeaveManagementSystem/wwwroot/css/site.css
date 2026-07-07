@@ -942,3 +942,13 @@ body.signup-page .signup-container {
     transform: scale(0.92);
     transform-origin: top center;
 }
+
+.signup-page {
+    background: linear-gradient(135deg, #B5BAFF, #9FA1FF, #8A90FF);
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    min-height: 100vh;
+    padding: 20px;
+    overflow-y: auto;
+}

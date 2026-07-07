@@ -4,6 +4,7 @@ using LeaveManagementSystem.Models;
 using LeaveManagementSystem.Repositories;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.Data.SqlClient;
 using Microsoft.Extensions.Configuration;
 
@@ -82,7 +83,30 @@ namespace LeaveManagementSystem.Controllers
             {
                 return RedirectToAction("Dashboard", "Report");
             }
-            return View(new SignupModel());
+            SignupModel model = new SignupModel();
+
+            model.DepartmentList = _employeeRepository.GetDepartments()
+                .Select(x => new SelectListItem
+                {
+                    Value = x.DepartmentId.ToString(),
+                    Text = x.DepartmentName
+                }).ToList();
+
+            model.RoleList = new List<SelectListItem>()
+            {
+                new SelectListItem
+                {
+                    Text="Employee",
+                    Value="Employee"
+                },
+            
+                new SelectListItem
+                {
+                    Text="Manager",
+                    Value="Manager"
+                }
+            };
+            return View(model);
         }
 
 
@@ -90,6 +114,19 @@ namespace LeaveManagementSystem.Controllers
         [ValidateAntiForgeryToken]
         public IActionResult Signup(SignupModel model)
         {
+            model.DepartmentList = _employeeRepository.GetDepartments()
+                .Select(x => new SelectListItem
+                {
+                    Value = x.DepartmentId.ToString(),
+                    Text = x.DepartmentName
+                }).ToList();
+
+            model.RoleList = new List<SelectListItem>()
+            {
+                new SelectListItem { Text="Employee", Value="Employee" },
+                new SelectListItem { Text="Manager", Value="Manager" }
+            };
+
             if (!ModelState.IsValid)
             {
                 return View(model);
@@ -106,6 +143,57 @@ namespace LeaveManagementSystem.Controllers
                         return View(model);
                     }
                 }
+
+                if (model.ProfileImage != null)
+                {
+                    if (model.ProfileImage.Length > 2 * 1024 * 1024)
+                    {
+                        ModelState.AddModelError("ProfileImage", "Image size should be less than 2 MB.");
+                        return View(model);
+                    }
+                }
+
+                if (model.DateOfBirth >= DateTime.Today)
+                {
+                    ModelState.AddModelError("DateOfBirth", "Date of Birth must be before today.");
+                    return View(model);
+                }
+
+                if (model.JoiningDate < DateTime.Today)
+                {
+                    ModelState.AddModelError("JoiningDate", "Joining Date cannot be past date.");
+                    return View(model);
+                }
+
+                if (model.DepartmentId <= 0)
+                {
+                    ModelState.AddModelError("DepartmentId", "Please select Department.");
+                    return View(model);
+                }
+
+                if (string.IsNullOrEmpty(model.Role))
+                {
+                    ModelState.AddModelError("Role", "Please select Role.");
+                    return View(model);
+                }
+
+                if (model.Salary < 0)
+                {
+                    ModelState.AddModelError("Salary", "Salary cannot be negative.");
+                    return View(model);
+                }
+
+                int age = DateTime.Today.Year - model.DateOfBirth.Year;
+                if (model.DateOfBirth > DateTime.Today.AddYears(-age))
+                {
+                    age--;
+                }
+                if (age < 18)
+                {
+                    ModelState.AddModelError("DateOfBirth", "Employee must be at least 18 years old.");
+                    return View(model);
+                }
+
                 string imageName = null;
                 if (model.ProfileImage != null)
                 {
@@ -119,23 +207,23 @@ namespace LeaveManagementSystem.Controllers
                         model.ProfileImage.CopyTo(stream);
                     }
                 }
+
                 EmployeeModel employee = new EmployeeModel
                 {
                     EmployeeName = model.FullName,
                     Email = model.Email,
-                    DepartmentId = 1,
-                    Role = "Employee",
                     Password = model.Password,
+                    DepartmentId = model.DepartmentId,
+                    Role = model.Role,
                     DateOfBirth = model.DateOfBirth,
                     Gender = model.Gender,
-                    ProfileImage = imageName
+                    ProfileImage = imageName,
+                    MobileNo = model.MobileNo,
+                    Salary = model.Salary,
+                    JoiningDate = model.JoiningDate,
+                    Address = model.Address,
+                    Skills = model.Skills != null ? string.Join(",", model.Skills) : ""
                 };
-
-                if (model.DateOfBirth >= DateTime.Today)
-                {
-                    ModelState.AddModelError("DateOfBirth", "Date of Birth must be before today.");
-                    return View(model);
-                }
 
                 int employeeId = _employeeRepository.InsertEmployee(employee);
                 if (employeeId > 0)
@@ -161,7 +249,7 @@ namespace LeaveManagementSystem.Controllers
                         ModelState.AddModelError("Email", "Invalid email format.");
                         break;
                     case -6:
-                        ModelState.AddModelError("Password", "Password must be at least 4 characters.");
+                        ModelState.AddModelError("Password", "Password must be at least 5 characters.");
                         break;
                     default:
                         ModelState.AddModelError("", "Failed to create account.");

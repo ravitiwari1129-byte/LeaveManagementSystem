@@ -16,12 +16,12 @@ namespace LeaveManagementSystem.Repositories
         }
 
 
-        public List<EmployeeModel> GetAllEmployees(string departmentId ,string Role,string userName)
+        public List<EmployeeModel> GetAllEmployees(int? departmentId ,string Role,string userName)
         {
             var employees = new List<EmployeeModel>();
             Hashtable ht = new Hashtable();
             ht.Clear();
-            ht.Add("DepartmentId", (object)departmentId ?? DBNull.Value);
+            ht.Add("DepartmentId", (object)departmentId ?? (object)DBNull.Value);
             ht.Add("Role",Role);
             ht.Add("UserName", userName);
 
@@ -40,6 +40,11 @@ namespace LeaveManagementSystem.Repositories
                     DateOfBirth = row["DateOfBirth"] != DBNull.Value ? Convert.ToDateTime(row["DateOfBirth"]) : DateTime.MinValue,
                     Gender = row["Gender"] == DBNull.Value ? "" : row["Gender"].ToString(),
                     ProfileImage = row["ProfileImage"] == DBNull.Value ? "" : row["ProfileImage"].ToString(),
+                    MobileNo = row["MobileNo"] == DBNull.Value ? "" : row["MobileNo"].ToString(),
+                    Salary = row["Salary"] != DBNull.Value ? Convert.ToDecimal(row["Salary"]) : 0,
+                    JoiningDate = row["JoiningDate"] != DBNull.Value ? Convert.ToDateTime(row["JoiningDate"]) : DateTime.MinValue,
+                    Address = row["Address"] == DBNull.Value ? "" : row["Address"].ToString(),
+                    Skills = row["Skills"] == DBNull.Value ? "" : row["Skills"].ToString(),
                 });
             }
             return employees;
@@ -67,6 +72,11 @@ namespace LeaveManagementSystem.Repositories
                     DateOfBirth = row["DateOfBirth"] != DBNull.Value ? Convert.ToDateTime(row["DateOfBirth"]) : DateTime.MinValue,
                     Gender = row["Gender"] == DBNull.Value ? "" : row["Gender"].ToString(),
                     ProfileImage = row["ProfileImage"] == DBNull.Value ? "" : row["ProfileImage"].ToString(),
+                    MobileNo = row["MobileNo"].ToString(),
+                    Salary = Convert.ToDecimal(row["Salary"]),
+                    JoiningDate = Convert.ToDateTime(row["JoiningDate"]),
+                    Address = row["Address"].ToString(),
+                    Skills = row["Skills"].ToString(),
                 };
             }
             return null;
@@ -94,6 +104,11 @@ namespace LeaveManagementSystem.Repositories
             ht.Add("DateOfBirth", employee.DateOfBirth);
             ht.Add("Gender", employee.Gender);
             ht.Add("ProfileImage", employee.ProfileImage);
+            ht.Add("MobileNo", employee.MobileNo);
+            ht.Add("Salary", employee.Salary);
+            ht.Add("JoiningDate", employee.JoiningDate);
+            ht.Add("Address", employee.Address);
+            ht.Add("Skills", employee.Skills);
             return _dbHelper.ExecuteWithOutputParameter("USP_InsertEmployee",ht,"@EmployeeId");
         }
 
@@ -106,6 +121,14 @@ namespace LeaveManagementSystem.Repositories
             ht.Add("Email", employee.Email);
             ht.Add("DepartmentId", employee.DepartmentId);
             ht.Add("Role", employee.Role);
+            ht.Add("DateOfBirth", employee.DateOfBirth);
+            ht.Add("Gender", employee.Gender);
+            ht.Add("ProfileImage", employee.ProfileImage);
+            ht.Add("MobileNo", employee.MobileNo);
+            ht.Add("Salary", employee.Salary);
+            ht.Add("JoiningDate", employee.JoiningDate);
+            ht.Add("Address", employee.Address);
+            ht.Add("Skills", employee.Skills);
             _dbHelper.ExecuteNonQuery("USP_UpdateEmployee", ht);
             return true;
         }
