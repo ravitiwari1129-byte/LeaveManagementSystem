@@ -210,7 +210,7 @@ namespace LeaveManagementSystem.Controllers
                 if (model.ProfileImage != null)
                 {
                     imageName = Guid.NewGuid() + Path.GetExtension(model.ProfileImage.FileName);
-                    string folder = Path.Combine(Directory.GetCurrentDirectory(),"wwwroot/uploads/profile");
+                    string folder = Path.Combine(Directory.GetCurrentDirectory(),"wwwroot/uploads");
                     if (!Directory.Exists(folder))
                         Directory.CreateDirectory(folder);
                     string path = Path.Combine(folder, imageName);

@@ -6,6 +6,19 @@ let gridApi;
 
 const columnDefs = [
     {
+        field: "ProfileImage",
+        headerName: " Profile Image",
+        minWidth: 120,
+        sortable: false,
+        filter: false,
+        cellRenderer: function (params) {
+            if (!params.data.ProfileImage || params.data.ProfileImage.trim() === "") {
+                return `<span style="color:#999;">No Image</span>`;
+            }
+            return ` <img src="/uploads/${params.data.ProfileImage}" width="45" height="45" style="border-radius:50%;object-fit:cover;" /> `;
+        }
+    },
+    {
         field: "EmployeeName",
         headerName: "Employee Name",
         sortable: true,
