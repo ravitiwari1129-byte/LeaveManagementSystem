@@ -89,13 +89,13 @@
             <div class="form-group">
                 <label>Salary</label>
                 @Html.TextBoxFor(m => m.Salary, new { @class = "form-control", step = "0.01", type = "number" })
-                @Html.ValidationMessageFor(m => m.Salary)
+                @Html.ValidationMessageFor(m => m.Salary, "", new { @class = "field-validation-error" })
             </div>
 
             <div class="form-group">
                 <label>Joining Date</label>
                 @Html.TextBoxFor(m => m.JoiningDate, "{0:yyyy-MM-dd}", new { @class = "form-control", type = "date" })
-                @Html.ValidationMessageFor(m => m.JoiningDate)
+                @Html.ValidationMessageFor(m => m.JoiningDate, "", new { @class = "field-validation-error" })
             </div>
 
             <div class="form-group">
@@ -111,7 +111,7 @@
                         @Html.RadioButtonFor(m => m.Gender, "Other") Other
                     </label>
                 </div>
-                @Html.ValidationMessageFor(m => m.Gender)
+                @Html.ValidationMessageFor(m => m.Gender, "", new { @class = "field-validation-error" })
             </div>
 
             <div class="form-group">
@@ -123,6 +123,7 @@
             <div class="form-group">
                 <label>Role</label>
                 @Html.DropDownListFor(m => m.Role, Model.RoleList, "Select Role", new { @class = "form-control" })
+                @Html.ValidationMessageFor(m => m.Role, "", new { @class = "field-validation-error" })
             </div>
 
             <div class="form-group">
@@ -147,7 +148,7 @@
             <div class="form-group">
                 <label>Address</label>
                 @Html.TextAreaFor(m => m.Address, 5, 30, new { @class = "form-control", placeholder = "Enter Address" })
-                @Html.ValidationMessageFor(m => m.Address)
+                @Html.ValidationMessageFor(m => m.Address, "", new { @class = "field-validation-error" })
             </div>
 
             <div class="form-group">
@@ -158,7 +159,7 @@
 
             <div class="form-group">
                 <button type="submit" class="btn btn-primary">Sign Up</button>
-                <input type="reset" value="Reset" class="btn btn-danger"/>
+                <button type="reset" id="btnReset" class="btn btn-danger">Reset</button>
             </div>
 
         </form>

@@ -91,3 +91,21 @@ if (dobElement) {
         document.getElementById("Age").value = age;
     });
 }
+
+$("#btnReset").on("click", function () {
+
+    var validator = $("form").validate();
+    validator.resetForm();
+
+    $("form")
+        .find(".input-validation-error")
+        .removeClass("input-validation-error");
+
+    $("form")
+        .find(".field-validation-error")
+        .removeClass("field-validation-error")
+        .addClass("field-validation-valid")
+        .empty();
+
+    $("#Age").val("");
+});
