@@ -596,14 +596,19 @@ textarea.form-control {
 }
 
 .field-validation-error {
-    color: #e74c3c;
-    font-size: 0.8rem;
-    margin-top: 0.3rem;
+    color: #dc3545;
+    font-size: 13px;
+    margin-top: 4px;
     display: block;
 }
 
 .input-validation-error {
-    border-color: #e74c3c;
+    border: 1px solid #dc3545 !important;
+    background: #fff;
+}
+
+.validation-summary-errors {
+    color: #dc3545;
 }
 
 /* ========================================
@@ -925,31 +930,4 @@ textarea.form-control {
     cursor: pointer;
     color: #666;
     z-index: 2;
-}
-
-
-body.signup-page {
-    overflow-y: auto;
-    overflow-x: hidden;
-}
-
-body.signup-page .signup-container {
-    margin: 0 auto;
-}
-
-.signup-container {
-    max-width: 480px;
-    padding: 18px;
-    transform: scale(0.92);
-    transform-origin: top center;
-}
-
-.signup-page {
-    background: linear-gradient(135deg, #B5BAFF, #9FA1FF, #8A90FF);
-    display: flex;
-    justify-content: center;
-    align-items: flex-start;
-    min-height: 100vh;
-    padding: 20px;
-    overflow-y: auto;
 }

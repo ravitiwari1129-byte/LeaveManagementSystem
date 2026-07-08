@@ -12,8 +12,8 @@
     <link rel="stylesheet" href="~/css/site.css" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 </head>
-<body class="signup-page">
-    <div class="signup-container">
+<body style="background:#f0f2f5;">
+    <div style="max-width:900px;margin:40px auto;">
         @if (TempData["Message"] != null)
         {
             <div class="alert alert-success">
@@ -27,10 +27,12 @@
                 @TempData["Error"]
             </div>
         }
-        <div class="signup-header">
-            <h1>Create Account</h1>
-            <p>Sign up to get started</p>
+        <div class="page-header">
+            <h2>Create Account</h2>
+            <p>Create Employee Account</p>
         </div>
+
+        <div class="card">
 
         <form method="post" action="/Account/Signup" enctype="multipart/form-data" autocomplete="off">
             @Html.HiddenFor(m => m.UserId)
@@ -150,19 +152,25 @@
 
             <div class="form-group">
                 <label>Profile Image</label>
-                @Html.ValidationMessageFor(m => m.ProfileImage, "", new { @class = "field-validation-error" })
                 @Html.TextBoxFor(m => m.ProfileImage,new{ type = "file", @class = "form-control", accept = ".jpg,.jpeg,.png"})
+                @Html.ValidationMessageFor(m => m.ProfileImage, "", new { @class = "field-validation-error" })
             </div>
 
-            <button type="submit" class="btn-signup">Sign Up</button>
-            <input type="reset" value="Reset" class="btn-signup" style="background:red;margin-top:10px;" />
+            <div class="form-group">
+                <button type="submit" class="btn btn-primary">Sign Up</button>
+                <input type="reset" value="Reset" class="btn btn-danger"/>
+            </div>
+
         </form>
 
-        <div class="login-link">
+            <div style="margin-top:20px;text-align:center;">
             Already have an account? <a href="/Account/Login">Login here</a>
+        </div>
         </div>
     </div>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.5/jquery.validate.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validation-unobtrusive/4.0.0/jquery.validate.unobtrusive.min.js"></script>
     <script src="/js/site.js"></script>
 </body>
 </html>
