@@ -15,7 +15,7 @@ const columnDefs = [
             if (!params.data.ProfileImage || params.data.ProfileImage.trim() === "") {
                 return `<span style="color:#999;">No Image</span>`;
             }
-            return ` <img src="/uploads/${params.data.ProfileImage}" width="45" height="45" style="border-radius:50%;object-fit:cover;" /> `;
+            return ` <img src="/uploads/${params.data.ProfileImage}" width="45" height="45" style="border-radius:50%;object-fit:cover;" onerror="this.outerHTML='<span style=&quot;color:#999;&quot;>No Image</span>'" /> `;
         }
     },
     {
