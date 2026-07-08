@@ -99,11 +99,13 @@ namespace LeaveManagementSystem.Controllers
                     Text = x.DepartmentName
                 }).ToList();
 
-            model.RoleList = new List<SelectListItem>()
-            {
-                new SelectListItem { Text="Employee", Value="Employee" },
-                new SelectListItem { Text="Manager", Value="Manager" }
-            };
+            model.RoleList = _employeeRepository.GetRoles()
+                .Where(x => x.RoleName != "Admin")
+                .Select(x => new SelectListItem
+                {
+                    Value = x.RoleName,
+                    Text = x.RoleName
+                }).ToList();
             return View(model);
         }
 
@@ -129,11 +131,13 @@ namespace LeaveManagementSystem.Controllers
                     Text = x.DepartmentName
                 }).ToList();
 
-            model.RoleList = new List<SelectListItem>()
-            {
-                new SelectListItem { Text="Employee", Value="Employee" },
-                new SelectListItem { Text="Manager", Value="Manager" }
-            };
+            model.RoleList = _employeeRepository.GetRoles()
+                .Where(x => x.RoleName != "Admin")
+                .Select(x => new SelectListItem
+                {
+                    Value = x.RoleName,
+                    Text = x.RoleName
+                }).ToList();
 
             if (!ModelState.IsValid)
             {
@@ -258,6 +262,9 @@ namespace LeaveManagementSystem.Controllers
                         break;
                     case -6:
                         ModelState.AddModelError("Password", "Password must be at least 5 characters.");
+                        break;
+                    case -99:
+                        ModelState.AddModelError("", "An unexpected database error occurred.");
                         break;
                     default:
                         ModelState.AddModelError("", "Failed to create account.");

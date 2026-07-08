@@ -56,7 +56,8 @@ namespace LeaveManagementSystem.Repositories
             Hashtable ht = new Hashtable();
             ht.Clear();
             ht.Add("EmployeeId", employeeId);
-            DataTable dt = _dbHelper.ExecuteStoredProcedure("USP_GetEmployeeById", ht);
+            DataSet ds = _dbHelper.ExecuteDataSet("USP_GetEmployeeById", ht);
+            DataTable dt = ds.Tables[0];
             if (dt.Rows.Count > 0)
             {
                 DataRow row = dt.Rows[0];
@@ -129,8 +130,8 @@ namespace LeaveManagementSystem.Repositories
             ht.Add("JoiningDate", employee.JoiningDate);
             ht.Add("Address", employee.Address);
             ht.Add("Skills", employee.Skills);
-            _dbHelper.ExecuteNonQuery("USP_UpdateEmployee", ht);
-            return true;
+            int result = _dbHelper.ExecuteWithOutputParameter("USP_UpdateEmployee", ht,"@Result");
+            return result == 1;
         }
 
         public bool DeleteEmployee(int employeeId)
@@ -138,17 +139,8 @@ namespace LeaveManagementSystem.Repositories
             Hashtable ht = new Hashtable();
             ht.Clear();
             ht.Add("EmployeeId", employeeId);
-            DataTable dt = _dbHelper.ExecuteStoredProcedure("USP_DeleteEmployee", ht);
-            if (dt.Rows.Count > 0)
-            {
-                int result = Convert.ToInt32(dt.Rows[0]["Result"]);
-                if (result == 1)
-                {
-                    return true;
-                }
-                throw new Exception(dt.Rows[0]["Message"].ToString());
-            }
-            return false;
+            int result = _dbHelper.ExecuteWithOutputParameter("USP_DeleteEmployee", ht,"@Result");
+            return result == 1;
         }
 
 
@@ -157,7 +149,8 @@ namespace LeaveManagementSystem.Repositories
             var departments = new List<DepartmentModel>();
             Hashtable ht = new Hashtable();
             ht.Clear();
-            DataTable dt = _dbHelper.ExecuteStoredProcedure("USP_GetDepartments", ht);
+            DataSet ds = _dbHelper.ExecuteDataSet("USP_GetDepartments", ht);
+            DataTable dt = ds.Tables[0];
             foreach (DataRow row in dt.Rows)
             {
                 departments.Add(new DepartmentModel
@@ -196,5 +189,26 @@ namespace LeaveManagementSystem.Repositories
             }
             return null;
         }
+
+        public List<RoleModel> GetRoles()
+        {
+            List<RoleModel> roles = new List<RoleModel>();
+
+            Hashtable ht = new Hashtable();
+            ht.Clear();
+            DataTable dt = _dbHelper.ExecuteStoredProcedure("USP_GetRoles", ht);
+
+            foreach (DataRow row in dt.Rows)
+            {
+                roles.Add(new RoleModel
+                {
+                    RoleId = Convert.ToInt32(row["RoleId"]),
+                    RoleName = row["RoleName"].ToString()
+                });
+            }
+
+            return roles;
+        }
+
     }
 }

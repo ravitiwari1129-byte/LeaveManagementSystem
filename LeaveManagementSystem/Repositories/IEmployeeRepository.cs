@@ -13,5 +13,6 @@ namespace LeaveManagementSystem.Repositories
         bool DeleteEmployee(int employeeId);
         List<DepartmentModel> GetDepartments();
         UserSession ValidateUser(string email, string password);
+        List<RoleModel> GetRoles();
     }
 }

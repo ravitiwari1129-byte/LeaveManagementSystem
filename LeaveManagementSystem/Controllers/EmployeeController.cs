@@ -154,9 +154,16 @@ namespace LeaveManagementSystem.Controllers
             {
                 try
                 {
-                    _employeeRepository.UpdateEmployee(employee);
-                    TempData["Success"] = "Employee updated successfully!";
-                    return RedirectToAction("Index");
+                    bool result = _employeeRepository.UpdateEmployee(employee);
+                    if(result)
+                    {
+                        TempData["Success"] = "Employee updated successfully!";
+                        return RedirectToAction("Index");
+                    }
+                    else
+                    {
+                        ModelState.AddModelError("", "Employee update failed.");
+                    }
                 }
                 catch (Exception ex)
                 {
