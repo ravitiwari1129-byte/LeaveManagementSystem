@@ -55,6 +55,7 @@
                     {
                         <a href="@Url.Action("Index", "Employee")" class="@(ViewContext.RouteData.Values["controller"]?.ToString() == "Employee" ? "active" : "")">👥 Employees</a>
                         <a href="@Url.Action("Index", "Report")" class="@(ViewContext.RouteData.Values["action"]?.ToString() == "Leave" ? "active" : "")">📋 Report</a>
+                        <a href="@Url.Action("Signup", "Account")" class="@(ViewContext.RouteData.Values["controller"]?.ToString() == "Account" && ViewContext.RouteData.Values["action"]?.ToString() == "Signup" ? "active" : "")">➕ Add User </a>
                     }
                     <a href="@Url.Action("Index", "Leave")" class="@(ViewContext.RouteData.Values["controller"]?.ToString() == "Leave" && ViewContext.RouteData.Values["action"]?.ToString() == "Index" ? "active" : "")">✅ Approve Leave</a>
                 }

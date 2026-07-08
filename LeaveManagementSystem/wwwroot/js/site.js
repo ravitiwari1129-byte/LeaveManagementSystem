@@ -107,24 +107,28 @@ document.addEventListener("click", function (e) {
 });
 
 
-document.getElementById("DateOfBirth").addEventListener("change", function () {
+var dobElement = document.getElementById("DateOfBirth");
 
-    if (this.value === "") {
-        document.getElementById("Age").value = "";
-        return;
-    }
+if (dobElement) {
+    dobElement.addEventListener("change", function () {
 
-    var dob = new Date(this.value);
-    var today = new Date();
+        if (this.value === "") {
+            document.getElementById("Age").value = "";
+            return;
+        }
 
-    var age = today.getFullYear() - dob.getFullYear();
+        var dob = new Date(this.value);
+        var today = new Date();
 
-    var monthDifference = today.getMonth() - dob.getMonth();
+        var age = today.getFullYear() - dob.getFullYear();
 
-    if (monthDifference < 0 ||
-        (monthDifference === 0 && today.getDate() < dob.getDate())) {
-        age--;
-    }
+        var monthDifference = today.getMonth() - dob.getMonth();
 
-    document.getElementById("Age").value = age ;
-});
+        if (monthDifference < 0 ||
+            (monthDifference === 0 && today.getDate() < dob.getDate())) {
+            age--;
+        }
+
+        document.getElementById("Age").value = age;
+    });
+}
