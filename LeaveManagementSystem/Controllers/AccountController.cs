@@ -145,6 +145,11 @@ namespace LeaveManagementSystem.Controllers
             }
             try
             {
+                if (model.ProfileImage == null)
+                {
+                    ModelState.AddModelError("ProfileImage", "Profile Image is required.");
+                    return View(model);
+                }
                 if (model.ProfileImage != null)
                 {
                     var extension = Path.GetExtension(model.ProfileImage.FileName).ToLower();

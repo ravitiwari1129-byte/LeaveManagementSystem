@@ -28,6 +28,30 @@ const columnDefs = [
         minWidth: 150
     },
     {
+        field: "MobileNo",
+        headerName: "Mobile",
+        sortable: true,
+        filter: true,
+        floatingFilter: true,
+        minWidth: 130
+    },
+    {
+        field: "DateOfBirth",
+        headerName: "DOB",
+        sortable: true,
+        filter: true,
+        floatingFilter: true,
+        minWidth: 130
+    },
+    {
+        field: "Gender",
+        headerName: "Gender",
+        sortable: true,
+        filter: true,
+        floatingFilter: true,
+        minWidth: 110
+    },
+    {
         field: "Email",
         headerName: "Email",
         sortable: true,
@@ -53,6 +77,41 @@ const columnDefs = [
         floatingFilter: true,
         flex: 1,
         minWidth: 100
+    },
+    {
+        field: "Salary",
+        headerName: "Salary",
+        sortable: true,
+        filter: "agNumberColumnFilter",
+        floatingFilter: true,
+        minWidth: 120,
+        valueFormatter: function (params) {
+            return "₹ " + params.value;
+        }
+    },
+    {
+        field: "JoiningDate",
+        headerName: "Joining Date",
+        sortable: true,
+        filter: true,
+        floatingFilter: true,
+        minWidth: 140
+    },
+    {
+        field: "Skills",
+        headerName: "Skills",
+        sortable: true,
+        filter: true,
+        floatingFilter: true,
+        minWidth: 180
+    },
+    {
+        field: "Address",
+        headerName: "Address",
+        sortable: true,
+        filter: true,
+        floatingFilter: true,
+        minWidth: 220
     },
     {
         field: "Status", headerName: "Status", sortable: true, filter: true, floatingFilter: true, flex: 1, minWidth: 100,
@@ -86,7 +145,21 @@ window.exportEmployeeManagement = function () {
         console.log("Export starting");
 
         gridApi.exportDataAsCsv({
-            fileName: "EmployeeManagement.csv"
+            fileName: "EmployeeManagement.csv",
+            columnKeys: [
+                "EmployeeName",
+                "Email",
+                "MobileNo",
+                "DateOfBirth",
+                "Gender",
+                "DepartmentName",
+                "Role",
+                "Salary",
+                "JoiningDate",
+                "Skills",
+                "Address",
+                "Status"
+            ]
         });
 
         console.log("Export completed");
