@@ -104,10 +104,6 @@ namespace LeaveManagementSystem.Repositories
             ht.Add("Password", employee.Password);
             ht.Add("DateOfBirth", employee.DateOfBirth);
             ht.Add("Gender", employee.Gender);
-            if (string.IsNullOrEmpty(employee.ProfileImage))
-            {
-                employee.ProfileImage = "";
-            }
             ht.Add("ProfileImage", employee.ProfileImage);
             ht.Add("MobileNo", employee.MobileNo);
             ht.Add("Salary", employee.Salary);
@@ -128,10 +124,6 @@ namespace LeaveManagementSystem.Repositories
             ht.Add("Role", employee.Role);
             ht.Add("DateOfBirth", employee.DateOfBirth);
             ht.Add("Gender", employee.Gender);
-            if (string.IsNullOrEmpty(employee.ProfileImage))
-            {
-                employee.ProfileImage = "";
-            }
             ht.Add("ProfileImage", employee.ProfileImage);
             ht.Add("MobileNo", employee.MobileNo);
             ht.Add("Salary", employee.Salary);

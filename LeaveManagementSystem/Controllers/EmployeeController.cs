@@ -29,7 +29,7 @@ namespace LeaveManagementSystem.Controllers
         private void LoadViewBagData()
         {
             ViewBag.Departments = _employeeRepository.GetDepartments();
-            ViewBag.Roles = _employeeRepository.GetRoles();
+            ViewBag.Roles = new[] { "Employee", "Manager", "Admin" };
         }
 
 
@@ -73,8 +73,6 @@ namespace LeaveManagementSystem.Controllers
             ModelState.Remove("DepartmentName");
             ModelState.Remove("IsActive");
             ModelState.Remove("EmployeeId");
-            ModelState.Remove("ProfileImage");
-            ModelState.Remove("ExistingProfileImage");
             if (employee.DepartmentId <= 0)
             {
                 ModelState.AddModelError("DepartmentId", "Please select a valid department");
@@ -83,70 +81,10 @@ namespace LeaveManagementSystem.Controllers
             {
                 ModelState.AddModelError("Role", "Please select a role");
             }
-            if (employee.ImageFile == null)
-            {
-                ModelState.AddModelError("ImageFile", "Profile Image is required.");
-            }
-            if (employee.DateOfBirth >= DateTime.Today)
-            {
-                ModelState.AddModelError("DateOfBirth", "Date of Birth must be before today.");
-            }
-
-            int age = DateTime.Today.Year - employee.DateOfBirth.Year;
-
-            if (employee.DateOfBirth > DateTime.Today.AddYears(-age))
-            {
-                age--;
-            }
-
-            if (age < 18)
-            {
-                ModelState.AddModelError("DateOfBirth", "Employee must be at least 18 years old.");
-            }
-            if (employee.JoiningDate < DateTime.Today)
-            {
-                ModelState.AddModelError("JoiningDate", "Joining Date cannot be a past date.");
-            }
             if (ModelState.IsValid)
             {
                 try
                 {
-                    if (employee.ImageFile != null)
-                    {
-                        var extension = Path.GetExtension(employee.ImageFile.FileName).ToLower();
-
-                        if (extension != ".jpg" && extension != ".jpeg" && extension != ".png")
-                        {
-                            ModelState.AddModelError("ImageFile", "Only JPG, JPEG and PNG files are allowed.");
-                            LoadViewBagData();
-                            return View(employee);
-                        }
-
-                        if (employee.ImageFile.Length > 2 * 1024 * 1024)
-                        {
-                            ModelState.AddModelError("ImageFile", "Image size should be less than 2 MB.");
-                            LoadViewBagData();
-                            return View(employee);
-                        }
-
-                        string imageName = Guid.NewGuid().ToString() + extension;
-
-                        string folder = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/uploads");
-
-                        if (!Directory.Exists(folder))
-                        {
-                            Directory.CreateDirectory(folder);
-                        }
-
-                        string path = Path.Combine(folder, imageName);
-
-                        using (var stream = new FileStream(path, FileMode.Create))
-                        {
-                            employee.ImageFile.CopyTo(stream);
-                        }
-
-                        employee.ProfileImage = imageName;
-                    }
                     int id = _employeeRepository.InsertEmployee(employee);
 
                     if (id > 0)
@@ -200,31 +138,7 @@ namespace LeaveManagementSystem.Controllers
             ModelState.Remove("DepartmentName");
             ModelState.Remove("IsActive");
             ModelState.Remove("Password");
-            ModelState.Remove("ProfileImage");
-            ModelState.Remove("ExistingProfileImage");
-
-            if (employee.DateOfBirth >= DateTime.Today)
-            {
-                ModelState.AddModelError("DateOfBirth", "Date of Birth must be before today.");
-            }
-
-            int age = DateTime.Today.Year - employee.DateOfBirth.Year;
-
-            if (employee.DateOfBirth > DateTime.Today.AddYears(-age))
-            {
-                age--;
-            }
-
-            if (age < 18)
-            {
-                ModelState.AddModelError("DateOfBirth", "Employee must be at least 18 years old.");
-            }
-
-            if (employee.JoiningDate < DateTime.Today)
-            {
-                ModelState.AddModelError("JoiningDate", "Joining Date cannot be a past date.");
-            }
-
+            
             var existingEmployee = _employeeRepository.GetEmployeeById(employee.EmployeeId);
 
             if (existingEmployee != null && existingEmployee.Role == "Admin" && employee.Role != "Admin")
@@ -240,47 +154,6 @@ namespace LeaveManagementSystem.Controllers
             {
                 try
                 {
-                    if (employee.ImageFile != null)
-                    {
-                        var extension = Path.GetExtension(employee.ImageFile.FileName).ToLower();
-
-                        if (extension != ".jpg" && extension != ".jpeg" && extension != ".png")
-                        {
-                            ModelState.AddModelError("ImageFile", "Only JPG, JPEG and PNG files are allowed.");
-                            LoadViewBagData();
-                            return View(employee);
-                        }
-
-                        if (employee.ImageFile.Length > 2 * 1024 * 1024)
-                        {
-                            ModelState.AddModelError("ImageFile", "Image size should be less than 2 MB.");
-                            LoadViewBagData();
-                            return View(employee);
-                        }
-
-                        string imageName = Guid.NewGuid().ToString() + extension;
-
-                        string folder = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/uploads");
-
-                        if (!Directory.Exists(folder))
-                        {
-                            Directory.CreateDirectory(folder);
-                        }
-
-                        string path = Path.Combine(folder, imageName);
-
-                        using (var stream = new FileStream(path, FileMode.Create))
-                        {
-                            employee.ImageFile.CopyTo(stream);
-                        }
-
-                        employee.ProfileImage = imageName;
-                    }
-                    else if (existingEmployee != null)
-                    {
-                        employee.ProfileImage = existingEmployee.ProfileImage;
-                    }
-
                     bool result = _employeeRepository.UpdateEmployee(employee);
                     if(result)
                     {
@@ -338,7 +211,7 @@ namespace LeaveManagementSystem.Controllers
             if (!IsAdmin())
                 return Json(new { success = false, message = "Unauthorized" });
 
-            var employees = _employeeRepository.GetAllEmployees(departmentId, null,null);
+            var employees = _employeeRepository.GetAllEmployees(null,null,null);
             return Json(new { success = true, data = employees });
         }
 
@@ -351,7 +224,7 @@ namespace LeaveManagementSystem.Controllers
                 -3 => "Invalid role selected. Must be 'Admin', 'Manager' or 'Employee'",
                 -4 => "Employee name cannot be empty",
                 -5 => "Invalid email format",
-                -6 => "Password must be between 5 and 20 characters",
+                -6 => "Password must be at least 4 characters",
                 _ => "Failed to add employee. Please try again."
             };
         }

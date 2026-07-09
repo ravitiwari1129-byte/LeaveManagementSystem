@@ -1,5 +1,4 @@
-﻿using Microsoft.AspNetCore.Http;
-using System;
+﻿using System;
 using System.ComponentModel.DataAnnotations;
 
 namespace LeaveManagementSystem.Models
@@ -61,12 +60,9 @@ namespace LeaveManagementSystem.Models
         [Required(ErrorMessage = "Select at least one Skill")]
         public string Skills { get; set; }
 
+        [Required(ErrorMessage = "Profile Image is required")]
         [Display(Name = "Profile Image")]
         public string ProfileImage { get; set; }
-
-        [Display(Name = "Profile Image")]
-        public IFormFile ImageFile { get; set; }
-        public string ExistingProfileImage { get; set; }
 
         public int Age
         {
