@@ -139,12 +139,27 @@ namespace LeaveManagementSystem.Controllers
                     Text = x.RoleName
                 }).ToList();
 
+            if (model.Skills == null || !model.Skills.Any())
+            {
+                ModelState.AddModelError(nameof(model.Skills), "Select at least one Skill");
+            }
+
+            if (!ModelState.IsValid)
+            {
+                return View(model);
+            }
+
             if (!ModelState.IsValid)
             {
                 return View(model);
             }
             try
             {
+                if (model.ProfileImage == null)
+                {
+                    ModelState.AddModelError("ProfileImage", "Profile Image is required.");
+                    return View(model);
+                }
                 if (model.ProfileImage != null)
                 {
                     var extension = Path.GetExtension(model.ProfileImage.FileName).ToLower();

@@ -1,5 +1,7 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
+using Microsoft.AspNetCore.Http;
 
 namespace LeaveManagementSystem.Models
 {
@@ -34,6 +36,10 @@ namespace LeaveManagementSystem.Models
         [RegularExpression(@"^(?=.*[A-Z])(?=.*[0-9])(?=.*[@$!%*?&])[A-Za-z0-9@$!%*?&]{5,20}$", ErrorMessage = "Password must contain uppercase letter, number and special character")]
         public string Password { get; set; }
 
+        [Required]
+        [Compare("Password", ErrorMessage = "Passwords do not match")]
+        public string ConfirmPassword { get; set; }
+
         [Required(ErrorMessage = "Date of Birth is required")]
         [DataType(DataType.Date)]
         public DateTime DateOfBirth { get; set; }
@@ -60,9 +66,15 @@ namespace LeaveManagementSystem.Models
         [Required(ErrorMessage = "Select at least one Skill")]
         public string Skills { get; set; }
 
+        [NotMapped]
+        public List<string> SelectedSkills { get; set; } = new();
+
         [Required(ErrorMessage = "Profile Image is required")]
         [Display(Name = "Profile Image")]
         public string ProfileImage { get; set; }
+        [Display(Name = "Profile Image")]
+        public IFormFile ImageFile { get; set; }
+        public string ExistingProfileImage { get; set; }
 
         public int Age
         {

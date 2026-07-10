@@ -104,6 +104,10 @@ namespace LeaveManagementSystem.Repositories
             ht.Add("Password", employee.Password);
             ht.Add("DateOfBirth", employee.DateOfBirth);
             ht.Add("Gender", employee.Gender);
+            if (string.IsNullOrEmpty(employee.ProfileImage))
+            {
+                employee.ProfileImage = "";
+            }
             ht.Add("ProfileImage", employee.ProfileImage);
             ht.Add("MobileNo", employee.MobileNo);
             ht.Add("Salary", employee.Salary);
@@ -124,12 +128,17 @@ namespace LeaveManagementSystem.Repositories
             ht.Add("Role", employee.Role);
             ht.Add("DateOfBirth", employee.DateOfBirth);
             ht.Add("Gender", employee.Gender);
+            if (string.IsNullOrEmpty(employee.ProfileImage))
+            {
+                employee.ProfileImage = "";
+            }
             ht.Add("ProfileImage", employee.ProfileImage);
             ht.Add("MobileNo", employee.MobileNo);
             ht.Add("Salary", employee.Salary);
             ht.Add("JoiningDate", employee.JoiningDate);
             ht.Add("Address", employee.Address);
             ht.Add("Skills", employee.Skills);
+            ht.Add("@IsActive", employee.IsActive);
             int result = _dbHelper.ExecuteWithOutputParameter("USP_UpdateEmployee", ht,"@Result");
             return result == 1;
         }
