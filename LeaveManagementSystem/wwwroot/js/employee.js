@@ -86,7 +86,7 @@ const columnDefs = [
         floatingFilter: true,
         minWidth: 120,
         valueFormatter: function (params) {
-            return "₹ " + params.value;
+            return params.value;
         }
     },
     {

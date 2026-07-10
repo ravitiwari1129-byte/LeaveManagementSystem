@@ -88,7 +88,7 @@
 
             <div class="form-group">
                 <label>Salary</label>
-                    @Html.TextBoxFor(m => m.Salary, new { @class = "form-control", maxlength = "7", oninput = "this.value=this.value.replace(/[^0-9]/g,'')" })
+                    @Html.TextBoxFor(m => m.Salary, new { @class = "form-control", type = "number", min = "1000", max = "1000000", step = "1" })
                 @Html.ValidationMessageFor(m => m.Salary, "", new { @class = "field-validation-error" })
             </div>
 
