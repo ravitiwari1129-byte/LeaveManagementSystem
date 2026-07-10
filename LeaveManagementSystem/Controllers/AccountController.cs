@@ -139,11 +139,6 @@ namespace LeaveManagementSystem.Controllers
                     Text = x.RoleName
                 }).ToList();
 
-            if (model.Skills == null || !model.Skills.Any())
-            {
-                ModelState.AddModelError(nameof(model.Skills), "Select at least one Skill");
-            }
-
             if (!ModelState.IsValid)
             {
                 return View(model);

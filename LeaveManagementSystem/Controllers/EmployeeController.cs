@@ -91,12 +91,8 @@ namespace LeaveManagementSystem.Controllers
             {
                 ModelState.AddModelError("DateOfBirth", "Date of Birth must be before today.");
             }
-            if (employee.SelectedSkills == null || !employee.SelectedSkills.Any())
-            {
-                ModelState.AddModelError("Skills", "Select at least one skill.");
-            }
 
-            employee.Skills = string.Join(",", employee.SelectedSkills);
+            employee.Skills = employee.SelectedSkills != null ? string.Join(",", employee.SelectedSkills) : "";
 
             int age = DateTime.Today.Year - employee.DateOfBirth.Year;
 
@@ -214,12 +210,7 @@ namespace LeaveManagementSystem.Controllers
                 ModelState.AddModelError("DateOfBirth", "Date of Birth must be before today.");
             }
 
-            if (employee.SelectedSkills == null || !employee.SelectedSkills.Any())
-            {
-                ModelState.AddModelError("Skills", "Select at least one skill.");
-            }
-
-            employee.Skills = string.Join(",", employee.SelectedSkills);
+            employee.Skills = employee.SelectedSkills != null ? string.Join(",", employee.SelectedSkills) : "";
 
             int age = DateTime.Today.Year - employee.DateOfBirth.Year;
 

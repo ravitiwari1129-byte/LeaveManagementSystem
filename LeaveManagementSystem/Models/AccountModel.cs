@@ -87,7 +87,6 @@ namespace LeaveManagementSystem.Models
         public string Role { get; set; }
         public List<SelectListItem> RoleList { get; set; } = new();
 
-        [Required(ErrorMessage = "Select at least one Skill")]
         public List<string> Skills { get; set; } = new List<string>();
 
         [Required(ErrorMessage = "Address is required")]
