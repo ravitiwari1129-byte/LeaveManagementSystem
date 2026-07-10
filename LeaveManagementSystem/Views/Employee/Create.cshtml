@@ -2,7 +2,7 @@
 @{
     ViewBag.Title = "Add Employee";
 }
-
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 <div class="page-header">
     <h2>Add New Employee</h2>
     <p>Create a new employee account</p>
@@ -24,23 +24,21 @@
             @Html.ValidationMessageFor(m => m.Email, "", new { @class = "field-validation-error" })
         </div>
 
-        <div class="form-group">
+        <div class="form-group password-wrapper">
             <label>Password <span class="text-danger">*</span></label>
-            @Html.PasswordFor(m => m.Password, new
-            {
-                @class = "form-control",
-                placeholder = "Enter Password"
-            })
+            <div style="position:relative;">
+                @Html.PasswordFor(m => m.Password, new { @class = "form-control", placeholder = "Enter Password", id = "Password", maxlength = "20" })
+                <span class="toggle-password" data-target="Password"><i class="fa-regular fa-eye"></i></span>
+            </div>
             @Html.ValidationMessageFor(m => m.Password, "", new { @class = "text-danger" })
         </div>
 
-        <div class="form-group">
+        <div class="form-group password-wrapper">
             <label>Confirm Password <span class="text-danger">*</span></label>
-            @Html.PasswordFor(m => m.ConfirmPassword, new
-            {
-                @class = "form-control",
-                placeholder = "Confirm Password"
-            })
+            <div style="position:relative;">
+                @Html.PasswordFor(m => m.ConfirmPassword, new { @class = "form-control", placeholder = "Confirm Password", id = "ConfirmPassword", maxlength = "20" })
+                <span class="toggle-password" data-target="ConfirmPassword"><i class="fa-regular fa-eye"></i></span>
+            </div>
             @Html.ValidationMessageFor(m => m.ConfirmPassword, "", new { @class = "text-danger" })
         </div>
 
@@ -100,7 +98,7 @@
 
         <div class="form-group">
             <label>Salary *</label>
-            @Html.TextBoxFor(m => m.Salary, new { @class = "form-control", type = "number" })
+            @Html.TextBoxFor(m => m.Salary, new { @class = "form-control", maxlength = "7", oninput = "this.value=this.value.replace(/[^0-9]/g,'')" })
             @Html.ValidationMessageFor(m => m.Salary, "", new { @class = "field-validation-error" })
         </div>
 
@@ -134,7 +132,7 @@
 
         <div class="form-group">
             <label>Address *</label>
-            @Html.TextAreaFor(m => m.Address, new { @class = "form-control", rows = "3" })
+            @Html.TextAreaFor(m => m.Address, new { @class = "form-control", rows = "3", minlength = "10", maxlength = "300" })
             @Html.ValidationMessageFor(m => m.Address, "", new { @class = "field-validation-error" })
         </div>
 
