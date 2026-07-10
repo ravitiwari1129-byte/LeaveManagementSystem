@@ -13,7 +13,6 @@
         @Html.AntiForgeryToken()
         @Html.ValidationSummary(true, "", new { @class = "validation-summary" })
         @Html.HiddenFor(m => m.EmployeeId)
-        @Html.HiddenFor(m => m.Password)
         @Html.HiddenFor(m => m.ProfileImage)
         <div class="form-group">
             <label>Employee Name *</label>
@@ -28,9 +27,23 @@
         </div>
 
         <div class="form-group">
+            <label>Password</label>
+            @Html.PasswordFor(m => m.Password, new
+            {
+                @class = "form-control",
+                placeholder = "Enter New Password"
+            })
+            @Html.ValidationMessageFor(m => m.Password, "", new { @class = "text-danger" })
+        </div>
+
+        <div class="form-group">
             <label>Confirm Password</label>
-            @Html.PasswordFor(m => m.ConfirmPassword, new { @class = "form-control" })
-            @Html.ValidationMessageFor(m => m.ConfirmPassword)
+            @Html.PasswordFor(m => m.ConfirmPassword, new
+            {
+                @class = "form-control",
+                placeholder = "Confirm New Password"
+            })
+            @Html.ValidationMessageFor(m => m.ConfirmPassword, "", new { @class = "text-danger" })
         </div>
 
         <div class="form-group">
@@ -54,11 +67,11 @@
             <div class="form-group">
                 <label>Gender *</label>
 
-                <label>
+                <label style="margin-left:20px;">
                     @Html.RadioButtonFor(m => m.Gender, "Male") Male
                 </label>
 
-                <label>
+                <label style="margin-left:20px;">
                     @Html.RadioButtonFor(m => m.Gender, "Female") Female
                 </label>
 
@@ -103,7 +116,7 @@
                     var skills = (Model.Skills ?? "").Split(',');
                 }
 
-                <label>
+                <label style="margin-left:20px;">
                     <input type="checkbox" name="SelectedSkills" value="C#" @(skills.Contains("C#") ? "checked" : "") /> C#
                 </label>
 

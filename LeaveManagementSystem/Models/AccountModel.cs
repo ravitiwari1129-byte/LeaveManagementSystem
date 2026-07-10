@@ -56,6 +56,9 @@ namespace LeaveManagementSystem.Models
         public string Password { get; set; }
 
         [Required(ErrorMessage = "Confirm password is required")]
+        [StringLength(20, MinimumLength = 5, ErrorMessage = "Confirm Password must be between 5 and 20 characters")]
+        [RegularExpression(@"^(?=.*[A-Z])(?=.*[0-9])(?=.*[@$!%*?&])[A-Za-z0-9@$!%*?&]{5,20}$",
+    ErrorMessage = "Password must contain uppercase letter, number and special character")]
         [Compare("Password", ErrorMessage = "Passwords do not match")]
         [DataType(DataType.Password)]
         [Display(Name = "Confirm Password")]
