@@ -73,11 +73,11 @@ namespace LeaveManagementSystem.Repositories
                     DateOfBirth = row["DateOfBirth"] != DBNull.Value ? Convert.ToDateTime(row["DateOfBirth"]) : DateTime.MinValue,
                     Gender = row["Gender"] == DBNull.Value ? "" : row["Gender"].ToString(),
                     ProfileImage = row["ProfileImage"] == DBNull.Value ? "" : row["ProfileImage"].ToString(),
-                    MobileNo = row["MobileNo"].ToString(),
-                    Salary = Convert.ToDecimal(row["Salary"]),
-                    JoiningDate = Convert.ToDateTime(row["JoiningDate"]),
-                    Address = row["Address"].ToString(),
-                    Skills = row["Skills"].ToString(),
+                    MobileNo = row["MobileNo"] == DBNull.Value ? string.Empty : row["MobileNo"].ToString(),
+                    Salary = row["Salary"] != DBNull.Value ? Convert.ToDecimal(row["Salary"]) : 0,
+                    JoiningDate = row["JoiningDate"] != DBNull.Value ? Convert.ToDateTime(row["JoiningDate"]) : DateTime.MinValue,
+                    Address = row["Address"] == DBNull.Value ? string.Empty : row["Address"].ToString(),
+                    Skills = row["Skills"] == DBNull.Value ? string.Empty : row["Skills"].ToString(),
                 };
             }
             return null;
