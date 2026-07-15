@@ -52,7 +52,7 @@ namespace LeaveManagementSystem.Models
         public string MobileNo { get; set; }
 
         [Required(ErrorMessage = "Salary is required")]
-        [Range(1000, 1000000, ErrorMessage = "Salary must be between 1000 and 1000000")]
+        [Range(typeof(decimal), "1000.00", "1000000.00", ErrorMessage = "Salary must be between 1000.00 and 1000000.00")]
         public decimal Salary { get; set; }
 
         [Required(ErrorMessage = "Joining Date is required")]
