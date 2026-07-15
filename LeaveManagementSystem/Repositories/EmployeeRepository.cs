@@ -57,10 +57,9 @@ namespace LeaveManagementSystem.Repositories
             ht.Clear();
             ht.Add("EmployeeId", employeeId);
             DataSet ds = _dbHelper.ExecuteDataSet("USP_GetEmployeeById", ht);
-            DataTable dt = ds.Tables[0];
-            if (dt.Rows.Count > 0)
+            if (ds.Tables.Count > 0 && ds.Tables[0].Rows.Count > 0)
             {
-                DataRow row = dt.Rows[0];
+                DataRow row = ds.Tables[0].Rows[0];
                 return new EmployeeModel
                 {
                     EmployeeId = Convert.ToInt32(row["EmployeeId"]),
@@ -159,14 +158,16 @@ namespace LeaveManagementSystem.Repositories
             Hashtable ht = new Hashtable();
             ht.Clear();
             DataSet ds = _dbHelper.ExecuteDataSet("USP_GetDepartments", ht);
-            DataTable dt = ds.Tables[0];
-            foreach (DataRow row in dt.Rows)
+            if (ds.Tables.Count > 0)
             {
-                departments.Add(new DepartmentModel
+                foreach (DataRow row in ds.Tables[0].Rows)
                 {
-                    DepartmentId = Convert.ToInt32(row["DepartmentId"]),
-                    DepartmentName = row["DepartmentName"] == DBNull.Value ? string.Empty : row["DepartmentName"].ToString()
-                });
+                    departments.Add(new DepartmentModel
+                    {
+                        DepartmentId = row["DepartmentId"] != DBNull.Value ? Convert.ToInt32(row["DepartmentId"]) : 0,
+                        DepartmentName = row["DepartmentName"] != DBNull.Value ? row["DepartmentName"].ToString() : string.Empty
+                    });
+                }
             }
             return departments;
         }
