@@ -184,6 +184,10 @@ var gridApi = null;
             return $(this).val();
         }).get();
 
+        if (status.includes("All")) {
+            status = [];
+        }
+
         var fromDate = $("#reportFromDate").val();
         var toDate = $("#reportToDate").val();
 
@@ -298,6 +302,22 @@ var gridApi = null;
             allowClear: true
         });
 
+        $('#reportStatus').on('change', function () {
+            let selectedValues = $(this).val() || [];
+
+            if (selectedValues.includes("All")) {
+
+                let allValues = [];
+
+                $('#reportStatus option').each(function () {
+                    if ($(this).val() !== "All") {
+                        allValues.push($(this).val());
+                    }
+                });
+
+                $(this).val(allValues).trigger('change.select2');
+            }
+        });
         
         $("#generateReportBtn").on("click", function () {
             generateReport();
