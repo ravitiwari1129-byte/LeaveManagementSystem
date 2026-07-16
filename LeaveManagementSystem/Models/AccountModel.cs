@@ -67,9 +67,11 @@ namespace LeaveManagementSystem.Models
         [DataType(DataType.Date)]
         public DateTime DateOfBirth { get; set; }
 
-        [Required(ErrorMessage = "Salary is required")]
+        [Required]
+        [RegularExpression(@"^[1-9]\d{3,6}(\.\d{1,2})?$",
+     ErrorMessage = "Salary cannot start with 0")]
         [Range(typeof(decimal), "1000.00", "1000000.00", ErrorMessage = "Salary must be between 1000.00 and 1000000.00")]
-        public decimal Salary { get; set; }
+        public string Salary { get; set; }
 
         [Required(ErrorMessage = "Joining Date is required")]
         [DataType(DataType.Date)]

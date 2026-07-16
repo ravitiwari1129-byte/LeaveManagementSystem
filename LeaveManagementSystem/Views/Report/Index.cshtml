@@ -4,7 +4,10 @@
     var userRole = Context.Session.GetString("UserRole");
     var currentName = employees?.FirstOrDefault()?.EmployeeName;
 }
-
+<style>
+    .ag-input-wrapper:before {
+        display: none;
+    }</style>
 <div class="page-header">
     <h2>Leave Report</h2>
     <p>Generate and view leave reports</p>

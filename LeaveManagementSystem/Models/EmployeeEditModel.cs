@@ -1,11 +1,12 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using Microsoft.AspNetCore.Http;
 
 namespace LeaveManagementSystem.Models
 {
-    public class EmployeeModel
+    public class EmployeeEditModel
     {
         public int EmployeeId { get; set; }
 
@@ -30,15 +31,16 @@ namespace LeaveManagementSystem.Models
 
         public bool IsActive { get; set; }
 
-        [Required(ErrorMessage = "Password is required")]
+        // Optional in Edit
         [StringLength(20, MinimumLength = 5, ErrorMessage = "Password must be between 5 and 20 characters")]
         [DataType(DataType.Password)]
-        [RegularExpression(@"^(?=.*[A-Z])(?=.*[0-9])(?=.*[@$!%*?&])[A-Za-z0-9@$!%*?&]{5,20}$", ErrorMessage = "Password must contain uppercase letter, number and special character")]
-        public string Password { get; set; }
+        [RegularExpression(@"^(?=.*[A-Z])(?=.*[0-9])(?=.*[@$!%*?&])[A-Za-z0-9@$!%*?&]{5,20}$",
+            ErrorMessage = "Password must contain uppercase letter, number and special character")]
+        public string? Password { get; set; }
 
-        [Required]
+        // Optional in Edit
         [Compare("Password", ErrorMessage = "Passwords do not match")]
-        public string ConfirmPassword { get; set; }
+        public string? ConfirmPassword { get; set; }
 
         [Required(ErrorMessage = "Date of Birth is required")]
         [DataType(DataType.Date)]
@@ -52,7 +54,8 @@ namespace LeaveManagementSystem.Models
         public string MobileNo { get; set; }
 
         [Required(ErrorMessage = "Salary is required")]
-        [Range(typeof(decimal), "1000.00", "1000000.00", ErrorMessage = "Salary must be between 1000.00 and 1000000.00")]
+        [Range(typeof(decimal), "1000.00", "1000000.00",
+            ErrorMessage = "Salary must be between 1000.00 and 1000000.00")]
         public decimal Salary { get; set; }
 
         [Required(ErrorMessage = "Joining Date is required")]
@@ -60,7 +63,8 @@ namespace LeaveManagementSystem.Models
         public DateTime JoiningDate { get; set; }
 
         [Required(ErrorMessage = "Address is required")]
-        [StringLength(300, MinimumLength = 10, ErrorMessage = "Address must be between 10 and 300 characters")]
+        [StringLength(300, MinimumLength = 10,
+            ErrorMessage = "Address must be between 10 and 300 characters")]
         public string Address { get; set; }
 
         public string Skills { get; set; } = "";
@@ -68,10 +72,11 @@ namespace LeaveManagementSystem.Models
         [NotMapped]
         public List<string> SelectedSkills { get; set; } = new();
 
-       
         public string ProfileImage { get; set; }
-        [Display(Name = "Profile Image")]
-        public IFormFile ImageFile { get; set; }
+
+        // Optional in Edit
+        public IFormFile? ImageFile { get; set; }
+
         public string ExistingProfileImage { get; set; }
 
         public int Age
@@ -79,27 +84,12 @@ namespace LeaveManagementSystem.Models
             get
             {
                 int age = DateTime.Today.Year - DateOfBirth.Year;
+
                 if (DateOfBirth > DateTime.Today.AddYears(-age))
-                {
                     age--;
-                }
+
                 return age;
             }
         }
-
     }
-
-    public class DashboardModel
-    {
-        public int PendingCount { get; set; }
-        public int ApprovedCount { get; set; }
-        public int RejectedCount { get; set; }
-        public int MonthlyCount { get; set; }
-        public int TotalDaysTaken { get; set; }
-        public int PendingLeaves { get; set; }
-        public int ApprovedLeaves { get; set; }
-        public int RejectedLeaves { get; set; }
-    }
-
 }
-

@@ -199,9 +199,9 @@ namespace LeaveManagementSystem.Controllers
                     return View(model);
                 }
 
-                if (model.Salary < 0)
+                if (!decimal.TryParse(model.Salary, out decimal salary))
                 {
-                    ModelState.AddModelError("Salary", "Salary cannot be negative.");
+                    ModelState.AddModelError("Salary", "Invalid salary.");
                     return View(model);
                 }
 
@@ -241,7 +241,7 @@ namespace LeaveManagementSystem.Controllers
                     Gender = model.Gender,
                     ProfileImage = imageName,
                     MobileNo = model.MobileNo,
-                    Salary = model.Salary,
+                    Salary = salary,
                     JoiningDate = model.JoiningDate,
                     Address = model.Address,
                     Skills = model.Skills != null ? string.Join(",", model.Skills) : ""

@@ -114,7 +114,7 @@ const columnDefs = [
         minWidth: 220
     },
     {
-        field: "Status", headerName: "Status", sortable: true, filter: true, floatingFilter: true, flex: 1, minWidth: 100,
+        field: "Status", headerName: "Status", sortable: true, filter: true, floatingFilter: true, flex: 1, minWidth: 110,
         cellRenderer: function (params) {
             var status = params.value;
             var badgeClass = status === 'Active' ? 'badge-approved' : 'badge-rejected';
@@ -126,16 +126,29 @@ const columnDefs = [
         headerName: "Actions",
         sortable: false,
         filter: false,
-        flex: 1.5,
-        minWidth: 130,
+        flex: 2,
+        minWidth: 180,
         cellRenderer: function (params) {
+
             var empId = params.data.EmployeeId;
+
+            var toggleButton = "";
+
+            if (params.data.IsActive) {
+                toggleButton =
+                    '<button onclick="toggleEmployeeStatus(' + empId + ', false)" class="btn btn-danger" style="padding:4px 10px;font-size:12px;">Inactive</button>';
+            }
+            else {
+                toggleButton =
+                    '<button onclick="toggleEmployeeStatus(' + empId + ', true)" class="btn btn-success" style="padding:4px 10px;font-size:12px;">Active</button>';
+            }
+
             return '<div class="action-links">' +
-                '<a href="/Employee/Edit/' + empId + '" class="btn btn-warning" style="padding: 4px 10px; font-size: 12px; margin-right: 5px;">Edit</a>' +
-                '<button onclick="deleteEmployee(' + empId + ')" class="btn btn-danger" style="padding: 4px 10px; font-size: 12px;">Delete</button>' +
+                '<a href="/Employee/Edit/' + empId + '" class="btn btn-warning" style="padding:4px 10px;font-size:12px;margin-right:5px;">Edit</a>' +
+                toggleButton +
                 '</div>';
         }
-    }
+    },
 ];
 
 window.exportEmployeeManagement = function () {
@@ -188,47 +201,79 @@ function initGrid() {
 // ========================================
 // DELETE FUNCTION 
 // ========================================
-window.deleteEmployee = function (employeeId) {
-    if (!confirm('Are you sure you want to delete this employee?\n\nNote: All leave requests of this employee will also be deleted.')) {
+window.toggleEmployeeStatus = function (employeeId, isActive) {
+
+    var action = isActive ? "activate" : "deactivate";
+
+    if (!confirm("Are you sure you want to " + action + " this employee?")) {
         return;
     }
-    var token = document.querySelector('input[name="__RequestVerificationToken"]')?.value || '';
-    fetch('/Employee/Delete/' + employeeId, {
+
+    var token = document.querySelector('input[name="__RequestVerificationToken"]').value;
+
+    fetch('/Employee/ToggleUserStatus', {
+
         method: 'POST',
+
         headers: {
             'Content-Type': 'application/json',
             'RequestVerificationToken': token
         },
-        body: JSON.stringify({ id: employeeId })
+
+        body: JSON.stringify({
+
+            EmployeeId: employeeId,
+            IsActive: isActive
+
+        })
+
     })
         .then(function (response) {
+
             return response.json();
+
         })
         .then(function (data) {
+
             if (data.success) {
-                // Update local data
-                var updatedData = window.employeeData.filter(function (emp) {
-                    return emp.EmployeeId !== employeeId;
+
+                var employee = window.employeeData.find(function (x) {
+
+                    return x.EmployeeId == employeeId;
+
                 });
-                window.employeeData = updatedData;
-                // Update grid
-                if (gridApi) {
-                    gridApi.setGridOption('rowData', updatedData);
+
+                if (employee) {
+
+                    employee.IsActive = isActive;
+
+                    employee.Status = isActive ? "Active" : "Inactive";
+
                 }
-                // Update stats
+
+                gridApi.setGridOption("rowData", window.employeeData);
+
                 updateStats();
-                // Show success message
-                showMessage('Employee deleted successfully', 'success');
-            } else {
-                showMessage(data.message || 'Error deleting employee', 'error');
+
+                showMessage(data.message, "success");
+
             }
+            else {
+
+                showMessage(data.message, "error");
+
+            }
+
         })
         .catch(function (error) {
-            console.error('Error:', error);
-            showMessage('Error deleting employee. Please try again.', 'error');
-        });
-};
 
+            console.log(error);
+
+            showMessage("Something went wrong.", "error");
+
+        });
+
+};
 function updateStats() {
     var totalCount = window.employeeData.length;
     var activeCount = window.employeeData.filter(function (e) { return e.IsActive; }).length;

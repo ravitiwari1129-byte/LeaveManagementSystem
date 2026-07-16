@@ -14,5 +14,6 @@ namespace LeaveManagementSystem.Repositories
         List<DepartmentModel> GetDepartments();
         UserSession ValidateUser(string email, string password);
         List<RoleModel> GetRoles();
+        bool ToggleUserStatus(int employeeId, bool isActive);
     }
 }

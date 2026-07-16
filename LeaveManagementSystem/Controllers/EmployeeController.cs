@@ -181,43 +181,72 @@ namespace LeaveManagementSystem.Controllers
             if (!IsAdmin())
                 return RedirectToAction("AccessDenied", "Account");
 
-            var employee = _employeeRepository.GetEmployeeById(id);
-            if (employee == null)
+            var emp = _employeeRepository.GetEmployeeById(id);
+
+            if (emp == null)
             {
-                TempData["Error"] = "Employee not found";
+                TempData["Error"] = "Employee not found.";
                 return RedirectToAction("Index");
             }
+
+            EmployeeEditModel model = new EmployeeEditModel
+            {
+                EmployeeId = emp.EmployeeId,
+                EmployeeName = emp.EmployeeName,
+                Email = emp.Email,
+                DepartmentId = emp.DepartmentId,
+                DepartmentName = emp.DepartmentName,
+                Role = emp.Role,
+                DateOfBirth = emp.DateOfBirth,
+                Gender = emp.Gender,
+                MobileNo = emp.MobileNo,
+                Salary = emp.Salary,
+                JoiningDate = emp.JoiningDate,
+                Address = emp.Address,
+                Skills = emp.Skills,
+                ProfileImage = emp.ProfileImage,
+                ExistingProfileImage = emp.ProfileImage,
+                SelectedSkills = string.IsNullOrEmpty(emp.Skills)
+                    ? new List<string>()
+                    : emp.Skills.Split(',').ToList()
+            };
+
             LoadViewBagData();
-            return View(employee);
+
+            return View(model);
         }
 
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Edit(EmployeeModel employee)
+        public IActionResult Edit(EmployeeEditModel employee)
         {
             if (!IsAdmin())
                 return RedirectToAction("AccessDenied", "Account");
 
             ModelState.Remove("DepartmentName");
             ModelState.Remove("IsActive");
-            ModelState.Remove("Password");
             ModelState.Remove("ProfileImage");
             ModelState.Remove("ExistingProfileImage");
 
+            var existingEmployee = _employeeRepository.GetEmployeeById(employee.EmployeeId);
+
+            if (existingEmployee == null)
+            {
+                TempData["Error"] = "Employee not found.";
+                return RedirectToAction("Index");
+            }
+
+            // DOB Validation
             if (employee.DateOfBirth >= DateTime.Today)
             {
                 ModelState.AddModelError("DateOfBirth", "Date of Birth must be before today.");
             }
 
-            employee.Skills = employee.SelectedSkills != null ? string.Join(",", employee.SelectedSkills) : "";
-
             int age = DateTime.Today.Year - employee.DateOfBirth.Year;
 
             if (employee.DateOfBirth > DateTime.Today.AddYears(-age))
-            {
                 age--;
-            }
 
             if (age < 18)
             {
@@ -228,82 +257,143 @@ namespace LeaveManagementSystem.Controllers
             {
                 ModelState.AddModelError("JoiningDate", "Joining Date cannot be a past date.");
             }
-            var existingEmployee = _employeeRepository.GetEmployeeById(employee.EmployeeId);
 
-            if (existingEmployee != null && existingEmployee.Role == "Admin" && employee.Role != "Admin")
+            employee.Skills = employee.SelectedSkills != null
+                ? string.Join(",", employee.SelectedSkills)
+                : "";
+
+            // Last Admin Validation
+            if (existingEmployee.Role == "Admin" && employee.Role != "Admin")
             {
                 int adminCount = _employeeRepository.GetAdminCount();
+
                 if (adminCount <= 1)
                 {
                     ModelState.AddModelError("", "At least one Admin must exist in the system.");
                 }
             }
 
-            if (ModelState.IsValid)
+            if (!ModelState.IsValid)
             {
-                try
-                {
-                    if (employee.ImageFile != null)
-                    {
-                        var extension = Path.GetExtension(employee.ImageFile.FileName).ToLower();
-
-                        if (extension != ".jpg" && extension != ".jpeg" && extension != ".png")
-                        {
-                            ModelState.AddModelError("ImageFile", "Only JPG, JPEG and PNG files are allowed.");
-                            LoadViewBagData();
-                            return View(employee);
-                        }
-
-                        if (employee.ImageFile.Length > 2 * 1024 * 1024)
-                        {
-                            ModelState.AddModelError("ImageFile", "Image size should be less than 2 MB.");
-                            LoadViewBagData();
-                            return View(employee);
-                        }
-
-                        string imageName = Guid.NewGuid().ToString() + extension;
-
-                        string folder = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/uploads");
-
-                        if (!Directory.Exists(folder))
-                        {
-                            Directory.CreateDirectory(folder);
-                        }
-
-                        string path = Path.Combine(folder, imageName);
-
-                        using (var stream = new FileStream(path, FileMode.Create))
-                        {
-                            employee.ImageFile.CopyTo(stream);
-                        }
-
-                        employee.ProfileImage = imageName;
-                    }
-                    else if (existingEmployee != null)
-                    {
-                        employee.ProfileImage = existingEmployee.ProfileImage;
-                    }
-                    bool result = _employeeRepository.UpdateEmployee(employee);
-                    if(result)
-                    {
-                        TempData["Success"] = "Employee updated successfully!";
-                        return RedirectToAction("Index");
-                    }
-                    else
-                    {
-                        ModelState.AddModelError("", "Employee update failed.");
-                    }
-                }
-                catch (Exception ex)
-                {
-                    ModelState.AddModelError("", "Error: " + ex.Message);
-                }
+                LoadViewBagData();
+                return View(employee);
             }
+
+            try
+            {
+                // Keep Existing Image
+                employee.ProfileImage = existingEmployee.ProfileImage;
+
+                // Upload New Image
+                if (employee.ImageFile != null && employee.ImageFile.Length > 0)
+                {
+                    string extension = Path.GetExtension(employee.ImageFile.FileName).ToLower();
+
+                    if (extension != ".jpg" &&
+                        extension != ".jpeg" &&
+                        extension != ".png")
+                    {
+                        ModelState.AddModelError("ImageFile", "Only JPG, JPEG and PNG files are allowed.");
+                        LoadViewBagData();
+                        return View(employee);
+                    }
+
+                    if (employee.ImageFile.Length > 2 * 1024 * 1024)
+                    {
+                        ModelState.AddModelError("ImageFile", "Image size should be less than 2 MB.");
+                        LoadViewBagData();
+                        return View(employee);
+                    }
+
+                    string folder = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "uploads");
+
+                    if (!Directory.Exists(folder))
+                        Directory.CreateDirectory(folder);
+
+                    string imageName = Guid.NewGuid().ToString() + extension;
+
+                    string path = Path.Combine(folder, imageName);
+
+                    using (var stream = new FileStream(path, FileMode.Create))
+                    {
+                        employee.ImageFile.CopyTo(stream);
+                    }
+
+                    employee.ProfileImage = imageName;
+
+                    // Delete old image
+                    if (!string.IsNullOrEmpty(existingEmployee.ProfileImage))
+                    {
+                        string oldFile = Path.Combine(folder, existingEmployee.ProfileImage);
+
+                        if (System.IO.File.Exists(oldFile))
+                        {
+                            System.IO.File.Delete(oldFile);
+                        }
+                    }
+                }
+
+                // Mapping EmployeeEditModel -> EmployeeModel
+                EmployeeModel updateModel = new EmployeeModel
+                {
+                    EmployeeId = employee.EmployeeId,
+                    EmployeeName = employee.EmployeeName,
+                    Email = employee.Email,
+                    DepartmentId = employee.DepartmentId,
+                    DepartmentName = employee.DepartmentName,
+                    Role = employee.Role,
+                    DateOfBirth = employee.DateOfBirth,
+                    Gender = employee.Gender,
+                    MobileNo = employee.MobileNo,
+                    Salary = employee.Salary,
+                    JoiningDate = employee.JoiningDate,
+                    Address = employee.Address,
+                    Skills = employee.Skills,
+                    ProfileImage = employee.ProfileImage,
+
+                    // Optional Password
+                    Password = string.IsNullOrWhiteSpace(employee.Password)
+                        ? existingEmployee.Password
+                        : employee.Password,
+
+                    ConfirmPassword = string.IsNullOrWhiteSpace(employee.Password)
+                        ? existingEmployee.Password
+                        : employee.Password
+                };
+
+                bool result = _employeeRepository.UpdateEmployee(updateModel);
+
+                if (result)
+                {
+                    TempData["Success"] = "Employee updated successfully.";
+                    return RedirectToAction("Index");
+                }
+
+                ModelState.AddModelError("", "Employee update failed.");
+            }
+            catch (Exception ex)
+            {
+                ModelState.AddModelError("", ex.Message);
+            }
+
             LoadViewBagData();
             return View(employee);
         }
 
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public JsonResult ToggleUserStatus([FromBody] EmployeeModel model)
+        {
+            bool success = _employeeRepository.ToggleUserStatus(model.EmployeeId, model.IsActive);
 
+            return Json(new
+            {
+                success = success,
+                message = success
+                    ? "Employee status updated successfully."
+                    : "Unable to update employee status."
+            });
+        }
 
         // ==================== DELETE EMPLOYEE ====================
 

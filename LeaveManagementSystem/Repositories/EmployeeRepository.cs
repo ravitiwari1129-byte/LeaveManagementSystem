@@ -65,6 +65,7 @@ namespace LeaveManagementSystem.Repositories
                     EmployeeId = Convert.ToInt32(row["EmployeeId"]),
                     EmployeeName = row["EmployeeName"] == DBNull.Value ? string.Empty : row["EmployeeName"].ToString(),
                     Email = row["Email"] == DBNull.Value ? string.Empty : row["Email"].ToString(),
+                    Password = row["Password"] == DBNull.Value ? string.Empty : row["Password"].ToString(),
                     DepartmentId = row["DepartmentId"] != DBNull.Value ? Convert.ToInt32(row["DepartmentId"]) : 0,
                     DepartmentName = row["DepartmentName"] == DBNull.Value ? string.Empty : row["DepartmentName"].ToString(),
                     Role = row["Role"] == DBNull.Value ? string.Empty : row["Role"].ToString(),
@@ -76,7 +77,7 @@ namespace LeaveManagementSystem.Repositories
                     Salary = row["Salary"] != DBNull.Value ? Convert.ToDecimal(row["Salary"]) : 0,
                     JoiningDate = row["JoiningDate"] != DBNull.Value ? Convert.ToDateTime(row["JoiningDate"]) : DateTime.MinValue,
                     Address = row["Address"] == DBNull.Value ? string.Empty : row["Address"].ToString(),
-                    Skills = row["Skills"] == DBNull.Value ? string.Empty : row["Skills"].ToString(),
+                    Skills = row["Skills"] == DBNull.Value ? string.Empty : row["Skills"].ToString()
                 };
             }
             return null;
@@ -120,25 +121,33 @@ namespace LeaveManagementSystem.Repositories
         {
             Hashtable ht = new Hashtable();
             ht.Clear();
+
             ht.Add("EmployeeId", employee.EmployeeId);
             ht.Add("EmployeeName", employee.EmployeeName);
             ht.Add("Email", employee.Email);
+            ht.Add("Password", employee.Password);   // <-- Add this line
             ht.Add("DepartmentId", employee.DepartmentId);
             ht.Add("Role", employee.Role);
             ht.Add("DateOfBirth", employee.DateOfBirth);
             ht.Add("Gender", employee.Gender);
+
             if (string.IsNullOrEmpty(employee.ProfileImage))
             {
                 employee.ProfileImage = "";
             }
+
             ht.Add("ProfileImage", employee.ProfileImage);
             ht.Add("MobileNo", employee.MobileNo);
             ht.Add("Salary", employee.Salary);
             ht.Add("JoiningDate", employee.JoiningDate);
             ht.Add("Address", employee.Address);
             ht.Add("Skills", employee.Skills);
-            ht.Add("@IsActive", employee.IsActive);
-            int result = _dbHelper.ExecuteWithOutputParameter("USP_UpdateEmployee", ht,"@Result");
+
+            int result = _dbHelper.ExecuteWithOutputParameter(
+                "USP_UpdateEmployee",
+                ht,
+                "@Result");
+
             return result == 1;
         }
 
@@ -218,6 +227,20 @@ namespace LeaveManagementSystem.Repositories
             }
 
             return roles;
+        }
+        public bool ToggleUserStatus(int employeeId, bool isActive)
+        {
+            Hashtable ht = new Hashtable();
+
+            ht.Add("@EmployeeId", employeeId);
+            ht.Add("@IsActive", isActive);
+
+            int result = _dbHelper.ExecuteWithOutputParameter(
+                "USP_ToggleUserStatus",
+                ht,
+                "@Result");
+
+            return result == 1;
         }
 
     }
